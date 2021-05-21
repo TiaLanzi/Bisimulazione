@@ -11,4 +11,16 @@
     <string name="login_sign_in_text_button">REGISTRATI</string>
     <string name="login_forgot_password_text_caption">Password dimenticata?</string>
     <string name="login_click_here_text_link">Clicca qui</string>
+
+    <!-- sign up activity-->
+    <string name="sign_up_insert_name">Inserisci il tuo nome</string>
+    <string name="sign_up_your_name_hint">Nome</string>
+    <string name="sign_up_insert_surname">Inserisci il tuo cognome</string>
+    <string name="sign_up_your_surname_hint">Cognome</string>
+    <string name="sign_up_insert_mail">Inserisci il tuo indirizzo mail</string>
+    <string name="sign_up_your_mail_hint">esempio@prova.it</string>
+    <string name="sign_up_insert_username">Inserisci uno username</string>
+    <string name="sign_up_your_username_hint">Username</string>
+    <string name="sign_up_insert_pwd">Inserisci una password</string>
+    <string name="sign_up_button_text">REGISTRATI</string>
 </resources>

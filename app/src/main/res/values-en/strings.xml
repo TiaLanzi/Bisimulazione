@@ -8,7 +8,19 @@
     <string name="login_username_text_header">Username</string>
     <string name="login_password_text_header">Password</string>
     <string name="login_remember_me_text">Remember me</string>
-    <string name="login_sign_in_text_button">SIGN IN</string>
+    <string name="login_sign_in_text_button">SIGN UP</string>
     <string name="login_forgot_password_text_caption">Forgot password?</string>
     <string name="login_click_here_text_link">Click here</string>
+
+    <!-- sign up activity-->
+    <string name="sign_up_insert_name">Insert your name</string>
+    <string name="sign_up_your_name_hint">Your first name</string>
+    <string name="sign_up_insert_surname">Insert last name</string>
+    <string name="sign_up_your_surname_hint">Your last name</string>
+    <string name="sign_up_insert_mail">Insert your email address</string>
+    <string name="sign_up_your_mail_hint">example@mail.com</string>
+    <string name="sign_up_insert_username">Insert a username</string>
+    <string name="sign_up_your_username_hint">Username</string>
+    <string name="sign_up_insert_pwd">Insert password</string>
+    <string name="sign_up_button_text">SIGN UP</string>
 </resources>
