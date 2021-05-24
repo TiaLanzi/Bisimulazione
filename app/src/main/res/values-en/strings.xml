@@ -22,5 +22,13 @@
     <string name="sign_up_insert_username">Insert a username</string>
     <string name="sign_up_your_username_hint">Username</string>
     <string name="sign_up_insert_pwd">Insert password</string>
+    <string name="sign_up_insert_confirm_pwd">Confirm your password</string>
     <string name="sign_up_button_text">SIGN UP</string>
+
+    <!-- user-->
+    <string name="user_unknown">unknown</string>
+
+    <!-- errors-->
+    <string name="error_empty_edittext">Required field</string>
+    <string name="error_too_short_edittext">Text too short</string>
 </resources>

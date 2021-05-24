@@ -155,6 +155,35 @@
             android:paddingEnd="8dp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/sign_up_confirm_pwd_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/sign_up_insert_confirm_pwd_text"
+            style="@style/Body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_up_insert_confirm_pwd" />
+
+        <EditText
+            android:id="@+id/sign_up_confirm_pwd_input"
+            style="@style/H6"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:background="@drawable/edittext"
+            android:gravity="center_vertical"
+            android:importantForAutofill="no"
+            android:inputType="textPassword"
+            android:paddingStart="8dp"
+            android:paddingLeft="8dp"
+            android:paddingEnd="8dp" />
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/sign_up_button_layout"
         android:layout_width="match_parent"

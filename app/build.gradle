@@ -31,7 +31,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:28.0.1')
     //dependency for the Firebase SDK for Google Analytics
     implementation 'com.google.firebase:firebase-analytics'
-    //dependecy for Firebase
+    //dependency for Firebase Authentication
+    implementation 'com.google.firebase:firebase-auth'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
