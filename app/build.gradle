@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+// Google services plugin
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 29
@@ -25,6 +27,11 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    // import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:28.0.1')
+    //dependency for the Firebase SDK for Google Analytics
+    implementation 'com.google.firebase:firebase-analytics'
+    //dependecy for Firebase
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
