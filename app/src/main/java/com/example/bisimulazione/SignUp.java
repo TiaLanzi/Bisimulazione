@@ -22,6 +22,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SignUp extends AppCompatActivity {
 
     private final String TAG = "Bisimulazione";
@@ -32,7 +35,6 @@ public class SignUp extends AppCompatActivity {
     private EditText password;
     private EditText confirmPassword;
     private FirebaseAuth auth;
-    private FirebaseDatabase database;
     private DatabaseReference reference;
 
     @Override
@@ -53,7 +55,7 @@ public class SignUp extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         // initialize database
-        database = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         // initialize reference into database
         reference = database.getReference("users");
@@ -63,18 +65,18 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // check if all fields are correct
-                if (validate(firstName) & validate(lastName) & validate(username)) {  //& validateEmail(email) & validatePwd(password)) {
+                if (isValidName(firstName) & isValidName(lastName) & isValidName(username) & isValidEmail(email) & isValidPwd(password, confirmPassword)) {  //& validateEmail(email) & validatePwd(password)) {
                     // get text written in edittext
-                    String nome = firstName.getText().toString().trim();
-                    Log.i(TAG, nome);
-                    String cognome = lastName.getText().toString().trim();
-                    Log.i(TAG, cognome);
-                    String nomeUtente = username.getText().toString().trim();
-                    Log.i(TAG, nomeUtente);
-                    String mail = email.getText().toString().trim();
-                    Log.i(TAG, mail);
-                    String pwd = password.getText().toString().trim();
-                    Log.i(TAG, pwd);
+                    String nome = fromEditTextToString(firstName).trim();
+                    //Log.i(TAG, nome);
+                    String cognome = fromEditTextToString(lastName).trim();
+                    //Log.i(TAG, cognome);
+                    String nomeUtente = fromEditTextToString(username).trim();
+                    //Log.i(TAG, nomeUtente);
+                    String mail = fromEditTextToString(email).trim();
+                    //Log.i(TAG, mail);
+                    String pwd = fromEditTextToString(password);
+                    //Log.i(TAG, pwd);
                     final User utente = new User(nome, cognome, nomeUtente, mail, pwd);
                     auth.createUserWithEmailAndPassword(mail, pwd)
                             .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
@@ -98,8 +100,12 @@ public class SignUp extends AppCompatActivity {
         });
     }
 
-    private boolean validate(EditText editText) {
-        String string = editText.getText().toString().trim();
+    private String fromEditTextToString(EditText editText) {
+        return editText.getText().toString();
+    }
+
+    private boolean isValidName(EditText editText) {
+        String string = fromEditTextToString(editText).trim();
         // firstName, lastName and username must be longer than one single character and cannot be empty
         if (string.equalsIgnoreCase("")) {
             editText.setError(getString(R.string.error_empty_edittext));
@@ -110,6 +116,41 @@ public class SignUp extends AppCompatActivity {
         } else {
             return true;
         }
+    }
+
+    private boolean isValidEmail(EditText editText) {
+        String email = fromEditTextToString(editText).trim();
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        Pattern p = Pattern.compile(ePattern);
+        Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
+    private boolean isValidPwd(EditText editText, EditText et) {
+        String pass = fromEditTextToString(editText);
+        String confPass = fromEditTextToString(et);
+
+        if (!pass.equalsIgnoreCase(confPass)) {
+            return false;
+        }
+
+        // Regex to check valid password.
+        String regex = "^(?=.*[0-9])"
+                + "(?=.*[a-z])(?=.*[A-Z])"
+                + "(?=.*[@#$%^&+=])"
+                + "(?=\\S+$).{8,20}$";
+
+        // Compile the ReGex
+        Pattern p = Pattern.compile(regex);
+
+        // Pattern class contains matcher() method
+        // to find matching between given password
+        // and regular expression.
+        Matcher m = p.matcher(pass);
+
+        // Return if the password
+        // matched the ReGex
+        return m.matches();
     }
 
     private void sendData(User user) {
