@@ -31,11 +31,11 @@ public class Login extends AppCompatActivity {
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
-        login.setOnClickListener(new View.OnClickListener() {
+        /*login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validEmail(user))
             }
-        });
+        });*/
     }
 }
