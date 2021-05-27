@@ -58,7 +58,7 @@ public class SignUp extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         // initialize reference into database
-        reference = database.getReference("users");
+        reference = database.getReference("bisimulazione-default-rtdb");
 
         // listener for button sign up
         signUp.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +84,7 @@ public class SignUp extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
-                                        // Log.d(TAG, getString(R.string.msg_create_user_success));
+                                        Log.d(TAG, getString(R.string.msg_create_user_success));
                                         FirebaseUser user = auth.getCurrentUser();
                                         sendData(utente);
                                     } else {
@@ -157,6 +157,7 @@ public class SignUp extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                Log.i(TAG, getString(R.string.msg_data_send_success));
                 reference.setValue(user);
             }
 

@@ -31,4 +31,14 @@
     <!-- errors -->
     <string name="error_empty_edittext">Campo obbligatorio</string>
     <string name="error_too_short_edittext">Input troppo breve</string>
+
+    <!-- success -->
+    <string name="msg_create_user_success">Utente creato con successo</string>
+    <string name="msg_data_send_success">Dati inviati con successo</string>
+
+    <!-- bug report-->
+    <string name="bug_report_explanation_message">Mandaci un messaggio in cui riporti il problema che hai riscontrato:</string>
+    <string name="bug_report_hint">Inserisci qui il testo</string>
+    <string name="bug_report_send_message">Il messaggio verra\' inviato a prova@mail.it\nGrazie per la segnalazione!</string>
+    <string name="bug_report_send_button_text">INVIA</string>
 </resources>

@@ -31,4 +31,14 @@
     <!-- errors-->
     <string name="error_empty_edittext">Required field</string>
     <string name="error_too_short_edittext">Text too short</string>
+
+    <!-- success -->
+    <string name="msg_create_user_success">User created successfully in Firebase</string>
+    <string name="msg_data_send_success">Data send successfully to Realtime Database</string>
+
+    <!-- bug report -->
+    <string name="bug_report_explanation_message">Please send us a message stating the problem you have experienced:</string>
+    <string name="bug_report_hint">Insert text here</string>
+    <string name="bug_report_send_message">The message will be sent to prova@mail.it\n Thanks for reporting!</string>
+    <string name="bug_report_send_button_text">SEND</string>
 </resources>
