@@ -41,4 +41,5 @@
     <string name="bug_report_hint">Insert text here</string>
     <string name="bug_report_send_message">The message will be sent to prova@mail.it\n Thanks for reporting!</string>
     <string name="bug_report_send_button_text">SEND</string>
+    <string name="bug_report">BUG REPORT</string>
 </resources>

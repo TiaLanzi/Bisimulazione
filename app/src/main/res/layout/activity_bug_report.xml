@@ -28,7 +28,8 @@
         android:gravity="top"
         android:hint="@string/bug_report_hint"
         android:inputType="textMultiLine"
-        android:padding="8dp" />
+        android:padding="8dp"
+        android:autofillHints="@string/bug_report_hint" />
 
     <RelativeLayout
         android:id="@+id/bug_report_send_layout"

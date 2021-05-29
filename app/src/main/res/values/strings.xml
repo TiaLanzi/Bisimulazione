@@ -41,4 +41,5 @@
     <string name="bug_report_hint">Inserisci qui il testo</string>
     <string name="bug_report_send_message">Il messaggio verra\' inviato a prova@mail.it\nGrazie per la segnalazione!</string>
     <string name="bug_report_send_button_text">INVIA</string>
+    <string name="bug_report">SEGNALA UN PROBLEMA</string>
 </resources>
