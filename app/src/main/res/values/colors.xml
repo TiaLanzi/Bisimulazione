@@ -9,5 +9,5 @@
     <color name="link">#47A7FF</color>
     <color name="orange_peach">#FF6837</color>
     <color name="dark_grey">#A9A9A9</color>
-    <color name="background_color">#F4F6FB</color>
+    <color name="background_answer_color">#F4F6FB</color>
 </resources>

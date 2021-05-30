@@ -42,4 +42,9 @@
     <string name="bug_report_send_message">Il messaggio verra\' inviato a prova@mail.it\nGrazie per la segnalazione!</string>
     <string name="bug_report_send_button_text">INVIA</string>
     <string name="bug_report">SEGNALA UN PROBLEMA</string>
+
+    <!-- faq -->
+    <string name="faq_question_one">Domanda numero 1?</string>
+    <string name="faq_toggle_question">Apri / Chiudi</string>
+    <string name="faq_answer_one">Risposta numero 1…</string>
 </resources>
