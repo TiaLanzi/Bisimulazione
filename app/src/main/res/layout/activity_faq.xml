@@ -58,13 +58,10 @@
                 style="@style/Body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/background_answer_color"
+                android:background="@color/background_color"
                 android:padding="16dp"
                 android:text="@string/faq_answer_one"
                 android:visibility="gone" />
         </LinearLayout>
-
-
     </LinearLayout>
-
 </ScrollView>
