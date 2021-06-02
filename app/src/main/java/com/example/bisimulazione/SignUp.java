@@ -36,7 +36,6 @@ public class SignUp extends AppCompatActivity {
     private EditText password;
     private EditText confirmPassword;
     private FirebaseAuth auth;
-    private FirebaseDatabase database;
     private DatabaseReference reference;
 
     @Override
@@ -57,10 +56,12 @@ public class SignUp extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         // initialize database
-        database = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         // initialize reference into database
         reference = database.getReference().child("users");
+
+        reference.setValue("Hello");
 
         // listener for button sign up
         signUp.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +89,7 @@ public class SignUp extends AppCompatActivity {
                                         // Sign in success, update UI with the signed-in user's information
                                         Toast.makeText(getApplicationContext(), "Registrazione avvenuta con successo", Toast.LENGTH_SHORT).show();
                                         Log.d(TAG, getString(R.string.msg_create_user_success));
-                                        sendData(utente);
+                                        //sendData(utente);
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Toast.makeText(getApplicationContext(), "Registrazione fallita" + task.getException(), Toast.LENGTH_SHORT).show();
@@ -121,7 +122,7 @@ public class SignUp extends AppCompatActivity {
         }
     }
 
-    private boolean isValidEmail(EditText editText) {
+    /*private boolean isValidEmail(EditText editText) {
         String email = fromEditTextToString(editText).trim();
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
         Pattern p = Pattern.compile(ePattern);
@@ -166,7 +167,7 @@ public class SignUp extends AppCompatActivity {
         } else {
             Log.i(TAG, "User null");
         }
-        /**
+
          reference.addValueEventListener(new ValueEventListener() {
         @Override public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
         if (utente != null) {
@@ -178,6 +179,6 @@ public class SignUp extends AppCompatActivity {
         @Override public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
 
         }
-        }); */
-    }
+        });
+    } */
 }
