@@ -8,7 +8,7 @@
     <string name="login_username_text_header">Username</string>
     <string name="login_password_text_header">Password</string>
     <string name="login_remember_me_text">Remember me</string>
-    <string name="login_sign_in_text_button">SIGN UP</string>
+    <string name="login_sign_in_text_button">SIGN IN</string>
     <string name="login_forgot_password_text_caption">Forgot password?</string>
     <string name="login_click_here_text_link">Click here</string>
 
@@ -24,6 +24,8 @@
     <string name="sign_up_insert_pwd">Insert password</string>
     <string name="sign_up_insert_confirm_pwd">Confirm your password</string>
     <string name="sign_up_button_text">SIGN UP</string>
+    <string name="sign_up_successful">Sign up successfully</string>
+    <string name="sign_up_failed">Sign up failed</string>
 
     <!-- user-->
     <string name="user_unknown">unknown</string>

@@ -153,5 +153,4 @@
             android:text="@string/login_click_here_text_link"
             android:textColor="@color/link" />
     </LinearLayout>
-
 </LinearLayout>

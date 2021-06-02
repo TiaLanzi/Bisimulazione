@@ -8,7 +8,7 @@
     <string name="login_username_text_header">Username</string>
     <string name="login_password_text_header">Password</string>
     <string name="login_remember_me_text">Ricordami</string>
-    <string name="login_sign_in_text_button">REGISTRATI</string>
+    <string name="login_sign_in_text_button">ACCEDI</string>
     <string name="login_forgot_password_text_caption">Password dimenticata?</string>
     <string name="login_click_here_text_link">Clicca qui</string>
 
@@ -24,6 +24,8 @@
     <string name="sign_up_insert_pwd">Inserisci una password</string>
     <string name="sign_up_insert_confirm_pwd">Inserisci di nuovo la password</string>
     <string name="sign_up_button_text">REGISTRATI</string>
+    <string name="sign_up_successful">Registrazione avvenuta con successo</string>
+    <string name="sign_up_failed">Autenticazione fallita</string>
 
     <!-- user-->
     <string name="user_unknown">sconosciuto</string>

@@ -3,6 +3,7 @@ package com.example.bisimulazione;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -79,14 +80,15 @@ public class SignUp extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
-                                        Toast.makeText(getApplicationContext(), "Registrazione avvenuta con successo", Toast.LENGTH_SHORT).show();
-                                        Log.d(TAG, getString(R.string.msg_create_user_success));
+                                        Toast.makeText(getApplicationContext(), getString(R.string.sign_up_successful), Toast.LENGTH_SHORT).show();
+                                        //Log.d(TAG, getString(R.string.msg_create_user_success));
                                         sendData(utente);
+                                        passData(utente);
                                     } else {
                                         // If sign in fails, display a message to the user.
-                                        Toast.makeText(getApplicationContext(), "Registrazione fallita" + task.getException(), Toast.LENGTH_SHORT).show();
-                                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                        Toast.makeText(SignUp.this, "Authentication failed.",
+                                        //Toast.makeText(getApplicationContext(), getString(R.string.sign_up_failed) + task.getException(), Toast.LENGTH_SHORT).show();
+                                        //Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                        Toast.makeText(SignUp.this, getString(R.string.sign_up_failed),
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -134,5 +136,16 @@ public class SignUp extends AppCompatActivity {
         map.put("pwd", utente.getPassword());
 
         reference.child(utente.getLastName() + " " + utente.getFirstName()).setValue(map);
+    }
+
+    private void passData(User utente) {
+        // pass email and password to Login Activity...
+        Intent intent = new Intent(SignUp.this, Login.class);
+        intent.putExtra("email", utente.getMail());
+        intent.putExtra("pwd", utente.getPassword());
+        // ... and open it ...
+        startActivity(intent);
+        // ... and close this activity
+        finish();
     }
 }
