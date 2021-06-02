@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,15 +15,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
 
 public class SignUp extends AppCompatActivity {
 
@@ -61,25 +55,23 @@ public class SignUp extends AppCompatActivity {
         // initialize reference into database
         reference = database.getReference().child("users");
 
-        reference.setValue("Hello");
-
         // listener for button sign up
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // check if all fields are correct
-                if (isValidName(firstName) & isValidName(lastName)) { //& isValidName(username) & isValidEmail(email) & isValidPwd(password, confirmPassword)) {  //& validateEmail(email) & validatePwd(password)) {
+                if (isValidName(firstName) & isValidName(lastName) & isValidName(username) & isValidEmail(email) & isValidPwd(password, confirmPassword)) {  //& validateEmail(email) & validatePwd(password)) {
                     // get text written in edittext
                     String nome = fromEditTextToString(firstName).trim();
-                    Log.i(TAG, nome);
+                    //Log.i(TAG, nome);
                     String cognome = fromEditTextToString(lastName).trim();
-                    Log.i(TAG, cognome);
+                    //Log.i(TAG, cognome);
                     String nomeUtente = fromEditTextToString(username).trim();
-                    Log.i(TAG, nomeUtente);
+                    //Log.i(TAG, nomeUtente);
                     String mail = fromEditTextToString(email).trim();
-                    Log.i(TAG, mail);
+                    //Log.i(TAG, mail);
                     String pwd = fromEditTextToString(password);
-                    Log.i(TAG, pwd);
+                    //Log.i(TAG, pwd);
                     final User utente = new User(nome, cognome, nomeUtente, mail, pwd);
                     auth.createUserWithEmailAndPassword(mail, pwd)
                             .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
@@ -89,7 +81,7 @@ public class SignUp extends AppCompatActivity {
                                         // Sign in success, update UI with the signed-in user's information
                                         Toast.makeText(getApplicationContext(), "Registrazione avvenuta con successo", Toast.LENGTH_SHORT).show();
                                         Log.d(TAG, getString(R.string.msg_create_user_success));
-                                        //sendData(utente);
+                                        sendData(utente);
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Toast.makeText(getApplicationContext(), "Registrazione fallita" + task.getException(), Toast.LENGTH_SHORT).show();
@@ -122,63 +114,25 @@ public class SignUp extends AppCompatActivity {
         }
     }
 
-    /*private boolean isValidEmail(EditText editText) {
-        String email = fromEditTextToString(editText).trim();
-        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
-        Pattern p = Pattern.compile(ePattern);
-        Matcher m = p.matcher(email);
-        return m.matches();
+    private boolean isValidEmail(EditText editText) {
+        return true;
     }
 
     private boolean isValidPwd(EditText editText, EditText et) {
         String pass = fromEditTextToString(editText);
         String confPass = fromEditTextToString(et);
 
-        if (!pass.equalsIgnoreCase(confPass)) {
-            return false;
-        }
-
-        // Regex to check valid password.
-        String regex = "^(?=.*[0-9])"
-                + "(?=.*[a-z])(?=.*[A-Z])"
-                + "(?=.*[@#$%^&+=])"
-                + "(?=\\S+$).{8,20}$";
-
-        // Compile the ReGex
-        Pattern p = Pattern.compile(regex);
-
-        // Pattern class contains matcher() method
-        // to find matching between given password
-        // and regular expression.
-        Matcher m = p.matcher(pass);
-
-        // Return if the password
-        // matched the ReGex
-        return m.matches();
+        return pass.equalsIgnoreCase(confPass);
     }
 
     private void sendData(User utente) {
-        if (utente != null) {
-            reference.setValue(utente.getFirstName());
-            reference.setValue(utente.getLastName());
-            reference.setValue(utente.getUsername());
-            reference.setValue(utente.getMail());
-            reference.setValue(utente.getPassword());
-        } else {
-            Log.i(TAG, "User null");
-        }
+        HashMap<String, String> map = new HashMap<>();
+        map.put("firstName", utente.getFirstName());
+        map.put("lastName", utente.getLastName());
+        map.put("username", utente.getUsername());
+        map.put("email", utente.getMail());
+        map.put("pwd", utente.getPassword());
 
-         reference.addValueEventListener(new ValueEventListener() {
-        @Override public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
-        if (utente != null) {
-
-        Log.i(TAG, getString(R.string.msg_data_send_success));
-        }
-        }
-
-        @Override public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
-
-        }
-        });
-    } */
+        reference.child(utente.getLastName() + " " + utente.getFirstName()).setValue(map);
+    }
 }
