@@ -49,4 +49,19 @@
     <string name="faq_question_one">Domanda numero 1?</string>
     <string name="faq_toggle_question">Apri / Chiudi</string>
     <string name="faq_answer_one">Risposta numero 1…</string>
+
+    <!-- navigation -->
+    <string name="navigation_navigation">Navigazione</string>
+    <string name="navigation_home">Home</string>
+    <string name="navigation_my_account">Il mio profilo</string>
+    <string name="navigation_play_game">Gioca ora!</string>
+    <string name="navigation_other">Altro</string>
+    <string name="navigation_faq">FAQ</string>
+    <string name="navigation_settings">Impostazioni</string>
+    <string name="navigation_bug_report">Segnala un problema</string>
+
+    <!-- navigation header -->
+    <string name="navigation_header_description">Testata di navigazione</string>
+    <string name="navigation_header_bisimulation_game_title">Bisimulazione</string>
+    <string name="navigation_header_mail_subtitle">Benvenuto prova@mail.it!</string>
 </resources>
