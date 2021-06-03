@@ -16,8 +16,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -30,6 +35,7 @@ public class SignUp extends AppCompatActivity {
     private EditText email;
     private EditText password;
     private EditText confirmPassword;
+    private String userFullName = "";
     private FirebaseAuth auth;
     private DatabaseReference reference;
 
@@ -74,6 +80,25 @@ public class SignUp extends AppCompatActivity {
                     String pwd = fromEditTextToString(password);
                     //Log.i(TAG, pwd);
                     final User utente = new User(nome, cognome, nomeUtente, mail, pwd);
+                    // check if lastName + firstName already exist
+                    reference.child("users").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            userFullName = utente.getLastName() + " " + utente.getFirstName();
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                Log.i(TAG, (String) dataSnapshot.getValue());
+                                if (((String) dataSnapshot.getValue()).equalsIgnoreCase(userFullName)) {
+                                    userFullName = userFullName + "x";
+                                    Log.i(TAG, userFullName);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                        }
+                    });
                     auth.createUserWithEmailAndPassword(mail, pwd)
                             .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -82,7 +107,7 @@ public class SignUp extends AppCompatActivity {
                                         // Sign in success, update UI with the signed-in user's information
                                         Toast.makeText(getApplicationContext(), getString(R.string.sign_up_successful), Toast.LENGTH_SHORT).show();
                                         //Log.d(TAG, getString(R.string.msg_create_user_success));
-                                        sendData(utente);
+                                        sendData(utente, userFullName);
                                         passData(utente);
                                     } else {
                                         // If sign in fails, display a message to the user.
@@ -127,7 +152,7 @@ public class SignUp extends AppCompatActivity {
         return pass.equalsIgnoreCase(confPass);
     }
 
-    private void sendData(User utente) {
+    private void sendData(User utente, String userFullName) {
         HashMap<String, String> map = new HashMap<>();
         map.put("firstName", utente.getFirstName());
         map.put("lastName", utente.getLastName());
@@ -135,7 +160,12 @@ public class SignUp extends AppCompatActivity {
         map.put("email", utente.getMail());
         map.put("pwd", utente.getPassword());
 
-        reference.child(utente.getLastName() + " " + utente.getFirstName()).setValue(map);
+        // if lastName + firstName already exists --> add a counter (or something like this)
+        if (userFullName.equalsIgnoreCase("")) {
+            reference.child(utente.getLastName() + " " + utente.getFirstName()).setValue(map);
+        } else {
+            reference.child(userFullName).setValue(map);
+        }
     }
 
     private void passData(User utente) {
