@@ -45,9 +45,9 @@ public class Login extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
-            Log.i(TAG, user.getEmail());
+            // Log.i(TAG, user.getEmail());
         } else {
-            Log.i(TAG, "User is null");
+            // Log.i(TAG, "User is null");
         }
 
         Bundle extras = getIntent().getExtras();

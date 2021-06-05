@@ -3,7 +3,9 @@ package com.example.bisimulazione;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +40,8 @@ public class SignUp extends AppCompatActivity {
     private String userFullName = "";
     private FirebaseAuth auth;
     private DatabaseReference reference;
+    private SharedPreferences sharedPreferences;
+    private int counter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,14 @@ public class SignUp extends AppCompatActivity {
         // initialize reference into database
         reference = database.getReference().child("users");
 
+        // initialize shared preferences and persistent counter
+        sharedPreferences = this.getSharedPreferences("SharedPreferencesCounter", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        // to (re)set counter
+        /*editor.putInt("Counter", 1);
+        editor.apply();*/
+        Log.i(TAG, String.valueOf(getCounter()));
+
         // listener for button sign up
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,15 +93,24 @@ public class SignUp extends AppCompatActivity {
                     //Log.i(TAG, pwd);
                     final User utente = new User(nome, cognome, nomeUtente, mail, pwd);
                     // check if lastName + firstName already exist
-                    reference.child("users").addValueEventListener(new ValueEventListener() {
+                    reference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                             userFullName = utente.getLastName() + " " + utente.getFirstName();
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                Log.i(TAG, (String) dataSnapshot.getValue());
-                                if (((String) dataSnapshot.getValue()).equalsIgnoreCase(userFullName)) {
-                                    userFullName = userFullName + "x";
-                                    Log.i(TAG, userFullName);
+                                if (dataSnapshot != null) {
+                                    String userSearch = dataSnapshot.child("lastName").getValue().toString() + " " + dataSnapshot.child("firstName").getValue().toString();
+                                    Log.i(TAG, userSearch);
+                                    if (userSearch.equalsIgnoreCase(userFullName)) {
+                                        int count = sharedPreferences.getInt("Counter", 0);
+                                        String counter = String.valueOf(sharedPreferences.getInt("Counter", 0));
+                                        userFullName = userFullName + " " + counter;
+                                        count++;
+                                        editor.putInt("Counter", count);
+                                        editor.apply();
+                                    }
+                                } else {
+                                    Log.i(TAG, "Data snapshot is null");
                                 }
                             }
                         }
@@ -99,8 +120,8 @@ public class SignUp extends AppCompatActivity {
 
                         }
                     });
-                    auth.createUserWithEmailAndPassword(mail, pwd)
-                            .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
+                    auth.createUserWithEmailAndPassword(mail, pwd).
+                            addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
@@ -177,5 +198,9 @@ public class SignUp extends AppCompatActivity {
         startActivity(intent);
         // ... and close this activity
         finish();
+    }
+
+    private int getCounter() {
+        return sharedPreferences.getInt("Counter", 0);
     }
 }
