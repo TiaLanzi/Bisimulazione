@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class SignUp extends AppCompatActivity {
 
@@ -41,7 +42,6 @@ public class SignUp extends AppCompatActivity {
     private FirebaseAuth auth;
     private DatabaseReference reference;
     private SharedPreferences sharedPreferences;
-    private int counter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +79,7 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // check if all fields are correct
-                if (isValidName(firstName) & isValidName(lastName) & isValidName(username) & isValidEmail(email) & isValidPwd(password, confirmPassword)) {  //& validateEmail(email) & validatePwd(password)) {
+                if (isValidName(firstName) & isValidName(lastName) & isValidName(username) & isValidEmail(email) & isValidPwd(password, confirmPassword)) {
                     // get text written in edittext
                     String nome = fromEditTextToString(firstName).trim();
                     //Log.i(TAG, nome);
@@ -163,14 +163,29 @@ public class SignUp extends AppCompatActivity {
     }
 
     private boolean isValidEmail(EditText editText) {
-        return true;
+        String email = fromEditTextToString(editText);
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." + "[a-zA-Z0-9+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        if (email != null) {
+            return pattern.matcher(email).matches();
+        } else {
+            return false;
+        }
     }
 
     private boolean isValidPwd(EditText editText, EditText et) {
         String pass = fromEditTextToString(editText);
         String confPass = fromEditTextToString(et);
 
-        return pass.equalsIgnoreCase(confPass);
+        if (pass.equalsIgnoreCase(confPass)) {
+            String pwd = fromEditTextToString(editText);
+            String pwdRegex = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$";
+            Pattern pattern = Pattern.compile(pwdRegex);
+            return pattern.matcher(pwd).matches();
+        } else {
+            editText.setError("Le 2 password non corrispondono");
+            return false;
+        }
     }
 
     private void sendData(User utente, String userFullName) {
