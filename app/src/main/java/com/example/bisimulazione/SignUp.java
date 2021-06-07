@@ -79,7 +79,7 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // check if all fields are correct
-                if (isValidName(firstName) & isValidName(lastName) & isValidName(username) & isValidEmail(email) & isValidPwd(password, confirmPassword)) {
+                if (isValidName(firstName) & isValidName(lastName) & isValidName(username)) { // & isValidEmail(email) & isValidPwd(password, confirmPassword)) {
                     // get text written in edittext
                     String nome = fromEditTextToString(firstName).trim();
                     //Log.i(TAG, nome);
