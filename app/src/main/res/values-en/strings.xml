@@ -1,7 +1,7 @@
 <resources>
 
     <!--app name-->
-    <string name="app_name">Bisimulazione</string>
+    <string name="app_name">Bisimulation</string>
 
     <!--login activity-->
     <string name="login_login_text_title">LOGIN</string>
@@ -46,7 +46,7 @@
     <string name="bug_report">BUG REPORT</string>
 
     <!-- faq -->
-    <string name="faq_question_one">First aquestion?</string>
+    <string name="faq_question_one">First question?</string>
     <string name="faq_toggle_question">Open / Close</string>
     <string name="faq_answer_one">Answer number one…</string>
 
@@ -64,4 +64,8 @@
     <string name="navigation_header_description">Navigation header</string>
     <string name="navigation_header_bisimulation_game_title">Bisimulation game</string>
     <string name="navigation_header_mail_subtitle">Welcome prova@mail.it!</string>
+
+    <!-- main -->
+    <string name="main_play_now">PLAY NOW!</string>
+    <string name="main_options">SETTINGS</string>
 </resources>

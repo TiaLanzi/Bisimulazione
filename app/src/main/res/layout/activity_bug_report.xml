@@ -24,12 +24,12 @@
         android:layout_gravity="center_vertical"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="24dp"
+        android:autofillHints="@string/bug_report_hint"
         android:background="@drawable/corner_radius_edittext"
         android:gravity="top"
         android:hint="@string/bug_report_hint"
         android:inputType="textMultiLine"
-        android:padding="8dp"
-        android:autofillHints="@string/bug_report_hint" />
+        android:padding="8dp" />
 
     <RelativeLayout
         android:id="@+id/bug_report_send_layout"
@@ -59,6 +59,8 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/corner_radius_button"
+            android:clickable="true"
+            android:focusable="true"
             android:text="@string/bug_report_send_button_text"
             android:textColor="@color/background_color"
             android:visibility="visible" />

@@ -64,4 +64,8 @@
     <string name="navigation_header_description">Testata di navigazione</string>
     <string name="navigation_header_bisimulation_game_title">Bisimulazione</string>
     <string name="navigation_header_mail_subtitle">Benvenuto prova@mail.it!</string>
+
+    <!-- main activity -->
+    <string name="main_play_now">GIOCA ORA!</string>
+    <string name="main_options">OPZIONI</string>
 </resources>
