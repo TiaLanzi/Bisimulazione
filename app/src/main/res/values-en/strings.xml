@@ -68,4 +68,8 @@
     <!-- main -->
     <string name="main_play_now">PLAY NOW!</string>
     <string name="main_options">SETTINGS</string>
+
+    <!-- table -->
+    <string name="table_table_right">Right table</string>
+    <string name="table_table_left">Left table</string>
 </resources>

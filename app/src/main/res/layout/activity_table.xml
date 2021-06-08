@@ -18,7 +18,24 @@
         android:id="@+id/table_left_table_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight=".5" />
+        android:layout_weight=".5">
+
+        <LinearLayout
+            android:id="@+id/table_left_table_inside_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
+
+        <TextView
+            android:id="@+id/table_left_table_title"
+            style="@style/Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:clickable="false"
+            android:text="@string/table_table_left"
+            android:textColor="@color/primaryColor" />
+    </RelativeLayout>
 
     <View
         android:id="@+id/table_vertical_separator"
@@ -30,6 +47,22 @@
         android:id="@+id/table_right_table_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight=".5" />
+        android:layout_weight=".5">
 
+        <LinearLayout
+            android:id="@+id/table_right_table_inside_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
+
+        <TextView
+            android:id="@+id/table_right_table_title"
+            style="@style/Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:clickable="false"
+            android:text="@string/table_table_right"
+            android:textColor="@color/primaryColor" />
+    </RelativeLayout>
 </LinearLayout>

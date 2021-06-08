@@ -68,4 +68,8 @@
     <!-- main activity -->
     <string name="main_play_now">GIOCA ORA!</string>
     <string name="main_options">OPZIONI</string>
+
+    <!-- table -->
+    <string name="table_table_right">Tavolo destro</string>
+    <string name="table_table_left">Tavolo sinistro</string>
 </resources>
