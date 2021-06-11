@@ -53,7 +53,6 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.3.5'
     // dependency for Multidex
     implementation 'com.android.support:multidex:1.0.3'
-    // dependency form GraphView
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

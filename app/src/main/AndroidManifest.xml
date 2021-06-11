@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Table"></activity>
+        <activity
+            android:name=".Table"
+            android:exported="true" />
         <activity
             android:name=".FAQ"
             android:exported="true" />
