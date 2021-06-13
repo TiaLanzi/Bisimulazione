@@ -39,22 +39,23 @@ public class Table extends AppCompatActivity {
         Node second = new Node(root.getX(), root.getY(), false, true);
         //initialize array of edges
         edges = new Edge[10];
-        // initialize first Edge
-        Edge primo = new Edge(root, second, getResources().getColor(R.color.red));
+        // initialize first edge
+        Edge primo = new Edge(root, second, getResources().getColor(R.color.red), false);
         edges[0] = primo;
         // initialize third node
         Node third = new Node(root.getX(), root.getY(), true, false);
-        // initialize second Edge
-        Edge secondo = new Edge(root, third, getResources().getColor(R.color.red));
+        // initialize second edge
+        Edge secondo = new Edge(root, third, getResources().getColor(R.color.red), false);
         edges[1] = secondo;
+        // initialize third edge
+        Edge terzo = new Edge(second, root, getResources().getColor(R.color.green), true);
+        edges[2] = terzo;
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStrokeWidth((float) 8);
 
         //initialize DirectedGraph
         directedGraphLeft = new DirectedGraph(this, edges);
-        //directedGraphLeft.drawPath(root, third, new Path(), canvas);
-        //directedGraphLeft.addPath(root, third);
         directedGraphLeft.setBackgroundColor(getResources().getColor(R.color.red));
 
         /*directedGraphRight = new DirectedGraph(this);

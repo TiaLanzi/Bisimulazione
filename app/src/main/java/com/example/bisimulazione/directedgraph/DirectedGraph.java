@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.RectF;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -20,6 +21,7 @@ public class DirectedGraph extends View {
 
     private Paint paint;
     private Edge[] edges;
+    private float radius = 20;
 
     public DirectedGraph(Context context, Edge[] edges) {
         super(context);
@@ -62,7 +64,10 @@ public class DirectedGraph extends View {
                 // draw first Vertex
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(getResources().getColor(R.color.primaryColor));
-                canvas.drawCircle(pointOne.x, pointOne.y, 60, paint);
+                if (!this.getEdges()[i].getPathAlreadyExists()) {
+                    canvas.drawCircle(pointOne.x, pointOne.y, 60, paint);
+                }
+
 
                 // draw the edge
                 path.reset();
@@ -70,12 +75,23 @@ public class DirectedGraph extends View {
                 path.lineTo(pointTwo.x, pointTwo.y);
                 paint.setStyle(Paint.Style.STROKE);
                 paint.setColor(getResources().getColor(R.color.black));
-                canvas.drawPath(path, paint);
+                if (!this.getEdges()[i].getPathAlreadyExists()) {
+                    canvas.drawPath(path, paint);
+                } else {
+                    // NON FUNZIONA!!!
+                    RectF oval = new RectF();
+                    oval.set(pointOne.x - radius, pointOne.y - radius, pointTwo.x + radius, pointTwo.y + radius);
+                    int startAngle = (int) (180 / Math.PI * Math.atan2(pointOne.y - pointTwo.y, pointOne.x - pointTwo.x));
+                    path.arcTo(oval, startAngle, -(float) 600, true);
+                    canvas.drawArc(oval, startAngle, startAngle, false, paint);
+                }
 
                 // draw second vertex
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(getResources().getColor(R.color.black));
-                canvas.drawCircle(pointTwo.x, pointTwo.y, 60, paint);
+                if (!this.getEdges()[i].getPathAlreadyExists()) {
+                    canvas.drawCircle(pointTwo.x, pointTwo.y, 60, paint);
+                }
             }
         }
     }
