@@ -5,10 +5,6 @@ public class Edge {
     private Node one;
     private Node two;
 
-    public Edge() {
-        super();
-    }
-
     public Edge(Node one, Node two) {
         setOne(one);
         setTwo(two);
