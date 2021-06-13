@@ -5,7 +5,6 @@ public class Node {
     private int x;
     private int y;
     private boolean root;
-    private boolean binary;
     private boolean toLeft;
     private boolean toRight;
 
@@ -14,50 +13,34 @@ public class Node {
         setX(0);
         setY(0);
         isRoot(false);
-        isBinary(false);
         isToLeft(false);
         isToRight(false);
     }
 
-    public Node(int x, int y, boolean binary, boolean toLeft, boolean toRight) {
+    public Node(int x, int y, boolean toLeft, boolean toRight) {
         super();
-        if (binary) {
-            if (toLeft) {
-                setX(x - 128);
-                setY(y + 128);
-            } else {
-                setX(x + 128);
-                setY(y + 128);
-            }
+        if (toLeft) {
+            setX(x - 160);
+            setY(y + 160);
+        } else if (toRight) {
+            setX(x + 160);
+            setY(y + 160);
         } else {
             setX(x);
-            setY(y + 128);
+            setY(y + 160);
         }
         isRoot(false);
         isToLeft(toLeft);
         isToRight(toRight);
     }
 
-    public Node(int x, int y, boolean binary, boolean root) {
+    public Node(int x, int y, boolean root) {
         super();
         setX(x);
         setY(y);
         isRoot(root);
-        isBinary(binary);
         isToLeft(false);
         isToRight(false);
-    }
-
-    public Node(int x, int y, boolean binary) {
-        setX(x);
-        setY(y);
-        // useless control but ok let's put it
-        if (!binary) {
-            isBinary(binary);
-            isRoot(false);
-            isToLeft(false);
-            isToRight(false);
-        }
     }
 
     private void setX(int x) {
@@ -82,14 +65,6 @@ public class Node {
 
     public boolean isRoot() {
         return this.root;
-    }
-
-    private void isBinary(boolean binary) {
-        this.binary = binary;
-    }
-
-    public boolean isBinary() {
-        return this.binary;
     }
 
     private void isToLeft(boolean toLeft) {

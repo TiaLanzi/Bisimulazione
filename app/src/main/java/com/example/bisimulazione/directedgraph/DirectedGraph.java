@@ -79,23 +79,4 @@ public class DirectedGraph extends View {
             }
         }
     }
-
-    public void drawPath(Point one, Point two, Path path, Canvas canvas) {
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(getResources().getColor(R.color.primaryColor));
-        canvas.drawCircle(one.x, one.y, 60, paint);
-
-        // draw the edge
-        path.reset();
-        path.moveTo(one.x, one.y);
-        path.lineTo(two.x, two.y);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(getResources().getColor(R.color.black));
-        canvas.drawPath(path, paint);
-
-        // draw second vertex
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(getResources().getColor(R.color.black));
-        canvas.drawCircle(two.x, two.y, 60, paint);
-    }
 }

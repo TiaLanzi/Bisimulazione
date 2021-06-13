@@ -34,18 +34,18 @@ public class Table extends AppCompatActivity {
         tableLeftDirectedGraphLayout = findViewById(R.id.table_left_directed_graph_layout);
 
         // initialize root node
-        Node root = new Node(320, 96, true, true);
+        Node root = new Node(320, 96, true);
         // initialize second node
-        Node second = new Node(root.getX(), root.getY(), true, false, true);
+        Node second = new Node(root.getX(), root.getY(), false, true);
         //initialize array of edges
         edges = new Edge[10];
         // initialize first Edge
-        Edge primo = new Edge(root, second);
+        Edge primo = new Edge(root, second, getResources().getColor(R.color.red));
         edges[0] = primo;
         // initialize third node
-        Node third = new Node(root.getX(), root.getY(), false, true, false);
+        Node third = new Node(root.getX(), root.getY(), true, false);
         // initialize second Edge
-        Edge secondo = new Edge(root, third);
+        Edge secondo = new Edge(root, third, getResources().getColor(R.color.red));
         edges[1] = secondo;
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
