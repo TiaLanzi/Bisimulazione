@@ -34,7 +34,7 @@ public class Table extends AppCompatActivity {
         tableLeftDirectedGraphLayout = findViewById(R.id.table_left_directed_graph_layout);
 
         // initialize root node
-        Node root = new Node(320, 96, true);
+        Node root = new Node(96, true);
         // initialize second node
         Node second = new Node(root.getX(), root.getY(), false, true);
         //initialize array of edges

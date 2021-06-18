@@ -1,5 +1,7 @@
 package com.example.bisimulazione.directedgraph;
 
+import android.content.res.Resources;
+
 public class Node {
 
     private int x;
@@ -7,6 +9,8 @@ public class Node {
     private boolean root;
     private boolean toLeft;
     private boolean toRight;
+    private int shiftHorizontal = 96;
+    private int shiftVertical = 112;
 
     public Node() {
         super();
@@ -20,23 +24,23 @@ public class Node {
     public Node(int x, int y, boolean toLeft, boolean toRight) {
         super();
         if (toLeft) {
-            setX(x - 160);
-            setY(y + 160);
+            setX(x - shiftHorizontal);
+            setY(y + shiftVertical);
         } else if (toRight) {
-            setX(x + 160);
-            setY(y + 160);
+            setX(x + shiftHorizontal);
+            setY(y + shiftVertical);
         } else {
             setX(x);
-            setY(y + 160);
+            setY(y + shiftVertical);
         }
         isRoot(false);
         isToLeft(toLeft);
         isToRight(toRight);
     }
 
-    public Node(int x, int y, boolean root) {
+    public Node(int y, boolean root) {
         super();
-        setX(x);
+        setX((Resources.getSystem().getDisplayMetrics().widthPixels / 4) - 16);
         setY(y);
         isRoot(root);
         isToLeft(false);
