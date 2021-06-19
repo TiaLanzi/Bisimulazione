@@ -9,42 +9,33 @@ public class Node {
     private boolean root;
     private boolean toLeft;
     private boolean toRight;
-    private int shiftHorizontal = 96;
-    private int shiftVertical = 112;
 
-    public Node() {
+    public Node(int x, int y, boolean root, boolean toLeft, boolean toRight, boolean leftTable) {
         super();
-        setX(0);
-        setY(0);
-        isRoot(false);
-        isToLeft(false);
-        isToRight(false);
-    }
-
-    public Node(int x, int y, boolean toLeft, boolean toRight) {
-        super();
-        if (toLeft) {
-            setX(x - shiftHorizontal);
-            setY(y + shiftVertical);
-        } else if (toRight) {
-            setX(x + shiftHorizontal);
-            setY(y + shiftVertical);
+        int shiftHorizontal = 96;
+        int shiftVertical = 112;
+        if (root) {
+            if (leftTable) {
+                setX((Resources.getSystem().getDisplayMetrics().widthPixels / 4) - 16);
+            } else {
+                // missing code
+            }
+            setY(y);
         } else {
-            setX(x);
-            setY(y + shiftVertical);
+            if (toLeft) {
+                setX(x - shiftHorizontal);
+                setY(y + shiftVertical);
+            } else if (toRight) {
+                setX(x + shiftHorizontal);
+                setY(y + shiftVertical);
+            } else {
+                setX(x);
+                setY(y + shiftVertical);
+            }
         }
-        isRoot(false);
+        isRoot(root);
         isToLeft(toLeft);
         isToRight(toRight);
-    }
-
-    public Node(int y, boolean root) {
-        super();
-        setX((Resources.getSystem().getDisplayMetrics().widthPixels / 4) - 16);
-        setY(y);
-        isRoot(root);
-        isToLeft(false);
-        isToRight(false);
     }
 
     private void setX(int x) {

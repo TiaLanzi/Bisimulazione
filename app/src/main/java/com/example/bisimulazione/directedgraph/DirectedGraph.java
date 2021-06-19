@@ -22,14 +22,14 @@ public class DirectedGraph extends View {
 
     private static final String TAG = "Bisimulazione";
 
-    private Paint paint;
+    private Paint paintRoot;
+    private Paint paintVertex;
+    private Paint paintArc;
     private Edge[] edges;
-    private float radius = 32;
-    private int shiftVertical = 32;
-    private int shiftHorizontal = 8;
-    private int side = (int) (radius * 2);
-    private RectF rectOne;
-    private RectF rectTwo;
+    private final float radius = 32f;
+    private final float stroke = 8f;
+    private RectF rect;
+    private String horizontal;
 
     public DirectedGraph(Context context, Edge[] edges) {
         super(context);
@@ -61,52 +61,82 @@ public class DirectedGraph extends View {
 
         for (int i = 0; i < this.getEdges().length; i++) {
             if (this.getEdges()[i] != null) {
-                paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                paint.setStrokeWidth((float) 6);
-                paint.setStyle(Paint.Style.FILL);
-                paint.setColor(getResources().getColor(R.color.primaryColor));
 
-                Path path = new Path();
-                //Path.Direction direction = new Path.Direction(Path.Direction.CCW);
-
+                // coordinates of centre of first vertex
                 Point pointOne = new Point(this.getEdges()[i].getOne().getX(), this.getEdges()[i].getOne().getY());
+                // coordinates of centre of second vertex
                 Point pointTwo = new Point(this.getEdges()[i].getTwo().getX(), this.getEdges()[i].getTwo().getY());
-
-                // draw first Vertex
-                if (!this.getEdges()[i].getPathAlreadyExists()) {
-                    canvas.drawCircle(pointOne.x, pointOne.y, radius, paint);
-                }
-
-                Log.i(TAG, "Equals? " + String.valueOf(pointOne.x == (Resources.getSystem().getDisplayMetrics().widthPixels / 4) - 16));
-                rectOne = new RectF((pointOne.x - radius), (pointOne.y - radius), side, side);
-                rectTwo = new RectF((pointTwo.x - radius), (pointTwo.y - radius), side, side);
-
-                // draw the edge
-                path.reset();
-                //path.moveTo(pointOne.x, pointOne.y);
-                /*
-                if (!this.getEdges()[i].getPathAlreadyExists()) {
-                    canvas.drawPath(path, paint);
+                // set string horziontal
+                if (this.getEdges()[i].getTwo().isToLeft()) {
+                    horizontal = "RL";
                 } else {
-                    // NON FUNZIONA!!!
-                    RectF oval = new RectF();
-                    oval.set(pointOne.x - radius, pointOne.y - radius, pointTwo.x + radius, pointTwo.y + radius);
-                    int startAngle = (int) (180 / Math.PI * Math.atan2(pointOne.y - pointTwo.y, pointOne.x - pointTwo.x));
-                    path.arcTo(oval, startAngle, -(float) 600, true);
-                    canvas.drawArc(oval, startAngle, startAngle, false, paint);
-                }*/
+                    horizontal = "LR";
+                }
+                // rectangle middle-top in point one and right in point two
+                rect = getRectF(pointOne, pointTwo, horizontal);
 
-                // draw second vertex
-                paint.setStyle(Paint.Style.FILL);
-                paint.setColor(getResources().getColor(R.color.black));
-                if (!this.getEdges()[i].getPathAlreadyExists()) {
-                    canvas.drawCircle(pointTwo.x, pointTwo.y, 32, paint);
+                // paint for arc
+                paintArc = paintArc(getResources().getColor(R.color.red));
+                if (this.getEdges()[i].getTwo().isToLeft()) {
+                    canvas.drawArc(rect, 180, 90, false, paintArc);
+                } else {
+                    canvas.drawArc(rect, 270, 90, false, paintArc);
                 }
 
-                path.arcTo(rectOne, 0, 90, true);
-                path.arcTo(rectTwo, 0, 270, true);
-                canvas.drawPath(path, paint);
+
+
+                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                paint.setStyle(Paint.Style.STROKE);
+                canvas.drawRect(rect, paint);
+
+                // create paint for root
+                paintRoot = paintRoot();
+                // draw first Vertex if it doesn't exist
+                if (!this.getEdges()[i].getPathAlreadyExists()) {
+                    canvas.drawCircle(pointOne.x, pointOne.y, radius, paintRoot);
+                }
+                // draw second vertex if it doesn't exist
+                paintVertex = paintVertex(getResources().getColor(R.color.black));
+                if (!this.getEdges()[i].getPathAlreadyExists()) {
+                    canvas.drawCircle(pointTwo.x, pointTwo.y, radius, paintVertex);
+                }
             }
         }
+    }
+
+    private Paint paintRoot() {
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setStrokeWidth(stroke);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(getResources().getColor(R.color.primaryColor));
+        return paint;
+    }
+
+    private Paint paintVertex(int color) {
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(color);
+        return paint;
+    }
+
+    private Paint paintArc(int color) {
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setStrokeWidth(stroke / 2);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(color);
+        return paint;
+    }
+
+    private RectF getRectF(Point pointOne, Point pointTwo, String horizontal) {
+        /**
+         * LR = left to right
+         */
+        RectF rectF = new RectF();
+        if (horizontal.equals("LR")) {
+            rectF = new RectF((pointOne.x / 2), pointOne.y, pointTwo.x, (pointTwo.y * 2));
+        } else {
+            rectF = new RectF((pointOne.x / 2), pointOne.y, pointTwo.x, (pointTwo.y * 2));
+        }
+        return rectF;
     }
 }
