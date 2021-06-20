@@ -69,7 +69,13 @@ public class DirectedGraph extends View {
                 } else {
                     // set string horziontal
                     String horizontal;
-                    if (this.getEdges()[i].getTwo().isToLeft()) {
+                    if (this.getEdges()[i].getTwo().isRoot()) {
+                        if (this.getEdges()[i].getOne().isToLeft()) {
+                            horizontal = "LR";
+                        } else {
+                            horizontal = "RL";
+                        }
+                    } else if (this.getEdges()[i].getTwo().isToLeft()) {
                         horizontal = "RL";
                     } else {
                         horizontal = "LR";
@@ -84,15 +90,25 @@ public class DirectedGraph extends View {
                     // rectangle middle-top in point one and right in point two
                     RectF rect = getRectF(pointOne, pointTwo, horizontal, vertical);
                     // paint for arc
-                    Paint paintArc = paintArc(getResources().getColor(R.color.red));
-                    if (this.getEdges()[i].getTwo().isToLeft()) {
-                        canvas.drawArc(rect, 180, 90, false, paintArc);
+                    Paint paintArc = paintArc(this.getEdges()[i].getColor());
+                    if (vertical.equals("TB")) {
+                        if (horizontal.equals("LR")) {
+                            canvas.drawArc(rect, 270, 90, false, paintArc);
+                        } else {
+                            canvas.drawArc(rect, 180, 90, false, paintArc);
+                        }
                     } else {
-                        canvas.drawArc(rect, 270, 90, false, paintArc);
+                        if (horizontal.equals("LR")) {
+                            canvas.drawArc(rect, 0, 360, false, paintArc);
+                        } else {
+                            canvas.drawArc(rect, 0, 360, false, paintArc);
+                        }
                     }
-                    /*Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                    paint.setStyle(Paint.Style.STROKE);
-                    canvas.drawRect(rect, paint);*/
+                    if (vertical.equals("BT")) {
+                        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                        paint.setStyle(Paint.Style.STROKE);
+                        canvas.drawRect(rect, paint);
+                    }
                 }
                 // create paint for root
                 Paint paintVertex = new Paint();
@@ -108,14 +124,6 @@ public class DirectedGraph extends View {
                 canvas.drawCircle(pointTwo.x, pointTwo.y, radius, paintVertex);
             }
         }
-    }
-
-    private Paint paintRoot() {
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setStrokeWidth(stroke);
-        paint.setColor(getResources().getColor(R.color.primaryColor));
-        return paint;
     }
 
     private Paint paintVertex(int color) {
@@ -146,18 +154,22 @@ public class DirectedGraph extends View {
         /**
          * LR = left to right
          * RL = right to left
-         * TP = top to bottom
+         * TB = top to bottom
          * BT = bottom to top
          */
         RectF rectF = new RectF();
-        if (vertical.equals("TP")) {
+        if (vertical.equals("TB")) {
             if (horizontal.equals("LR")) {
                 rectF = new RectF((pointOne.x / 2), pointOne.y, pointTwo.x, (pointTwo.y * 2));
             } else {
                 rectF = new RectF(pointTwo.x, pointOne.y, (pointTwo.x * 2), pointTwo.y * 2);
             }
         } else {
-
+            if (horizontal.equals("LR")) {
+                rectF = new RectF(pointOne.x, pointOne.y, pointTwo.x, pointTwo.y);
+            } else {
+                rectF = new RectF(pointOne.x, pointOne.y, pointTwo.x, pointTwo.y);
+            }
         }
         return rectF;
     }

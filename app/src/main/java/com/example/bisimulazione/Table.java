@@ -29,7 +29,8 @@ public class Table extends AppCompatActivity {
         LinearLayout tableLeftDirectedGraphLayout = findViewById(R.id.table_left_directed_graph_layout);
 
         // initialize root node
-        Node root = new Node(0, 96, true, false, false, true);
+        int shiftStartVertical = 140;
+        Node root = new Node(0, shiftStartVertical, true, false, false, true);
         Node second = new Node(root.getX(), root.getY(), false, true, false, true);
         Node third = new Node(root.getX(), root.getY(), false, false, true, true);
         Node fourth = new Node(second.getX(), second.getY(), false, false, false, true);
@@ -42,10 +43,10 @@ public class Table extends AppCompatActivity {
         edges[0] = uno;
         Edge due = new Edge(root, third, getResources().getColor(R.color.red), true, false);
         edges[1] = due;
-        //Edge tre = new Edge(second, root, getResources().getColor(R.color.green), false, false);
-        //edges[2] = tre;
-        //Edge quattro = new Edge(third, root, getResources().getColor(R.color.green), false, false);
-        //edges[3] = quattro;
+        Edge tre = new Edge(second, root, getResources().getColor(R.color.green), false, false);
+        edges[2] = tre;
+        Edge quattro = new Edge(third, root, getResources().getColor(R.color.green), false, false);
+        edges[3] = quattro;
         Edge cinque = new Edge(third, fifth, getResources().getColor(R.color.grey), true, true);
         edges[4] = cinque;
         Edge sei = new Edge(second, fourth, getResources().getColor(R.color.primaryColor), true, true);

@@ -45,7 +45,7 @@ public class Edge {
     }
 
     public boolean isToBottom() {
-        return this.isToBottom();
+        return this.toBottom;
     }
 
     private void setLine(boolean line) {
