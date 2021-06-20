@@ -17,8 +17,6 @@ public class Table extends AppCompatActivity {
 
     private final String TAG = "Bisimulazione";
 
-    private DirectedGraph directedGraphLeft;
-    private LinearLayout tableLeftDirectedGraphLayout;
     private DirectedGraph directedGraphRight;
     private LinearLayout tableRightDirectedGraphLayout;
 
@@ -28,7 +26,7 @@ public class Table extends AppCompatActivity {
         setContentView(R.layout.activity_table);
 
         // initialize layout
-        tableLeftDirectedGraphLayout = findViewById(R.id.table_left_directed_graph_layout);
+        LinearLayout tableLeftDirectedGraphLayout = findViewById(R.id.table_left_directed_graph_layout);
 
         // initialize root node
         Node root = new Node(0, 96, true, false, false, true);
@@ -39,17 +37,23 @@ public class Table extends AppCompatActivity {
         //initialize array of edges
         Edge[] edges = new Edge[10];
         // initialize first edge
-        Edge uno = new Edge(root, second, getResources().getColor(R.color.red), false);
+        Edge uno = new Edge(root, second, getResources().getColor(R.color.red), true, false);
         // assign first edge to index 0 of edges array
         edges[0] = uno;
-        Edge due = new Edge(root, third, getResources().getColor(R.color.red), false);
+        Edge due = new Edge(root, third, getResources().getColor(R.color.red), true, false);
         edges[1] = due;
-        //Edge tre = new Edge(second, root, getResources().getColor(R.color.green), true);
+        //Edge tre = new Edge(second, root, getResources().getColor(R.color.green), false, false);
         //edges[2] = tre;
-        //Edge quattro = new Edge(third, root, getResources().getColor(R.color.green), true);
+        //Edge quattro = new Edge(third, root, getResources().getColor(R.color.green), false, false);
         //edges[3] = quattro;
+        Edge cinque = new Edge(third, fifth, getResources().getColor(R.color.grey), true, true);
+        edges[4] = cinque;
+        Edge sei = new Edge(second, fourth, getResources().getColor(R.color.primaryColor), true, true);
+        edges[5] = sei;
+        Edge sette = new Edge(fifth, fourth, getResources().getColor(R.color.primaryColor), false, true);
+        edges[6] = sette;
         //initialize DirectedGraph
-        directedGraphLeft = new DirectedGraph(this, edges);
+        DirectedGraph directedGraphLeft = new DirectedGraph(this, edges);
         // directedGraphLeft.setBackgroundColor(getResources().getColor(R.color.red));
 
         /*directedGraphRight = new DirectedGraph(this);

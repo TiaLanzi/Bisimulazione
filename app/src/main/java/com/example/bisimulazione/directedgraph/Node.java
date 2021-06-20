@@ -12,13 +12,13 @@ public class Node {
 
     public Node(int x, int y, boolean root, boolean toLeft, boolean toRight, boolean leftTable) {
         super();
-        int shiftHorizontal = 96;
-        int shiftVertical = 112;
+        int shiftHorizontal = 120;
+        int shiftVertical = 200;
         if (root) {
             if (leftTable) {
-                setX((Resources.getSystem().getDisplayMetrics().widthPixels / 4) - 16);
+                setX((Resources.getSystem().getDisplayMetrics().widthPixels / 4) - 40);
             } else {
-                // missing code
+                setX((Resources.getSystem().getDisplayMetrics().widthPixels / (3 / 4)) + 40);
             }
             setY(y);
         } else {

@@ -2,34 +2,23 @@ package com.example.bisimulazione.directedgraph;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.RectF;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 
 import com.example.bisimulazione.R;
-import com.example.bisimulazione.Table;
 
 @SuppressLint("ViewConstructor")
 public class DirectedGraph extends View {
 
     private static final String TAG = "Bisimulazione";
 
-    private Paint paintRoot;
-    private Paint paintVertex;
-    private Paint paintArc;
     private Edge[] edges;
-    private final float radius = 32f;
     private final float stroke = 8f;
-    private RectF rect;
-    private String horizontal;
 
     public DirectedGraph(Context context, Edge[] edges) {
         super(context);
@@ -61,53 +50,70 @@ public class DirectedGraph extends View {
 
         for (int i = 0; i < this.getEdges().length; i++) {
             if (this.getEdges()[i] != null) {
-
                 // coordinates of centre of first vertex
                 Point pointOne = new Point(this.getEdges()[i].getOne().getX(), this.getEdges()[i].getOne().getY());
+                Log.i(TAG, "Point one x: " + String.valueOf(this.getEdges()[i].getOne().getX()));
+                Log.i(TAG, "Point one y: " + String.valueOf(this.getEdges()[i].getOne().getY()));
                 // coordinates of centre of second vertex
                 Point pointTwo = new Point(this.getEdges()[i].getTwo().getX(), this.getEdges()[i].getTwo().getY());
-                // set string horziontal
-                if (this.getEdges()[i].getTwo().isToLeft()) {
-                    horizontal = "RL";
+                Log.i(TAG, "Point two x: " + String.valueOf(this.getEdges()[i].getTwo().getX()));
+                Log.i(TAG, "Point two y: " + String.valueOf(this.getEdges()[i].getTwo().getY()));
+                Log.i(TAG, "");
+                if (this.getEdges()[i].isLine()) {
+                    Path path = new Path();
+                    path.reset();
+                    path.moveTo(pointOne.x, pointOne.y);
+                    path.lineTo(pointTwo.x, pointTwo.y);
+                    Paint paintLine = paintLine(this.getEdges()[i].getColor());
+                    canvas.drawPath(path, paintLine);
                 } else {
-                    horizontal = "LR";
+                    // set string horziontal
+                    String horizontal;
+                    if (this.getEdges()[i].getTwo().isToLeft()) {
+                        horizontal = "RL";
+                    } else {
+                        horizontal = "LR";
+                    }
+                    // set string vertical
+                    String vertical;
+                    if (this.getEdges()[i].isToBottom()) {
+                        vertical = "TB";
+                    } else {
+                        vertical = "BT";
+                    }
+                    // rectangle middle-top in point one and right in point two
+                    RectF rect = getRectF(pointOne, pointTwo, horizontal, vertical);
+                    // paint for arc
+                    Paint paintArc = paintArc(getResources().getColor(R.color.red));
+                    if (this.getEdges()[i].getTwo().isToLeft()) {
+                        canvas.drawArc(rect, 180, 90, false, paintArc);
+                    } else {
+                        canvas.drawArc(rect, 270, 90, false, paintArc);
+                    }
+                    /*Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                    paint.setStyle(Paint.Style.STROKE);
+                    canvas.drawRect(rect, paint);*/
                 }
-                // rectangle middle-top in point one and right in point two
-                rect = getRectF(pointOne, pointTwo, horizontal);
-
-                // paint for arc
-                paintArc = paintArc(getResources().getColor(R.color.red));
-                if (this.getEdges()[i].getTwo().isToLeft()) {
-                    canvas.drawArc(rect, 180, 90, false, paintArc);
-                } else {
-                    canvas.drawArc(rect, 270, 90, false, paintArc);
-                }
-
-
-
-                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                paint.setStyle(Paint.Style.STROKE);
-                canvas.drawRect(rect, paint);
-
                 // create paint for root
-                paintRoot = paintRoot();
-                // draw first Vertex if it doesn't exist
-                if (!this.getEdges()[i].getPathAlreadyExists()) {
-                    canvas.drawCircle(pointOne.x, pointOne.y, radius, paintRoot);
+                Paint paintVertex = new Paint();
+                if (this.getEdges()[i].getOne().isRoot() || this.getEdges()[i].getTwo().isRoot()) {
+                    paintVertex = paintVertex(getResources().getColor(R.color.primaryColor));
+                } else {
+                    paintVertex = paintVertex(getResources().getColor(R.color.black));
                 }
-                // draw second vertex if it doesn't exist
-                paintVertex = paintVertex(getResources().getColor(R.color.black));
-                if (!this.getEdges()[i].getPathAlreadyExists()) {
-                    canvas.drawCircle(pointTwo.x, pointTwo.y, radius, paintVertex);
-                }
+                float radius = 40f;
+                // draw first vertex
+                canvas.drawCircle(pointOne.x, pointOne.y, radius, paintVertex);
+                // draw second vertex
+                canvas.drawCircle(pointTwo.x, pointTwo.y, radius, paintVertex);
             }
         }
     }
 
     private Paint paintRoot() {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStrokeWidth(stroke);
         paint.setStyle(Paint.Style.FILL);
+        paint.setStrokeWidth(stroke);
         paint.setColor(getResources().getColor(R.color.primaryColor));
         return paint;
     }
@@ -115,27 +121,43 @@ public class DirectedGraph extends View {
     private Paint paintVertex(int color) {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.FILL);
+        paint.setStrokeWidth(stroke);
         paint.setColor(color);
         return paint;
     }
 
     private Paint paintArc(int color) {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStrokeWidth(stroke / 2);
         paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(stroke);
         paint.setColor(color);
         return paint;
     }
 
-    private RectF getRectF(Point pointOne, Point pointTwo, String horizontal) {
+    private Paint paintLine(int color) {
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(stroke);
+        paint.setColor(color);
+        return paint;
+    }
+
+    private RectF getRectF(Point pointOne, Point pointTwo, String horizontal, String vertical) {
         /**
          * LR = left to right
+         * RL = right to left
+         * TP = top to bottom
+         * BT = bottom to top
          */
         RectF rectF = new RectF();
-        if (horizontal.equals("LR")) {
-            rectF = new RectF((pointOne.x / 2), pointOne.y, pointTwo.x, (pointTwo.y * 2));
+        if (vertical.equals("TP")) {
+            if (horizontal.equals("LR")) {
+                rectF = new RectF((pointOne.x / 2), pointOne.y, pointTwo.x, (pointTwo.y * 2));
+            } else {
+                rectF = new RectF(pointTwo.x, pointOne.y, (pointTwo.x * 2), pointTwo.y * 2);
+            }
         } else {
-            rectF = new RectF((pointOne.x / 2), pointOne.y, pointTwo.x, (pointTwo.y * 2));
+
         }
         return rectF;
     }

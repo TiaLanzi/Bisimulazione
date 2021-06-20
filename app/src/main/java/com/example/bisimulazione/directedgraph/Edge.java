@@ -5,13 +5,15 @@ public class Edge {
     private Node one;
     private Node two;
     private int color;
-    private boolean pathAlreadyExists;
+    private boolean toBottom;
+    private boolean line;
 
-    public Edge(Node one, Node two, int color, boolean pathAlreadyExists) {
+    public Edge(Node one, Node two, int color, boolean toBottom, boolean line) {
         setOne(one);
         setTwo(two);
         setColor(color);
-        pathAlreadyExists(pathAlreadyExists);
+        setToBottom(toBottom);
+        setLine(line);
     }
 
     private void setOne(Node one) {
@@ -38,17 +40,25 @@ public class Edge {
         return this.color;
     }
 
-    private void pathAlreadyExists(boolean pathAlreadyExists) {
-        this.pathAlreadyExists = pathAlreadyExists;
+    private void setToBottom(boolean toBottom) {
+        this.toBottom = toBottom;
     }
 
-    public boolean getPathAlreadyExists() {
-        return this.pathAlreadyExists;
+    public boolean isToBottom() {
+        return this.isToBottom();
+    }
+
+    private void setLine(boolean line) {
+        this.line = line;
+    }
+
+    public boolean isLine() {
+        return this.line;
     }
 
     public String toString() {
         return "First point: x: " + String.valueOf(this.getOne().getX()) + ", y: " + String.valueOf(this.getOne().getY()) +
                 ", Second point: x: " + String.valueOf(this.getTwo().getX()) + ", y: " + String.valueOf(this.getTwo().getY()) + ", Color: " +
-                String.valueOf(this.getColor()) + ", path already exists? " + this.getPathAlreadyExists();
+                String.valueOf(this.getColor()) + ", is to bottom? " + this.isToBottom() + ", verticalLine? " + this.isLine();
     }
 }
