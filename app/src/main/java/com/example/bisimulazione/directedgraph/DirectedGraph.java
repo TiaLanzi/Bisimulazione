@@ -52,13 +52,13 @@ public class DirectedGraph extends View {
             if (this.getEdges()[i] != null) {
                 // coordinates of centre of first vertex
                 Point pointOne = new Point(this.getEdges()[i].getOne().getX(), this.getEdges()[i].getOne().getY());
-                Log.i(TAG, "Point one x: " + String.valueOf(this.getEdges()[i].getOne().getX()));
-                Log.i(TAG, "Point one y: " + String.valueOf(this.getEdges()[i].getOne().getY()));
+                //Log.i(TAG, "Point one x: " + String.valueOf(this.getEdges()[i].getOne().getX()));
+                //Log.i(TAG, "Point one y: " + String.valueOf(this.getEdges()[i].getOne().getY()));
                 // coordinates of centre of second vertex
                 Point pointTwo = new Point(this.getEdges()[i].getTwo().getX(), this.getEdges()[i].getTwo().getY());
-                Log.i(TAG, "Point two x: " + String.valueOf(this.getEdges()[i].getTwo().getX()));
-                Log.i(TAG, "Point two y: " + String.valueOf(this.getEdges()[i].getTwo().getY()));
-                Log.i(TAG, "");
+                //Log.i(TAG, "Point two x: " + String.valueOf(this.getEdges()[i].getTwo().getX()));
+                //Log.i(TAG, "Point two y: " + String.valueOf(this.getEdges()[i].getTwo().getY()));
+                //Log.i(TAG, "");
                 if (this.getEdges()[i].isLine()) {
                     Path path = new Path();
                     path.reset();
@@ -67,7 +67,7 @@ public class DirectedGraph extends View {
                     Paint paintLine = paintLine(this.getEdges()[i].getColor());
                     canvas.drawPath(path, paintLine);
                 } else {
-                    // set string horziontal
+                    // set string horizontal
                     String horizontal;
                     if (this.getEdges()[i].getTwo().isRoot()) {
                         if (this.getEdges()[i].getOne().isToLeft()) {
@@ -111,7 +111,7 @@ public class DirectedGraph extends View {
                     }
                 }
                 // create paint for root
-                Paint paintVertex = new Paint();
+                Paint paintVertex;
                 if (this.getEdges()[i].getOne().isRoot() || this.getEdges()[i].getTwo().isRoot()) {
                     paintVertex = paintVertex(getResources().getColor(R.color.primaryColor));
                 } else {
@@ -157,7 +157,7 @@ public class DirectedGraph extends View {
          * TB = top to bottom
          * BT = bottom to top
          */
-        RectF rectF = new RectF();
+        RectF rectF;
         if (vertical.equals("TB")) {
             if (horizontal.equals("LR")) {
                 rectF = new RectF((pointOne.x / 2), pointOne.y, pointTwo.x, (pointTwo.y * 2));
@@ -172,5 +172,19 @@ public class DirectedGraph extends View {
             }
         }
         return rectF;
+    }
+
+    /*@Override
+    public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
+
+        if (touchIsInCircle())
+    }*/
+
+    private boolean touchIsInCircle(float x, float y, float centreX, float centreY, float radius) {
+        double dx = Math.pow(x - centreX, 2);
+        double dy = Math.pow(y - centreY, 2);
+
+        return (dx + dy) < Math.pow(radius, 2);
     }
 }

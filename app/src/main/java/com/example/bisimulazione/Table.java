@@ -2,11 +2,7 @@ package com.example.bisimulazione;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.example.bisimulazione.directedgraph.DirectedGraph;

@@ -57,8 +57,8 @@ public class Edge {
     }
 
     public String toString() {
-        return "First point: x: " + String.valueOf(this.getOne().getX()) + ", y: " + String.valueOf(this.getOne().getY()) +
-                ", Second point: x: " + String.valueOf(this.getTwo().getX()) + ", y: " + String.valueOf(this.getTwo().getY()) + ", Color: " +
-                String.valueOf(this.getColor()) + ", is to bottom? " + this.isToBottom() + ", verticalLine? " + this.isLine();
+        return "First point: x: " + this.getOne().getX()  + ", y: " + this.getOne().getY() +
+                ", Second point: x: " + this.getTwo().getX() + ", y: " + this.getTwo().getY() + ", Color: " +
+                this.getColor() + ", is to bottom? " + this.isToBottom() + ", verticalLine? " + this.isLine();
     }
 }
