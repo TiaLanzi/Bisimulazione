@@ -32,7 +32,7 @@ public class MatchmakingRoom extends AppCompatActivity {
 
     private List<String> roomPlayers;
 
-    private String player;
+    private String playerName;
     private String roomName = "";
 
     private FirebaseAuth auth;
@@ -48,11 +48,11 @@ public class MatchmakingRoom extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         if (user != null) {
-            player = user.getDisplayName();
+            playerName = user.getDisplayName();
         } else {
-            player = getString(R.string.matchmaking_room_player_unknown_text);
+            playerName = getString(R.string.matchmaking_room_player_unknown_text);
         }
-        roomName = player;
+        roomName = playerName;
         // initialize ListView
         listView = findViewById(R.id.matchmaking_room_list_view);
         // initialize create room button
@@ -66,10 +66,10 @@ public class MatchmakingRoom extends AppCompatActivity {
                 // create room and add yourself as a player
                 createRoom.setText(getString(R.string.matchmaking_room_creating_room_text));
                 createRoom.setEnabled(false);
-                roomName = player;
+                roomName = playerName;
                 reference = database.getReference("rooms/" + roomName + "/player1");
                 addRoomEventListener();
-                reference.setValue(player);
+                reference.setValue(playerName);
             }
         });
 
@@ -80,7 +80,7 @@ public class MatchmakingRoom extends AppCompatActivity {
                 roomName = roomPlayers.get(position);
                 reference = database.getReference("rooms/" + roomName + "/player1");
                 addRoomEventListener();
-                reference.setValue(player);
+                reference.setValue(playerName);
             }
         });
         // show if new room is available
@@ -93,8 +93,9 @@ public class MatchmakingRoom extends AppCompatActivity {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 createRoom.setText(getString(R.string.matchmaking_room_create_room_text));
                 createRoom.setEnabled(true);
-                Intent intent = new Intent(getApplicationContext(), Game.class);
+                Intent intent = new Intent(getApplicationContext(), Table.class);
                 intent.putExtra("roomName", roomName);
+                intent.putExtra("playerName", playerName);
                 startActivity(intent);
                 finish();
             }
@@ -129,7 +130,6 @@ public class MatchmakingRoom extends AppCompatActivity {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
             }
-        })
-
+        });
     }
 }

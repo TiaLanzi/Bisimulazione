@@ -33,6 +33,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         navigationView = findViewById(R.id.nav_view);
 
+        Intent intent = new Intent(MainActivity.this, Table.class);
+        startActivity(intent);
+
         //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_container);
         //NavigationUI.setupActionBarWithNavController(navigationView, navController);
 
