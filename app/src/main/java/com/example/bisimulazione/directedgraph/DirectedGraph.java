@@ -8,7 +8,10 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.annotation.Nullable;
 
 import com.example.bisimulazione.R;
 
@@ -19,6 +22,7 @@ public class DirectedGraph extends View {
 
     private Edge[] edges;
     private final float stroke = 8f;
+    private final float radius = 40f;
 
     public DirectedGraph(Context context, Edge[] edges) {
         super(context);
@@ -112,14 +116,12 @@ public class DirectedGraph extends View {
                 }
                 // create paint for root
                 Paint paintVertex;
-                if (this.getEdges()[i].getOne().isRoot() || this.getEdges()[i].getTwo().isRoot()) {
-                    paintVertex = paintVertex(getResources().getColor(R.color.primaryColor));
-                } else {
-                    paintVertex = paintVertex(getResources().getColor(R.color.black));
-                }
-                float radius = 40f;
+                paintVertex = paintVertex(getEdges()[i].getOne().getColor());
+                Log.i(TAG, String.valueOf(getEdges()[i].getOne().getColor()));
                 // draw first vertex
                 canvas.drawCircle(pointOne.x, pointOne.y, radius, paintVertex);
+                paintVertex = paintVertex(getEdges()[i].getTwo().getColor());
+                Log.i(TAG, String.valueOf(getEdges()[i].getTwo().getColor()));
                 // draw second vertex
                 canvas.drawCircle(pointTwo.x, pointTwo.y, radius, paintVertex);
             }
@@ -174,12 +176,21 @@ public class DirectedGraph extends View {
         return rectF;
     }
 
-    /*@Override
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
-
-        if (touchIsInCircle())
-    }*/
+        for (Edge edge : this.getEdges()) {
+            if (edge != null) {
+                if (edge.getOne() != null && edge.getTwo() != null) {
+                    boolean isTouched = touchIsInCircle(event.getX(), event.getY(), edge.getOne().getX(), edge.getOne().getY(), radius);
+                    if (isTouched) {
+                        edge.getOne().setColor(getResources().getColor(R.color.primaryColor));
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
     private boolean touchIsInCircle(float x, float y, float centreX, float centreY, float radius) {
         double dx = Math.pow(x - centreX, 2);

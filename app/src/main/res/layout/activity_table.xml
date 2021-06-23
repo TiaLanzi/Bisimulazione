@@ -25,13 +25,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/button_one"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="BUTTON 1" />
-
             <TextView
                 android:id="@+id/table_left_table_title"
                 style="@style/Body1"
@@ -71,13 +64,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <Button
-                android:id="@+id/button_two"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="BUTTON 2" />
 
             <TextView
                 android:id="@+id/table_right_table_title"

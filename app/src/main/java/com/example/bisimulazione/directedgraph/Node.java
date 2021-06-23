@@ -2,6 +2,8 @@ package com.example.bisimulazione.directedgraph;
 
 import android.content.res.Resources;
 
+import com.example.bisimulazione.R;
+
 public class Node {
 
     private int x;
@@ -9,12 +11,14 @@ public class Node {
     private boolean root;
     private boolean toLeft;
     private boolean toRight;
+    private int color = R.color.black;
 
     public Node(int x, int y, boolean root, boolean toLeft, boolean toRight, boolean leftTable) {
         super();
         int shiftHorizontal = 120;
         int shiftVertical = 200;
         if (root) {
+            setColor(R.color.primaryColor);
             if (leftTable) {
                 setX((Resources.getSystem().getDisplayMetrics().widthPixels / 4) - 40);
             } else {
@@ -22,6 +26,7 @@ public class Node {
             }
             setY(y);
         } else {
+            setColor(color);
             if (toLeft) {
                 setX(x - shiftHorizontal);
                 setY(y + shiftVertical);
@@ -52,6 +57,14 @@ public class Node {
 
     public int getY() {
         return this.y;
+    }
+
+    protected void setColor(int color) {
+        this.color = color;
+    }
+
+    public int getColor() {
+        return this.color;
     }
 
     private void isRoot(boolean root) {
