@@ -72,4 +72,7 @@
     <!-- table -->
     <string name="table_table_right">Tavolo destro</string>
     <string name="table_table_left">Tavolo sinistro</string>
+
+    <!-- matchmaking room -->
+    <string name="matchmaking_room_create_room_text">CREA STANZA</string>
 </resources>

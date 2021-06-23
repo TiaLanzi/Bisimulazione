@@ -72,4 +72,7 @@
     <!-- table -->
     <string name="table_table_right">Right table</string>
     <string name="table_table_left">Left table</string>
+
+    <!-- matchmaking room -->
+    <string name="matchmaking_room_create_room_text">CREATE ROOM</string>
 </resources>
