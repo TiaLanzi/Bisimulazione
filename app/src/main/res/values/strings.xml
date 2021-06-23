@@ -75,4 +75,7 @@
 
     <!-- matchmaking room -->
     <string name="matchmaking_room_create_room_text">CREA STANZA</string>
+    <string name="matchmaking_room_player_unknown_text">Sconosciuto</string>
+    <string name="matchmaking_room_creating_room_text">CREANDO LA STANZA…</string>
+    <string name="matchmaking_room_error_text">ERRORE</string>
 </resources>
