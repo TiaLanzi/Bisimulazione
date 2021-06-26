@@ -72,7 +72,6 @@ public class SignUp extends AppCompatActivity {
         // to (re)set counter
         /*editor.putInt("Counter", 1);
         editor.apply();*/
-        Log.i(TAG, String.valueOf(getCounter()));
 
         // listener for button sign up
         signUp.setOnClickListener(new View.OnClickListener() {
@@ -82,15 +81,10 @@ public class SignUp extends AppCompatActivity {
                 if (isValidName(firstName) & isValidName(lastName) & isValidName(username)) { // & isValidEmail(email) & isValidPwd(password, confirmPassword)) {
                     // get text written in edittext
                     String nome = fromEditTextToString(firstName).trim();
-                    //Log.i(TAG, nome);
                     String cognome = fromEditTextToString(lastName).trim();
-                    //Log.i(TAG, cognome);
                     String nomeUtente = fromEditTextToString(username).trim();
-                    //Log.i(TAG, nomeUtente);
                     String mail = fromEditTextToString(email).trim();
-                    //Log.i(TAG, mail);
                     String pwd = fromEditTextToString(password);
-                    //Log.i(TAG, pwd);
                     final User utente = new User(nome, cognome, nomeUtente, mail, pwd);
                     // check if lastName + firstName already exist
                     reference.addValueEventListener(new ValueEventListener() {
@@ -100,7 +94,6 @@ public class SignUp extends AppCompatActivity {
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                 if (dataSnapshot != null) {
                                     String userSearch = dataSnapshot.child("lastName").getValue().toString() + " " + dataSnapshot.child("firstName").getValue().toString();
-                                    Log.i(TAG, userSearch);
                                     if (userSearch.equalsIgnoreCase(userFullName)) {
                                         int count = sharedPreferences.getInt("Counter", 0);
                                         String counter = String.valueOf(sharedPreferences.getInt("Counter", 0));
@@ -127,13 +120,11 @@ public class SignUp extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
                                         Toast.makeText(getApplicationContext(), getString(R.string.sign_up_successful), Toast.LENGTH_SHORT).show();
-                                        //Log.d(TAG, getString(R.string.msg_create_user_success));
                                         sendData(utente, userFullName);
                                         passData(utente);
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         //Toast.makeText(getApplicationContext(), getString(R.string.sign_up_failed) + task.getException(), Toast.LENGTH_SHORT).show();
-                                        //Log.w(TAG, "createUserWithEmail:failure", task.getException());
                                         Toast.makeText(SignUp.this, getString(R.string.sign_up_failed),
                                                 Toast.LENGTH_SHORT).show();
                                     }

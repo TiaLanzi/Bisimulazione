@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -44,11 +43,6 @@ public class Login extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
-        if (user != null) {
-            // Log.i(TAG, user.getEmail());
-        } else {
-            // Log.i(TAG, "User is null");
-        }
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

@@ -33,7 +33,6 @@ public class DirectedGraph extends View {
     public DirectedGraph(Context context, Edge[] edges) {
         super(context);
         setEdges(edges);
-        printEdges();
     }
 
     private void setEdges(Edge[] edges) {
@@ -42,14 +41,6 @@ public class DirectedGraph extends View {
 
     public Edge[] getEdges() {
         return this.edges;
-    }
-
-    public void printEdges() {
-        for (int i = 0; i < this.getEdges().length; i++) {
-            if (this.getEdges()[i] != null) {
-                //Log.i(TAG, this.getEdges()[i].toString());
-            }
-        }
     }
 
     /*private void setCanvas(Canvas canvas) {
@@ -101,13 +92,8 @@ public class DirectedGraph extends View {
             if (this.getEdges()[i] != null) {
                 // coordinates of centre of first vertex
                 Point pointOne = new Point(this.getEdges()[i].getOne().getX(), this.getEdges()[i].getOne().getY());
-                //Log.i(TAG, "Point one x: " + String.valueOf(this.getEdges()[i].getOne().getX()));
-                //Log.i(TAG, "Point one y: " + String.valueOf(this.getEdges()[i].getOne().getY()));
                 // coordinates of centre of second vertex
                 Point pointTwo = new Point(this.getEdges()[i].getTwo().getX(), this.getEdges()[i].getTwo().getY());
-                //Log.i(TAG, "Point two x: " + String.valueOf(this.getEdges()[i].getTwo().getX()));
-                //Log.i(TAG, "Point two y: " + String.valueOf(this.getEdges()[i].getTwo().getY()));
-                //Log.i(TAG, "");
                 Paint paintArc = paintArc(this.getEdges()[i].getColor());
                 Path path = new Path();
                 path.reset();
@@ -146,19 +132,15 @@ public class DirectedGraph extends View {
                 canvas.drawPath(path, paintLine);
                 // create paint for root;
                 paintNode = paintNode(getEdges()[i].getOne().getColor());
-                //Log.i(TAG, String.valueOf(getEdges()[i].getOne().getColor()));
                 // draw first vertex if not already drawn
                 if (!getEdges()[i].getOne().isAlreadyDrawn()) {
-                    Log.i(TAG, "Draw circle one " + this.getEdges()[i].getOne().getId());
                     canvas.drawCircle(pointOne.x, pointOne.y, radius, paintNode);
                     // set already drawn
                     getEdges()[i].getOne().setAlreadyDrawn(true);
                 }
                 paintNode = paintNode(getEdges()[i].getTwo().getColor());
-                //Log.i(TAG, String.valueOf(getEdges()[i].getTwo().getColor()));
                 // draw second vertex if not already drawn
                 if (!getEdges()[i].getTwo().isAlreadyDrawn()) {
-                    Log.i(TAG, "Draw circle two " + this.getEdges()[i].getTwo().getId());
                     canvas.drawCircle(pointTwo.x, pointTwo.y, radius, paintNode);
                     // set already drawn
                     getEdges()[i].getTwo().setAlreadyDrawn(true);
