@@ -11,6 +11,7 @@ public class Node {
     private boolean root;
     private boolean toLeft;
     private boolean toRight;
+    private boolean alreadyDrawn;
     private int color = R.color.black;
 
     public Node(int x, int y, boolean root, boolean toLeft, boolean toRight, boolean leftTable) {
@@ -38,9 +39,10 @@ public class Node {
                 setY(y + shiftVertical);
             }
         }
-        isRoot(root);
-        isToLeft(toLeft);
-        isToRight(toRight);
+        setAlreadyDrawn(false);
+        setRoot(root);
+        setToLeft(toLeft);
+        setToRight(toRight);
     }
 
     private void setX(int x) {
@@ -67,7 +69,7 @@ public class Node {
         return this.color;
     }
 
-    private void isRoot(boolean root) {
+    private void setRoot(boolean root) {
         this.root = root;
     }
 
@@ -75,7 +77,7 @@ public class Node {
         return this.root;
     }
 
-    private void isToLeft(boolean toLeft) {
+    private void setToLeft(boolean toLeft) {
         this.toLeft = toLeft;
     }
 
@@ -83,11 +85,19 @@ public class Node {
         return this.toLeft;
     }
 
-    private void isToRight(boolean toRight) {
+    private void setToRight(boolean toRight) {
         this.toRight = toRight;
     }
 
     public boolean isToRight() {
         return this.toRight;
+    }
+
+    private void setAlreadyDrawn(boolean drawn) {
+        this.alreadyDrawn = drawn;
+    }
+
+    public boolean isAlreadyDrawn() {
+        return this.alreadyDrawn;
     }
 }
