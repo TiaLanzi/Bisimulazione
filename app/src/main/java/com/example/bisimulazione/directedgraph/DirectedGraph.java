@@ -118,12 +118,20 @@ public class DirectedGraph extends View {
                 Paint paintVertex;
                 paintVertex = paintVertex(getEdges()[i].getOne().getColor());
                 Log.i(TAG, String.valueOf(getEdges()[i].getOne().getColor()));
-                // draw first vertex
-                canvas.drawCircle(pointOne.x, pointOne.y, radius, paintVertex);
+                // draw first vertex if not already drawn
+                if (!getEdges()[i].getOne().isAlreadyDrawn()) {
+                    canvas.drawCircle(pointOne.x, pointOne.y, radius, paintVertex);
+                    // set already drawn
+                    getEdges()[i].getOne().setAlreadyDrawn(true);
+                }
                 paintVertex = paintVertex(getEdges()[i].getTwo().getColor());
                 Log.i(TAG, String.valueOf(getEdges()[i].getTwo().getColor()));
-                // draw second vertex
-                canvas.drawCircle(pointTwo.x, pointTwo.y, radius, paintVertex);
+                // draw second vertex if not already drawn
+                if (!getEdges()[i].getTwo().isAlreadyDrawn()) {
+                    canvas.drawCircle(pointTwo.x, pointTwo.y, radius, paintVertex);
+                    // set already drawn
+                    getEdges()[i].getTwo().setAlreadyDrawn(true);
+                }
             }
         }
     }

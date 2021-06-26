@@ -93,7 +93,7 @@ public class Node {
         return this.toRight;
     }
 
-    private void setAlreadyDrawn(boolean drawn) {
+    protected void setAlreadyDrawn(boolean drawn) {
         this.alreadyDrawn = drawn;
     }
 
