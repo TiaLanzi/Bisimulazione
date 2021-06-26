@@ -1,11 +1,15 @@
 package com.example.bisimulazione.directedgraph;
 
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.example.bisimulazione.R;
 
 public class Node {
 
+    private final String TAG = "Bisimulazione";
+
+    private int id;
     private int x;
     private int y;
     private boolean root;
@@ -14,8 +18,9 @@ public class Node {
     private boolean alreadyDrawn;
     private int color = R.color.black;
 
-    public Node(int x, int y, boolean root, boolean toLeft, boolean toRight, boolean leftTable) {
+    public Node(int id, int x, int y, boolean root, boolean toLeft, boolean toRight, boolean leftTable) {
         super();
+        setId(id);
         int shiftHorizontal = 120;
         int shiftVertical = 200;
         if (root) {
@@ -23,9 +28,12 @@ public class Node {
             if (leftTable) {
                 setX((Resources.getSystem().getDisplayMetrics().widthPixels / 4) - 40);
             } else {
-                setX((Resources.getSystem().getDisplayMetrics().widthPixels / (3 / 4)) + 40);
+                //int shift = Resources.getSystem().getDisplayMetrics().widthPixels / 4;
+                setX((Resources.getSystem().getDisplayMetrics().widthPixels / 4) - 40);
+                //Log.i(TAG, "xxxxxxxxxx" + String.valueOf(this.getX()));
             }
             setY(y);
+            setRoot(true);
         } else {
             setColor(color);
             if (toLeft) {
@@ -40,9 +48,17 @@ public class Node {
             }
         }
         setAlreadyDrawn(false);
-        setRoot(root);
+        setRoot(false);
         setToLeft(toLeft);
         setToRight(toRight);
+    }
+
+    private void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     private void setX(int x) {
