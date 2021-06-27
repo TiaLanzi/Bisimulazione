@@ -11,8 +11,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import androidx.annotation.Nullable;
-
 import com.example.bisimulazione.R;
 
 @SuppressLint("ViewConstructor")
@@ -23,6 +21,7 @@ public class DirectedGraph extends View {
     private Edge[] edges;
     private final float stroke = 8f;
     private final float radius = 40f;
+    private final float arrowHead = 24f;
 
     private RectF rectF;
 
@@ -62,24 +61,26 @@ public class DirectedGraph extends View {
     }
 
     private Paint paintNode(int color) {
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStyle(Paint.Style.FILL);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setAntiAlias(true);
         paint.setStrokeWidth(stroke);
         paint.setColor(color);
         return paint;
     }
 
     private Paint paintArc(int color) {
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
+        paint.setAntiAlias(true);
         paint.setStrokeWidth(stroke);
         paint.setColor(color);
         return paint;
     }
 
     private Paint paintLine(int color) {
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStyle(Paint.Style.STROKE);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
         paint.setStrokeWidth(stroke);
         paint.setColor(color);
         return paint;
@@ -94,28 +95,50 @@ public class DirectedGraph extends View {
                 Point pointOne = new Point(this.getEdges()[i].getOne().getX(), this.getEdges()[i].getOne().getY());
                 // coordinates of centre of second vertex
                 Point pointTwo = new Point(this.getEdges()[i].getTwo().getX(), this.getEdges()[i].getTwo().getY());
+                Point endPoint;
                 Paint paintArc = paintArc(this.getEdges()[i].getColor());
                 Path path = new Path();
                 path.reset();
+                Path pathArc = new Path();
                 if (this.getEdges()[i].isLeftTable()) {
                     switch (this.getEdges()[i].getId()) {
                         case 1:
-                            rectF = rectFOneTwo(this.getEdges()[i]);
-                            canvas.drawArc(rectF, 186 + (radius / 2), (86 - radius), false, paintArc);
+                            rectF = rectFOneTwo();
+                            pathArc.addArc(rectF, 186 + (radius / 2), (84 - radius));
+                            canvas.drawPath(pathArc, paintArc);
+                            // draw arrowhead on path end
+                            pathArc.moveTo(pointTwo.x, pointTwo.y);
+                            pathArc.lineTo((pointTwo.x - arrowHead), (pointTwo.y - arrowHead));
+                            pathArc.moveTo(pointTwo.x, pointTwo.y);
+                            pathArc.lineTo((pointTwo.x + arrowHead), (pointTwo.y - arrowHead));
+                            canvas.drawPath(pathArc, paintArc);
+                            //canvas.drawArc(rectF, 186 + (radius / 2), (86 - radius), false, paintArc);
                             //canvas.drawRect(rectF, paintRect);
                             break;
                         case 2:
-                            rectF = rectFOneTwo(this.getEdges()[i]);
+                            rectF = rectFOneTwo();
                             canvas.drawArc(rectF, 268 + (radius / 2), (86 - radius), false, paintArc);
                             //canvas.drawRect(rectF, paintRect);
                             break;
                         case 3:
                             path.moveTo((pointOne.x + radius), pointOne.y);
                             path.lineTo((pointTwo.x - 12), (pointTwo.y + radius));
+                            endPoint = new Point((pointTwo.x - 12), (int) (pointTwo.y + radius));
+                            canvas.drawPath(path, paintArc);
+                            path.moveTo(endPoint.x, endPoint.y);
+                            path.lineTo(endPoint.x - (arrowHead + 6), endPoint.y + arrowHead);
+                            path.moveTo(endPoint.x, endPoint.y);
+                            path.lineTo((endPoint.x + arrowHead) - 16, endPoint.y + arrowHead);
                             break;
                         case 4:
                             path.moveTo((pointOne.x - radius), pointOne.y);
                             path.lineTo((pointTwo.x + 12), (pointTwo.y + radius));
+                            endPoint = new Point((pointTwo.x + 12), (int) (pointTwo.y + radius));
+                            canvas.drawPath(path, paintArc);
+                            path.moveTo(endPoint.x, endPoint.y);
+                            path.lineTo(endPoint.x - (arrowHead - 16), endPoint.y + arrowHead);
+                            path.moveTo(endPoint.x, endPoint.y);
+                            path.lineTo((endPoint.x + arrowHead) + 4, endPoint.y + arrowHead);
                             break;
                         case 5:
                         case 6:
@@ -132,12 +155,12 @@ public class DirectedGraph extends View {
                 } else {
                     switch (this.getEdges()[i].getId()) {
                         case 1:
-                            rectF = rectFOneTwo(this.getEdges()[i]);
+                            rectF = rectFOneTwo();
                             canvas.drawArc(rectF, 186 + (radius / 2), (86 - radius), false, paintArc);
                             //canvas.drawRect(rectF, paintRect);
                             break;
                         case 2:
-                            rectF = rectFOneTwo(this.getEdges()[i]);
+                            rectF = rectFOneTwo();
                             canvas.drawArc(rectF, 268 + (radius / 2), (86 - radius), false, paintArc);
                             //canvas.drawRect(rectF, paintRect);
                             break;
@@ -183,16 +206,11 @@ public class DirectedGraph extends View {
         }
     }
 
-    private RectF rectFOneTwo(Edge edge) {
+    private RectF rectFOneTwo() {
         Point pointOne;
         Point pointTwo;
-        if (edge.isLeftTable()) {
-            pointOne = new Point(this.getEdges()[1].getOne().getX(), this.getEdges()[1].getOne().getY());
-            pointTwo = new Point(this.getEdges()[1].getTwo().getX(), this.getEdges()[1].getTwo().getY());
-        } else {
-            pointOne = new Point(this.getEdges()[1].getOne().getX(), this.getEdges()[1].getOne().getY());
-            pointTwo = new Point(this.getEdges()[1].getTwo().getX(), this.getEdges()[1].getTwo().getY());
-        }
+        pointOne = new Point(this.getEdges()[1].getOne().getX(), this.getEdges()[1].getOne().getY());
+        pointTwo = new Point(this.getEdges()[1].getTwo().getX(), this.getEdges()[1].getTwo().getY());
         rectF = new RectF((pointOne.x / 2), pointOne.y, pointTwo.x, (pointTwo.y * 2));
         return rectF;
     }
