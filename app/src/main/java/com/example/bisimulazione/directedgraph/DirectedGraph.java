@@ -97,36 +97,70 @@ public class DirectedGraph extends View {
                 Paint paintArc = paintArc(this.getEdges()[i].getColor());
                 Path path = new Path();
                 path.reset();
-                switch (this.getEdges()[i].getId()) {
-                    case 1:
-                        rectF = rectFOneTwo();
-                        canvas.drawArc(rectF, 184 + (radius / 2), (86 - radius), false, paintArc);
-                        //canvas.drawRect(rectF, paintRect);
-                        break;
-                    case 2:
-                        rectF = rectFOneTwo();
-                        canvas.drawArc(rectF, 268 + (radius / 2), (88 - radius), false, paintArc);
-                        //canvas.drawRect(rectF, paintRect);
-                        break;
-                    case 3:
-                        path.moveTo((pointOne.x + radius), pointOne.y);
-                        path.lineTo((pointTwo.x - 12), (pointTwo.y + radius));
-                        break;
-                    case 4:
-                        path.moveTo((pointOne.x - radius), pointOne.y);
-                        path.lineTo((pointTwo.x + 12), (pointTwo.y + radius));
-                        break;
-                    case 5:
-                    case 6:
-                        path.moveTo(pointOne.x, (pointOne.y + radius));
-                        path.lineTo(pointTwo.x, (pointTwo.y - radius));
-                        break;
-                    case 7:
-                        path.moveTo((pointOne.x - radius), pointOne.y);
-                        path.lineTo((pointTwo.x + radius), pointTwo.y);
-                        break;
-                    default:
-                        break;
+                if (this.getEdges()[i].isLeftTable()) {
+                    switch (this.getEdges()[i].getId()) {
+                        case 1:
+                            rectF = rectFOneTwo(this.getEdges()[i]);
+                            canvas.drawArc(rectF, 186 + (radius / 2), (86 - radius), false, paintArc);
+                            //canvas.drawRect(rectF, paintRect);
+                            break;
+                        case 2:
+                            rectF = rectFOneTwo(this.getEdges()[i]);
+                            canvas.drawArc(rectF, 268 + (radius / 2), (86 - radius), false, paintArc);
+                            //canvas.drawRect(rectF, paintRect);
+                            break;
+                        case 3:
+                            path.moveTo((pointOne.x + radius), pointOne.y);
+                            path.lineTo((pointTwo.x - 12), (pointTwo.y + radius));
+                            break;
+                        case 4:
+                            path.moveTo((pointOne.x - radius), pointOne.y);
+                            path.lineTo((pointTwo.x + 12), (pointTwo.y + radius));
+                            break;
+                        case 5:
+                        case 6:
+                            path.moveTo(pointOne.x, (pointOne.y + radius));
+                            path.lineTo(pointTwo.x, (pointTwo.y - radius));
+                            break;
+                        case 7:
+                            path.moveTo((pointOne.x - radius), pointOne.y);
+                            path.lineTo((pointTwo.x + radius), pointTwo.y);
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    switch (this.getEdges()[i].getId()) {
+                        case 1:
+                            rectF = rectFOneTwo(this.getEdges()[i]);
+                            canvas.drawArc(rectF, 186 + (radius / 2), (86 - radius), false, paintArc);
+                            //canvas.drawRect(rectF, paintRect);
+                            break;
+                        case 2:
+                            rectF = rectFOneTwo(this.getEdges()[i]);
+                            canvas.drawArc(rectF, 268 + (radius / 2), (86 - radius), false, paintArc);
+                            //canvas.drawRect(rectF, paintRect);
+                            break;
+                        case 3:
+                            path.moveTo((pointOne.x - radius), pointOne.y);
+                            path.lineTo((pointTwo.x + 12), (pointTwo.y + radius));
+                            break;
+                        case 4:
+                            path.moveTo((pointOne.x - 16), (pointOne.y - radius));
+                            path.lineTo((pointTwo.x - 12), (pointTwo.y + radius));
+                            break;
+                        case 5:
+                        case 7:
+                            path.moveTo(pointOne.x, (pointOne.y + radius));
+                            path.lineTo(pointTwo.x, (pointTwo.y - radius));
+                            break;
+                        case 6:
+                            path.moveTo((pointOne.x - radius), pointOne.y);
+                            path.lineTo((pointTwo.x + radius), pointTwo.y);
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 Paint paintLine = paintLine(this.getEdges()[i].getColor());
                 canvas.drawPath(path, paintLine);
@@ -147,15 +181,22 @@ public class DirectedGraph extends View {
                 }
             }
         }
-
     }
 
-    private RectF rectFOneTwo() {
-        Point pointOne = new Point(this.getEdges()[1].getOne().getX(), this.getEdges()[1].getOne().getY());
-        Point pointTwo = new Point(this.getEdges()[1].getTwo().getX(), this.getEdges()[1].getTwo().getY());
+    private RectF rectFOneTwo(Edge edge) {
+        Point pointOne;
+        Point pointTwo;
+        if (edge.isLeftTable()) {
+            pointOne = new Point(this.getEdges()[1].getOne().getX(), this.getEdges()[1].getOne().getY());
+            pointTwo = new Point(this.getEdges()[1].getTwo().getX(), this.getEdges()[1].getTwo().getY());
+        } else {
+            pointOne = new Point(this.getEdges()[1].getOne().getX(), this.getEdges()[1].getOne().getY());
+            pointTwo = new Point(this.getEdges()[1].getTwo().getX(), this.getEdges()[1].getTwo().getY());
+        }
         rectF = new RectF((pointOne.x / 2), pointOne.y, pointTwo.x, (pointTwo.y * 2));
         return rectF;
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

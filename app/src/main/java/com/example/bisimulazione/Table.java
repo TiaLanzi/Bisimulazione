@@ -62,23 +62,23 @@ public class Table extends AppCompatActivity {
         Node fourthR = new Node(4, second.getX(), second.getY(), false, false, false, false);
         Node fifthR = new Node(5, thirdR.getX(), thirdR.getY(), false, false, false, false);
 
-        /*Edge[] edgesR = new Edge[7];
-        Edge unoR = new Edge(rootR, secondR, getResources().getColor(R.color.red), true, false);
+        Edge[] edgesR = new Edge[7];
+        Edge unoR = new Edge(1, rootR, secondR, getResources().getColor(R.color.red), false, true, false);
         edgesR[0] = unoR;
-        Edge dueR = new Edge(rootR, thirdR, getResources().getColor(R.color.red), true, false);
+        Edge dueR = new Edge(2, rootR, thirdR, getResources().getColor(R.color.red), false, true, false);
         edgesR[1] = dueR;
-        Edge treR = new Edge(thirdR, rootR, getResources().getColor(R.color.green), false, false);
+        Edge treR = new Edge(3, thirdR, rootR, getResources().getColor(R.color.green), false, false, true);
         edgesR[2] = treR;
-        Edge quattroR = new Edge(fifthR, rootR, getResources().getColor(R.color.green), false, false);
+        Edge quattroR = new Edge(4, fifthR, rootR, getResources().getColor(R.color.green), false, false, false);
         edgesR[3] = quattroR;
-        Edge cinqueR = new Edge(secondR, fourthR, getResources().getColor(R.color.primaryColor), true, true);
+        Edge cinqueR = new Edge(5, secondR, fourthR, getResources().getColor(R.color.primaryColor), false, true, true);
         edgesR[4] = cinqueR;
-        Edge seiR = new Edge(fifthR, fourthR, getResources().getColor(R.color.primaryColor), false, true);
+        Edge seiR = new Edge(6, fifthR, fourthR, getResources().getColor(R.color.primaryColor), false, false, true);
         edgesR[5] = seiR;
-        Edge setteR = new Edge(thirdR, fifthR, getResources().getColor(R.color.black), true, true);
+        Edge setteR = new Edge(7, thirdR, fifthR, getResources().getColor(R.color.black), false, true, true);
         edgesR[6] = setteR;
 
         DirectedGraph directedGraphRight = new DirectedGraph(this, edgesR);
-        tableRightDirectedGraphLayout.addView(directedGraphRight); */
+        tableRightDirectedGraphLayout.addView(directedGraphRight);
     }
 }
