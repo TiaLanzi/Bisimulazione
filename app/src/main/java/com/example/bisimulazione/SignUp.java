@@ -67,7 +67,7 @@ public class SignUp extends AppCompatActivity {
         reference = database.getReference().child("users");
 
         // initialize shared preferences and persistent counter
-        sharedPreferences = this.getSharedPreferences("SharedPreferencesCounter", Context.MODE_PRIVATE);
+        sharedPreferences = this.getSharedPreferences("sharedPreferencesCounter", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         // to (re)set counter
         /*editor.putInt("Counter", 1);
@@ -78,7 +78,7 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // check if all fields are correct
-                if (isValidName(firstName) & isValidName(lastName) & isValidName(username)) { // & isValidEmail(email) & isValidPwd(password, confirmPassword)) {
+                if (isValidName(firstName) & isValidName(lastName) & isValidName(username) & isValidPwd(password, confirmPassword)) { // & isValidEmail(email) & isValidPwd(password, confirmPassword)) {
                     // get text written in edittext
                     String nome = fromEditTextToString(firstName).trim();
                     String cognome = fromEditTextToString(lastName).trim();
@@ -169,12 +169,15 @@ public class SignUp extends AppCompatActivity {
         String confPass = fromEditTextToString(et);
 
         if (pass.equalsIgnoreCase(confPass)) {
-            String pwd = fromEditTextToString(editText);
-            String pwdRegex = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$";
-            Pattern pattern = Pattern.compile(pwdRegex);
-            return pattern.matcher(pwd).matches();
+            if (pass.length() <= 4) {
+                editText.setError(getString(R.string.error_too_short_edittext));
+                et.setError(getString(R.string.error_too_short_edittext));
+                return false;
+            } else {
+                return true;
+            }
         } else {
-            editText.setError("Le 2 password non corrispondono");
+            editText.setError(getString(R.string.sign_up_pwds_dont_match));
             return false;
         }
     }

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.Toolbar;
 
 import com.google.android.material.navigation.NavigationView;
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private NavigationView navigationView;
 
+    private Button playGame;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +36,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         navigationView = findViewById(R.id.nav_view);
 
-        Intent intent = new Intent(MainActivity.this, Table.class);
-        startActivity(intent);
+        playGame = findViewById(R.id.main_play_button);
+        playGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // open matchmaking room
+                Intent intent = new Intent(MainActivity.this, MatchmakingRoom.class);
+                startActivity(intent);
+            }
+        });
+
+
+
 
         //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_container);
         //NavigationUI.setupActionBarWithNavController(navigationView, navController);

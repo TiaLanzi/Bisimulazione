@@ -3,7 +3,9 @@ package com.example.bisimulazione;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +28,9 @@ public class Login extends AppCompatActivity {
     private EditText username;
     private EditText pwd;
     private CheckBox rememberMe;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private Boolean saveLoginData;
     private FirebaseAuth auth;
 
     @Override
@@ -53,6 +58,19 @@ public class Login extends AppCompatActivity {
             rememberMe.setChecked(true);
         }
 
+        // initialize shared preferences
+        sharedPreferences = this.getSharedPreferences("sharedPreferencesLogin", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.apply();
+        // get shared prefences
+        saveLoginData = sharedPreferences.getBoolean("saveLoginData", false);
+        // if previously was set to checked, set with login data
+        if (saveLoginData) {
+            username.setText(sharedPreferences.getString("username", ""));
+            username.setText(sharedPreferences.getString("pwd", ""));
+            rememberMe.setChecked(true);
+        }
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,6 +79,15 @@ public class Login extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                 @Override
                                 public void onSuccess(AuthResult authResult) {
+                                    // if checked write in shared preferences login data
+                                    if (rememberMe.isChecked()) {
+                                        editor.putBoolean("saveLoginData", true);
+                                        editor.putString("username", fromEditTextToString(username));
+                                        editor.putString("pwd", fromEditTextToString(pwd));
+                                    } else {
+                                        editor.clear();
+                                    }
+                                    editor.commit();
                                     Toast.makeText(Login.this, "Login successfully", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(Login.this, MainActivity.class));
                                     finish();

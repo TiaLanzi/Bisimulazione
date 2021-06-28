@@ -45,6 +45,8 @@ public class MatchmakingRoom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_matchmaking_room);
 
+        database = FirebaseDatabase.getInstance();
+
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         if (user != null) {

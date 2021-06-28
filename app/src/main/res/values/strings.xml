@@ -26,6 +26,7 @@
     <string name="sign_up_button_text">REGISTRATI</string>
     <string name="sign_up_successful">Registrazione avvenuta con successo</string>
     <string name="sign_up_failed">Autenticazione fallita</string>
+    <string name="sign_up_pwds_dont_match">Le password non corrispondono!</string>
 
     <!-- user-->
     <string name="user_unknown">sconosciuto</string>

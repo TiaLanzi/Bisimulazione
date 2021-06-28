@@ -26,6 +26,7 @@
     <string name="sign_up_button_text">SIGN UP</string>
     <string name="sign_up_successful">Sign up successfully</string>
     <string name="sign_up_failed">Sign up failed</string>
+    <string name="sign_up_pwds_dont_match">Password and confirm password are not the same!</string>
 
     <!-- user-->
     <string name="user_unknown">unknown</string>
