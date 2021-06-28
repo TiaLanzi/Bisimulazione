@@ -42,7 +42,7 @@
     <!-- bug report -->
     <string name="bug_report_explanation_message">Please send us a message stating the problem you have experienced:</string>
     <string name="bug_report_hint">Insert text here</string>
-    <string name="bug_report_send_message">The message will be sent to prova@mail.it\n Thanks for reporting!</string>
+    <string name="bug_report_send_message">The message will be sent to prova@mail.it\nThanks for reporting!</string>
     <string name="bug_report_send_button_text">SEND</string>
     <string name="bug_report">BUG REPORT</string>
 
@@ -79,4 +79,10 @@
     <string name="matchmaking_room_player_unknown_text">Unknown</string>
     <string name="matchmaking_room_creating_room_text">CREATING ROOM…</string>
     <string name="matchmaking_room_error_text">ERROR</string>
+    <string name="bottom_sheet_reset_pwd_text">RESET PASSWORD</string>
+
+    <!-- bottom sheet reset pwd -->
+    <string name="bottom_sheet_reset_pwd_insert_mail">Insert your email address used during sign up:</string>
+    <string name="bottom_sheet_reset_pwd_insert_mail_here">Insert your mail address here…</string>
+    <string name="bottom_sheet_reset_pwd_reset">RESET</string>
 </resources>

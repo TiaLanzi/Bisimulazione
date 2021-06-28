@@ -79,4 +79,10 @@
     <string name="matchmaking_room_player_unknown_text">Sconosciuto</string>
     <string name="matchmaking_room_creating_room_text">CREANDO LA STANZA…</string>
     <string name="matchmaking_room_error_text">ERRORE</string>
+    <string name="bottom_sheet_reset_pwd_text">RESET PASSWORD</string>
+
+    <!-- bottom sheet reset pwd -->
+    <string name="bottom_sheet_reset_pwd_insert_mail">Inserisci il tuo indirizzo mail usato durante la registrazione:</string>
+    <string name="bottom_sheet_reset_pwd_insert_mail_here">Inserisci il tuo indirizzo mail qui…</string>
+    <string name="bottom_sheet_reset_pwd_reset">RESET</string>
 </resources>

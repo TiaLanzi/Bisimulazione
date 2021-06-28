@@ -14,8 +14,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,9 +30,8 @@ public class Login extends AppCompatActivity {
     private EditText username;
     private EditText pwd;
     private CheckBox rememberMe;
-    private SharedPreferences sharedPreferences;
+    private TextView forgotPwd;
     private SharedPreferences.Editor editor;
-    private Boolean saveLoginData;
     private FirebaseAuth auth;
 
     @Override
@@ -43,11 +44,10 @@ public class Login extends AppCompatActivity {
         pwd = findViewById(R.id.login_password_input);
         rememberMe = findViewById(R.id.login_remember_me_checkbox);
 
-        TextView forgotPwd = findViewById(R.id.login_click_here_link);
+        forgotPwd = findViewById(R.id.login_click_here_link);
         Button login = findViewById(R.id.login_sign_in_button);
 
         auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -59,11 +59,11 @@ public class Login extends AppCompatActivity {
         }
 
         // initialize shared preferences
-        sharedPreferences = this.getSharedPreferences("sharedPreferencesLogin", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences("sharedPreferencesLogin", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.apply();
-        // get shared prefences
-        saveLoginData = sharedPreferences.getBoolean("saveLoginData", false);
+        // get shared preferences
+        boolean saveLoginData = sharedPreferences.getBoolean("saveLoginData", false);
         // if previously was set to checked, set with login data
         if (saveLoginData) {
             username.setText(sharedPreferences.getString("username", ""));
@@ -99,6 +99,22 @@ public class Login extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+
+        forgotPwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                auth.sendPasswordResetEmail(emailAddress)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+
+                                }
+                            }
+                        });
+
             }
         });
     }

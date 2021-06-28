@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/bottom_sheet_reset_pwd_layout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="center_vertical"
+        android:background="@color/primaryColor"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <info.androidhive.fontawesome.FontTextView
+            android:id="@+id/bottom_sheet_reset_pwd_close_icon"
+            style="@style/H5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:text="@string/fa_times_solid"
+            android:textColor="@color/white"
+            app:solid_icon="true" />
+
+        <TextView
+            android:id="@+id/bs_location"
+            style="@style/H5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/bottom_sheet_reset_pwd_text"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/bottom_sheet_reset_pwd_insert_mail_caption"
+        style="@style/Body2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:clickable="false"
+        android:gravity="center_horizontal"
+        android:text="@string/bottom_sheet_reset_pwd_insert_mail"
+        android:textColor="@color/black" />
+
+    <EditText
+        android:id="@+id/bottom_sheet_reset_pwd_input"
+        style="@style/H6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:autofillHints="false"
+        android:background="@drawable/corner_radius_edittext"
+        android:clickable="true"
+        android:focusable="true"
+        android:hint="@string/bottom_sheet_reset_pwd_insert_mail_here"
+        android:inputType="textEmailAddress"
+        android:paddingVertical="8dp"
+        android:paddingStart="8dp"
+        android:paddingLeft="8dp"
+        android:paddingEnd="8dp" />
+
+    <RelativeLayout
+        android:id="@+id/bug_report_send_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/bottom_sheet_reset_pwd_reset_button"
+            style="@style/BUTTON"
+            android:layout_width="52dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/corner_radius_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/bottom_sheet_reset_pwd_reset"
+            android:textColor="@color/background_color"
+            android:visibility="visible" />
+    </RelativeLayout>
+</LinearLayout>
