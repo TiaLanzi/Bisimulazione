@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +28,8 @@ import org.jetbrains.annotations.NotNull;
 public class Login extends AppCompatActivity {
 
     private static final String TAG = "Bisimulazione";
+    private EditText resetEmail;
+    private Button reset;
     private EditText username;
     private EditText pwd;
     private CheckBox rememberMe;
@@ -105,16 +108,32 @@ public class Login extends AppCompatActivity {
         forgotPwd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                auth.sendPasswordResetEmail(emailAddress)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
+                // initialize and add bottom sheet
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(Login.this);
+                bottomSheetDialog.setContentView(R.layout.bottom_sheet_reset_pwd);
+                bottomSheetDialog.setCanceledOnTouchOutside(true);
+                bottomSheetDialog.show();
+                // initialize views in bottom sheet
+                resetEmail = bottomSheetDialog.findViewById(R.id.bottom_sheet_reset_pwd_input);
+                reset = bottomSheetDialog.findViewById(R.id.bottom_sheet_reset_pwd_reset_button);
+                reset.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        auth.sendPasswordResetEmail(fromEditTextToString(resetEmail))
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(Login.this, getString(R.string.login_bottom_sheet_mail_sent_to), Toast.LENGTH_LONG).show();
+                                            username.setText(fromEditTextToString(resetEmail));
+                                            rememberMe.setChecked(true);
+                                            bottomSheetDialog.dismiss();
+                                        }
+                                    }
+                                });
 
-                                }
-                            }
-                        });
-
+                    }
+                });
             }
         });
     }

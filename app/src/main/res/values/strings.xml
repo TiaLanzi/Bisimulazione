@@ -11,6 +11,7 @@
     <string name="login_sign_in_text_button">ACCEDI</string>
     <string name="login_forgot_password_text_caption">Password dimenticata?</string>
     <string name="login_click_here_text_link">Clicca qui</string>
+    <string name="login_bottom_sheet_mail_sent_to">Una mail con la nuova password è stata inviata all\'indirizzo </string>
 
     <!-- sign up activity-->
     <string name="sign_up_insert_name">Inserisci il tuo nome</string>

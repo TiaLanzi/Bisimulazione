@@ -71,9 +71,11 @@
         android:paddingEnd="8dp" />
 
     <RelativeLayout
-        android:id="@+id/bug_report_send_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:id="@+id/bottom_sheet_reset_pwd_button_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp">
 
         <Button
             android:id="@+id/bottom_sheet_reset_pwd_reset_button"
@@ -83,12 +85,13 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/corner_radius_button"
             android:clickable="true"
             android:focusable="true"
+            android:gravity="center_horizontal"
             android:text="@string/bottom_sheet_reset_pwd_reset"
+            android:textAlignment="center"
             android:textColor="@color/background_color"
             android:visibility="visible" />
     </RelativeLayout>

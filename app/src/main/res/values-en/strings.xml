@@ -11,6 +11,7 @@
     <string name="login_sign_in_text_button">SIGN IN</string>
     <string name="login_forgot_password_text_caption">Forgot password?</string>
     <string name="login_click_here_text_link">Click here</string>
+    <string name="login_bottom_sheet_mail_sent_to">Email with new password has been sent to </string>
 
     <!-- sign up activity-->
     <string name="sign_up_insert_name">Insert your name</string>
