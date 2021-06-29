@@ -9,14 +9,22 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +34,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
 
     private Button playGame;
+
+    private EditText editText;
+    private Button button;
+
+    private String playerName = "";
+    private FirebaseDatabase database;
+    private DatabaseReference playerRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +60,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent);
             }
         });
+
+
+        editText = findViewById(R.id.edittext);
+        button = findViewById(R.id.button);
+
+        database = FirebaseDatabase.getInstance();
+        // check if the player exists and set reference
+        SharedPreferences preferences = getSharedPreferences("PREFS", Context.MODE_PRIVATE);
+        playerName = preferences.getString("playerName", "");
+        if (playerName.equals("")) {
+            playerRef = database.getReference("players/" + playerName);
+            addEventListener();
+            playerRef.setValue("");
+        }
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playerName = editText.getText().toString();
+                editText.setText("");
+                if (playerName.equals("")) {
+                    button.setText("LOGGING IN");
+                    button.setEnabled(false);
+                    playerRef = database.getReference("players/" + playerName);
+                    addEventListener();
+                    startActivity(new Intent(MainActivity.this, MatchmakingRoom.class));
+                    playerRef.setValue("");
+                    finish();
+                }
+            }
+        });
+
+
 
 
 
@@ -100,5 +147,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.replace(R.id.nav_host_fragment_container, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    private void addEventListener() {
+        playerRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (!playerName.equals("")) {
+                    SharedPreferences preferences = getSharedPreferences("PREFS", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("playerName", playerName);
+                    editor.apply();
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                button.setText("LOG IN");
+                button.setEnabled(false);
+                Toast.makeText(MainActivity.this, "Error!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }

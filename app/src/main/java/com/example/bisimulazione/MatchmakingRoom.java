@@ -3,7 +3,9 @@ package com.example.bisimulazione;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,17 +30,18 @@ import java.util.List;
 public class MatchmakingRoom extends AppCompatActivity {
 
     private ListView listView;
-    private Button createRoom;
+    private Button button;
 
-    private List<String> roomPlayers;
+    private List<String> roomList;
 
-    private String playerName;
+    private String playerName = "";
     private String roomName = "";
 
     private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseDatabase database;
-    private DatabaseReference reference;
+    private DatabaseReference roomRef;
+    private DatabaseReference roomsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +50,48 @@ public class MatchmakingRoom extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
 
-        auth = FirebaseAuth.getInstance();
+        /*auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         if (user != null) {
             playerName = user.getDisplayName();
         } else {
             playerName = getString(R.string.matchmaking_room_player_unknown_text);
-        }
+        } */
+
+        SharedPreferences preferences = getSharedPreferences("PREFS", Context.MODE_PRIVATE);
+        playerName = preferences.getString("playerName", "");
         roomName = playerName;
+
+        listView = findViewById(R.id.matchmaking_room_list_view);
+        button = findViewById(R.id.matchmaking_room_create_room_button);
+
+        roomList = new ArrayList<>();
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                button.setText("CREATING ROOM");
+                button.setEnabled(false);
+                roomName = playerName;
+                roomRef = database.getReference("rooms/" + roomName + "/player1");
+                addRoomEventListener();
+                roomRef.setValue(playerName);
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                roomName = roomList.get(position);
+                roomRef = database.getReference("rooms/" + roomName + "/player2");
+                addRoomEventListener();
+                roomRef.setValue(playerName);
+            }
+        });
+
+        addRoomsEventListener();
+
+        /*roomName = playerName;
         // initialize ListView
         listView = findViewById(R.id.matchmaking_room_list_view);
         // initialize create room button
@@ -125,6 +162,50 @@ public class MatchmakingRoom extends AppCompatActivity {
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(MatchmakingRoom.this, android.R.layout.simple_list_item_1, roomPlayers);
                     listView.setAdapter(adapter);
 
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    } */
+    }
+
+    private void addRoomEventListener() {
+        roomRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                button.setText("CREATE ROOM");
+                button.setEnabled(true);
+                Intent intent = new Intent(getApplicationContext(), Third.class);
+                intent.putExtra("roomName", roomName);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                button.setText("CREATE ROOM");
+                button.setEnabled(true);
+                Toast.makeText(MatchmakingRoom.this, "Error!", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    private void addRoomsEventListener() {
+        roomsRef = database.getReference("rooms");
+        roomsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                roomList.clear();
+                Iterable<DataSnapshot> rooms =  snapshot.getChildren();
+                for (DataSnapshot snap : rooms) {
+                    roomList.add(snap.getKey());
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(MatchmakingRoom.this, android.R.layout.simple_list_item_1);
+                    listView.setAdapter(adapter);
                 }
             }
 
