@@ -21,7 +21,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +32,6 @@ public class Login extends AppCompatActivity {
     private EditText username;
     private EditText pwd;
     private CheckBox rememberMe;
-    private TextView forgotPwd;
     private SharedPreferences.Editor editor;
     private FirebaseAuth auth;
 
@@ -47,8 +45,18 @@ public class Login extends AppCompatActivity {
         pwd = findViewById(R.id.login_password_input);
         rememberMe = findViewById(R.id.login_remember_me_checkbox);
 
-        forgotPwd = findViewById(R.id.login_click_here_link);
+        TextView forgotPwd = findViewById(R.id.login_click_here_link);
         Button login = findViewById(R.id.login_sign_in_button);
+
+        TextView notMemberYet = findViewById(R.id.login_not_a_member_yet_sign_up_here);
+        notMemberYet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Login.this, SignUp.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         auth = FirebaseAuth.getInstance();
 
@@ -64,13 +72,17 @@ public class Login extends AppCompatActivity {
         // initialize shared preferences
         SharedPreferences sharedPreferences = this.getSharedPreferences("sharedPreferencesLogin", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        // to reset shared preferences
+        //editor.putBoolean("saveLoginData", false);
+        // editor.remove("username");
+        // editor.remove("pwd");
         editor.apply();
         // get shared preferences
         boolean saveLoginData = sharedPreferences.getBoolean("saveLoginData", false);
         // if previously was set to checked, set with login data
         if (saveLoginData) {
             username.setText(sharedPreferences.getString("username", ""));
-            username.setText(sharedPreferences.getString("pwd", ""));
+            pwd.setText(sharedPreferences.getString("pwd", ""));
             rememberMe.setChecked(true);
         }
 
