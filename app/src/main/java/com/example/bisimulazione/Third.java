@@ -36,7 +36,7 @@ public class Third extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_third);
 
-        button = findViewById(R.id.button);
+        //button = findViewById(R.id.button);
         button.setEnabled(false);
 
         database = FirebaseDatabase.getInstance();

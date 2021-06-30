@@ -41,35 +41,4 @@
         android:textColor="@color/white"
         android:visibility="visible" />
 
-    <EditText
-        android:id="@+id/edittext"
-        style="@style/H6"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/edittext"
-        android:gravity="center_vertical"
-        android:inputType="textPersonName"
-        android:paddingVertical="8dp"
-        android:paddingStart="8dp"
-        android:paddingLeft="8dp"
-        android:paddingEnd="8dp"
-        android:paddingRight="8dp" />
-
-    <Button
-        android:id="@+id/button"
-        style="@style/BUTTON"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginVertical="32dp"
-        android:background="@drawable/button"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:text="boh"
-        android:textColor="@color/white"
-        android:visibility="visible" />
-
 </LinearLayout>

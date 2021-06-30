@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,17 +33,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "Bisimulazione";
+
     private Toolbar toolbar;
     private NavigationView navigationView;
 
     private Button playGame;
 
-    private EditText editText;
-    private Button button;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
 
-    private String playerName = "";
+    private String playerName;
     private FirebaseDatabase database;
     private DatabaseReference playerRef;
+    private DatabaseReference roomsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,50 +58,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = findViewById(R.id.nav_view);
 
         playGame = findViewById(R.id.main_play_button);
+
+        database = FirebaseDatabase.getInstance();
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+
+        if (user != null) {
+            playerName = user.getDisplayName();
+            Log.i(TAG, "Player name " + user.getDisplayName());
+        }
+        if (playerName != null) {
+            if (!playerName.equals("")) {
+                playerRef = database.getReference().child("players");
+            }
+        }
+
         playGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                playerRef.setValue(playerName);
+                roomsRef.setValue("Room: " + playerName);
                 // open matchmaking room
                 Intent intent = new Intent(MainActivity.this, MatchmakingRoom.class);
                 startActivity(intent);
             }
         });
-
-
-        editText = findViewById(R.id.edittext);
-        button = findViewById(R.id.button);
-
-        database = FirebaseDatabase.getInstance();
-        // check if the player exists and set reference
-        SharedPreferences preferences = getSharedPreferences("PREFS", Context.MODE_PRIVATE);
-        playerName = preferences.getString("playerName", "");
-        if (playerName.equals("")) {
-            playerRef = database.getReference("players/" + playerName);
-            addEventListener();
-            playerRef.setValue("");
-        }
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playerName = editText.getText().toString();
-                editText.setText("");
-                if (playerName.equals("")) {
-                    button.setText("LOGGING IN");
-                    button.setEnabled(false);
-                    playerRef = database.getReference("players/" + playerName);
-                    addEventListener();
-                    startActivity(new Intent(MainActivity.this, MatchmakingRoom.class));
-                    playerRef.setValue("");
-                    finish();
-                }
-            }
-        });
-
-
-
-
-
-
         //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_container);
         //NavigationUI.setupActionBarWithNavController(navigationView, navController);
 
@@ -149,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.commit();
     }
 
-    private void addEventListener() {
+    /*private void addEventListener() {
         playerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -171,5 +158,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-    }
+    } */
 }
