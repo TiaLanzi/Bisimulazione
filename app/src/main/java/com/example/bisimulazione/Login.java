@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,6 +22,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,6 +42,10 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users");
+        reference.setValue("lol");
+        Log.i(TAG, "Ok");
 
         //initialize views
         username = findViewById(R.id.login_username_input);
@@ -74,8 +81,8 @@ public class Login extends AppCompatActivity {
         editor = sharedPreferences.edit();
         // to reset shared preferences
         //editor.putBoolean("saveLoginData", false);
-        // editor.remove("username");
-        // editor.remove("pwd");
+        //editor.remove("username");
+        //editor.remove("pwd");
         editor.apply();
         // get shared preferences
         boolean saveLoginData = sharedPreferences.getBoolean("saveLoginData", false);

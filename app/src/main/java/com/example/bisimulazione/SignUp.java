@@ -67,6 +67,7 @@ public class SignUp extends AppCompatActivity {
 
         // initialize reference into database
         reference = database.getReference().child("users");
+        reference.setValue("Hi");
 
         // initialize shared preferences and persistent counter
         sharedPreferences = this.getSharedPreferences("sharedPreferencesCounter", Context.MODE_PRIVATE);

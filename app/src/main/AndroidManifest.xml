@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Third"></activity>
+        <activity android:name=".Third"
+            android:exported="true"/>
         <activity android:name=".MatchmakingRoom" />
         <activity
             android:name=".Table"

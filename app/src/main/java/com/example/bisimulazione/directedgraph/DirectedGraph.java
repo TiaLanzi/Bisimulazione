@@ -21,7 +21,6 @@ public class DirectedGraph extends View {
     private Edge[] edges;
     private final float stroke = 8f;
     private final float radius = 40f;
-    private final float arrowHead = 24f;
 
     private RectF rectF;
 
@@ -86,6 +85,15 @@ public class DirectedGraph extends View {
         return paint;
     }
 
+    private Paint paintTriangle(int color) {
+        Paint paint = new Paint();
+        paint.setColor(color);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setStrokeWidth(stroke);
+        paint.setAntiAlias(true);
+        return paint;
+    }
+
     private void drawGraph(Canvas canvas) {
         Paint paintRect = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintRect.setStyle(Paint.Style.STROKE);
@@ -96,10 +104,16 @@ public class DirectedGraph extends View {
                 // coordinates of centre of second vertex
                 Point pointTwo = new Point(this.getEdges()[i].getTwo().getX(), this.getEdges()[i].getTwo().getY());
                 Point endPoint;
+                Point a;
+                Point b;
+                Point c;
                 Paint paintArc = paintArc(this.getEdges()[i].getColor());
+                Paint paintTriangle = paintTriangle(this.getEdges()[i].getColor());
                 Path path = new Path();
                 path.reset();
                 Path pathArc = new Path();
+                float arrowHead = 16f;
+                float shiftArrowHead = 4f;
                 if (this.getEdges()[i].isLeftTable()) {
                     switch (this.getEdges()[i].getId()) {
                         case 1:
@@ -121,33 +135,61 @@ public class DirectedGraph extends View {
                             //canvas.drawRect(rectF, paintRect);
                             break;
                         case 3:
-                            path.moveTo((pointOne.x + radius), pointOne.y);
-                            path.lineTo((pointTwo.x - 12), (pointTwo.y + radius));
-                            endPoint = new Point((pointTwo.x - 12), (int) (pointTwo.y + radius));
-                            canvas.drawPath(path, paintArc);
+                            path.moveTo((pointOne.x + radius + (stroke / 2)), pointOne.y);
+                            path.lineTo((pointTwo.x - 16), (pointTwo.y + radius));
+                            endPoint = new Point((pointTwo.x - 16), (int) (pointTwo.y + radius));
+                            a = new Point(endPoint.x, endPoint.y);
+                            b = new Point((int) (endPoint.x - arrowHead), ((int) (endPoint.y + arrowHead - shiftArrowHead)));
+                            c = new Point((int) (endPoint.x + arrowHead - (shiftArrowHead * 2)), ((int) (endPoint.y + arrowHead)));
                             path.moveTo(endPoint.x, endPoint.y);
-                            path.lineTo(endPoint.x - (arrowHead + 6), endPoint.y + arrowHead);
-                            path.moveTo(endPoint.x, endPoint.y);
-                            path.lineTo((endPoint.x + arrowHead) - 16, endPoint.y + arrowHead);
+                            path.lineTo(b.x, b.y);
+                            path.lineTo(c.x, c.y);
+                            path.lineTo(a.x, a.y);
+                            canvas.drawPath(path, paintTriangle);
+                            path.reset();
                             break;
                         case 4:
-                            path.moveTo((pointOne.x - radius), pointOne.y);
-                            path.lineTo((pointTwo.x + 12), (pointTwo.y + radius));
-                            endPoint = new Point((pointTwo.x + 12), (int) (pointTwo.y + radius));
-                            canvas.drawPath(path, paintArc);
+                            path.moveTo((pointOne.x - radius - (stroke / 2)), pointOne.y);
+                            path.lineTo((pointTwo.x + 16), (pointTwo.y + radius));
+                            endPoint = new Point((pointTwo.x + 16), (int) (pointTwo.y + radius));
+                            a = new Point(endPoint.x, endPoint.y);
+                            b = new Point((int) (endPoint.x - arrowHead + (shiftArrowHead * 2)), ((int) (endPoint.y + arrowHead)));
+                            c = new Point((int) (endPoint.x + arrowHead), ((int) (endPoint.y + arrowHead - shiftArrowHead)));
                             path.moveTo(endPoint.x, endPoint.y);
-                            path.lineTo(endPoint.x - (arrowHead - 16), endPoint.y + arrowHead);
-                            path.moveTo(endPoint.x, endPoint.y);
-                            path.lineTo((endPoint.x + arrowHead) + 4, endPoint.y + arrowHead);
+                            path.lineTo(b.x, b.y);
+                            path.lineTo(c.x, c.y);
+                            path.lineTo(a.x, a.y);
+                            canvas.drawPath(path, paintTriangle);
+                            path.reset();
                             break;
                         case 5:
                         case 6:
                             path.moveTo(pointOne.x, (pointOne.y + radius));
                             path.lineTo(pointTwo.x, (pointTwo.y - radius));
+                            endPoint = new Point(pointTwo.x, ((int) (pointTwo.y - radius)));
+                            a = new Point(endPoint.x, ((int) (endPoint.y - stroke)));
+                            b = new Point(((int) (endPoint.x - arrowHead)), ((int) (endPoint.y - arrowHead)));
+                            c = new Point(((int) (endPoint.x + arrowHead)), ((int) (endPoint.y - arrowHead)));
+                            path.moveTo(endPoint.x, (endPoint.y - stroke));
+                            path.lineTo(b.x, b.y);
+                            path.lineTo(c.x, c.y);
+                            path.lineTo(a.x, a.y);
+                            canvas.drawPath(path, paintTriangle);
+                            path.reset();
                             break;
                         case 7:
                             path.moveTo((pointOne.x - radius), pointOne.y);
                             path.lineTo((pointTwo.x + radius), pointTwo.y);
+                            endPoint = new Point(((int) (pointTwo.x + radius)), pointTwo.y);
+                            a = new Point(((int) (endPoint.x + stroke)), endPoint.y);
+                            b = new Point(((int) (endPoint.x + arrowHead)), ((int) (endPoint.y + arrowHead)));
+                            c = new Point(((int) (endPoint.x + arrowHead)), ((int) (endPoint.y - arrowHead)));
+                            path.moveTo((endPoint.x + stroke), endPoint.y);
+                            path.lineTo(b.x, b.y);
+                            path.lineTo(c.x, c.y);
+                            path.lineTo(a.x, a.y);
+                            canvas.drawPath(path, paintTriangle);
+                            path.reset();
                             break;
                         default:
                             break;
@@ -165,21 +207,61 @@ public class DirectedGraph extends View {
                             //canvas.drawRect(rectF, paintRect);
                             break;
                         case 3:
-                            path.moveTo((pointOne.x - radius), pointOne.y);
-                            path.lineTo((pointTwo.x + 12), (pointTwo.y + radius));
+                            path.moveTo((pointOne.x - radius - (stroke / 2)), pointOne.y);
+                            path.lineTo((pointTwo.x + 16), (pointTwo.y + radius));
+                            endPoint = new Point((pointTwo.x + 16), (int) (pointTwo.y + radius));
+                            a = new Point(endPoint.x, endPoint.y);
+                            b = new Point((int) (endPoint.x - arrowHead + (shiftArrowHead * 2)), ((int) (endPoint.y + arrowHead)));
+                            c = new Point((int) (endPoint.x + arrowHead), ((int) (endPoint.y + arrowHead - shiftArrowHead)));
+                            path.moveTo(endPoint.x, endPoint.y);
+                            path.lineTo(b.x, b.y);
+                            path.lineTo(c.x, c.y);
+                            path.lineTo(a.x, a.y);
+                            canvas.drawPath(path, paintTriangle);
+                            path.reset();
                             break;
                         case 4:
-                            path.moveTo((pointOne.x - 16), (pointOne.y - radius));
-                            path.lineTo((pointTwo.x - 12), (pointTwo.y + radius));
+                            path.moveTo((pointOne.x - radius), (pointOne.y - radius + 16));
+                            path.lineTo((pointTwo.x - 20), (pointTwo.y + radius));
+                            endPoint = new Point((pointTwo.x - 20), (int) (pointTwo.y + radius));
+                            a = new Point(endPoint.x, endPoint.y);
+                            b = new Point((int) (endPoint.x - arrowHead + (shiftArrowHead * 2)), ((int) (endPoint.y + arrowHead)));
+                            c = new Point((int) (endPoint.x + arrowHead - shiftArrowHead), ((int) (endPoint.y + arrowHead - shiftArrowHead)));
+                            path.moveTo(endPoint.x, endPoint.y);
+                            path.lineTo(b.x, b.y);
+                            path.lineTo(c.x, c.y);
+                            path.lineTo(a.x, a.y);
+                            canvas.drawPath(path, paintTriangle);
+                            path.reset();
                             break;
                         case 5:
                         case 7:
                             path.moveTo(pointOne.x, (pointOne.y + radius));
                             path.lineTo(pointTwo.x, (pointTwo.y - radius));
+                            endPoint = new Point(pointTwo.x, ((int) (pointTwo.y - radius)));
+                            a = new Point(endPoint.x, ((int) (endPoint.y - stroke)));
+                            b = new Point(((int) (endPoint.x - arrowHead)), ((int) (endPoint.y - arrowHead)));
+                            c = new Point(((int) (endPoint.x + arrowHead)), ((int) (endPoint.y - arrowHead)));
+                            path.moveTo(endPoint.x, (endPoint.y - stroke));
+                            path.lineTo(b.x, b.y);
+                            path.lineTo(c.x, c.y);
+                            path.lineTo(a.x, a.y);
+                            canvas.drawPath(path, paintTriangle);
+                            path.reset();
                             break;
                         case 6:
                             path.moveTo((pointOne.x - radius), pointOne.y);
                             path.lineTo((pointTwo.x + radius), pointTwo.y);
+                            endPoint = new Point(((int) (pointTwo.x + radius)), pointTwo.y);
+                            a = new Point(((int) (endPoint.x + stroke)), endPoint.y);
+                            b = new Point(((int) (endPoint.x + arrowHead)), ((int) (endPoint.y + arrowHead)));
+                            c = new Point(((int) (endPoint.x + arrowHead)), ((int) (endPoint.y - arrowHead)));
+                            path.moveTo((endPoint.x + stroke), endPoint.y);
+                            path.lineTo(b.x, b.y);
+                            path.lineTo(c.x, c.y);
+                            path.lineTo(a.x, a.y);
+                            canvas.drawPath(path, paintTriangle);
+                            path.reset();
                             break;
                         default:
                             break;
@@ -214,7 +296,6 @@ public class DirectedGraph extends View {
         rectF = new RectF((pointOne.x / 2), pointOne.y, pointTwo.x, (pointTwo.y * 2));
         return rectF;
     }
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

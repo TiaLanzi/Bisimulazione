@@ -6,6 +6,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.ui.AppBarConfiguration;
 
 import android.content.Context;
 import android.content.Intent;
@@ -35,8 +36,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String TAG = "Bisimulazione";
 
+    private AppBarConfiguration appBarConfiguration;
+
     private Toolbar toolbar;
-    private NavigationView navigationView;
 
     private Button playGame;
 
@@ -55,7 +57,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // initialize views about navigation drawer and header
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        navigationView = findViewById(R.id.nav_view);
+        /*DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_view).setDrawerLayout(drawerLayout).build();*/
 
         playGame = findViewById(R.id.main_play_button);
 
@@ -70,14 +74,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (playerName != null) {
             if (!playerName.equals("")) {
                 playerRef = database.getReference().child("players");
+                roomsRef = database.getReference().child("rooms");
             }
         }
 
         playGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playerRef.setValue(playerName);
-                roomsRef.setValue("Room: " + playerName);
+                playerRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        playerRef.setValue(playerName);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                    }
+                });
+                roomsRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        roomsRef.setValue("Room: " + playerName);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                    }
+                });
                 // open matchmaking room
                 Intent intent = new Intent(MainActivity.this, MatchmakingRoom.class);
                 startActivity(intent);
