@@ -4,86 +4,199 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:baselineAligned="false"
-    android:orientation="horizontal"
-    android:paddingStart="16dp"
-    android:paddingLeft="16dp"
-    android:paddingTop="16dp"
-    android:paddingEnd="16dp"
-    android:paddingRight="16dp"
-    android:paddingBottom="16dp"
+    android:orientation="vertical"
     tools:context=".Table">
 
-    <RelativeLayout
-        android:id="@+id/table_left_table_layout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight=".5">
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp">
 
-        <LinearLayout
-            android:id="@+id/table_left_table_inside_layout"
+        <RelativeLayout
+            android:id="@+id/table_left_table_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/table_left_table_title"
-                style="@style/Body1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:clickable="false"
-                android:text="@string/table_table_left"
-                android:textColor="@color/primaryColor" />
+            android:layout_weight=".5">
 
             <LinearLayout
-                android:id="@+id/table_left_directed_graph_layout"
+                android:id="@+id/table_left_table_inside_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="4dp"
-                android:layout_marginVertical="4dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:orientation="vertical" />
-        </LinearLayout>
-    </RelativeLayout>
+                android:orientation="vertical">
 
-    <View
-        android:id="@+id/table_vertical_separator"
-        android:layout_width="4dp"
-        android:layout_height="match_parent"
-        android:background="@color/primaryColor" />
+                <TextView
+                    android:id="@+id/table_left_table_title"
+                    style="@style/Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:clickable="false"
+                    android:gravity="center_horizontal"
+                    android:text="@string/table_table_left"
+                    android:textColor="@color/primaryColor" />
 
-    <RelativeLayout
-        android:id="@+id/table_right_table_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight=".5">
+                <LinearLayout
+                    android:id="@+id/table_left_directed_graph_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_marginVertical="4dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/table_right_table_inside_layout"
+        <View
+            android:id="@+id/table_vertical_separator"
+            android:layout_width="4dp"
+            android:layout_height="576dp"
+            android:background="@color/primaryColor" />
+
+        <RelativeLayout
+            android:id="@+id/table_right_table_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/table_right_table_title"
-                style="@style/Body1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:clickable="false"
-                android:text="@string/table_table_right"
-                android:textColor="@color/primaryColor" />
+            android:layout_weight=".5">
 
             <LinearLayout
-                android:id="@+id/table_right_directed_graph_layout"
+                android:id="@+id/table_right_table_inside_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="4dp"
-                android:layout_marginVertical="4dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:orientation="vertical" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/table_right_table_title"
+                    style="@style/Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:clickable="false"
+                    android:gravity="center_horizontal"
+                    android:text="@string/table_table_right"
+                    android:textColor="@color/primaryColor" />
+
+                <LinearLayout
+                    android:id="@+id/table_right_directed_graph_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_marginVertical="4dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/border_background"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginVertical="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/table_special_colour_text"
+                style="@style/Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@string/table_special_colour" />
+
+            <TextView
+                android:id="@+id/table_special_colour"
+                style="@style/Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:clickable="false"
+                android:focusable="false" />
         </LinearLayout>
-    </RelativeLayout>
+
+        <View
+            android:id="@+id/table_horizontal_separator_one"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_marginHorizontal="4dp"
+            android:background="@color/black" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginVertical="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/table_turn_text"
+                style="@style/Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@string/table_turn" />
+
+            <TextView
+                android:id="@+id/table_turn"
+                style="@style/Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:clickable="false"
+                android:focusable="false" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/table_horizontal_separator_two"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_marginHorizontal="4dp"
+            android:background="@color/black" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginVertical="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/table_available_moves_text"
+                style="@style/Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@string/table_available_moves" />
+
+            <TextView
+                android:id="@+id/table__available_moves"
+                style="@style/Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:clickable="false"
+                android:focusable="false" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

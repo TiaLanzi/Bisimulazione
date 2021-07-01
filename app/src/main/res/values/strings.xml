@@ -47,7 +47,7 @@
     <!-- bug report-->
     <string name="bug_report_explanation_message">Mandaci un messaggio in cui riporti il problema che hai riscontrato:</string>
     <string name="bug_report_hint">Inserisci qui il testo</string>
-    <string name="bug_report_send_message">Il messaggio verra\' inviato a prova@mail.it\nGrazie per la segnalazione!</string>
+    <string name="bug_report_send_message">Il messaggio verrà inviato a prova@mail.it\nGrazie per la segnalazione!</string>
     <string name="bug_report_send_button_text">INVIA</string>
     <string name="bug_report">SEGNALA UN PROBLEMA</string>
 
@@ -78,6 +78,9 @@
     <!-- table -->
     <string name="table_table_right">Tavolo destro</string>
     <string name="table_table_left">Tavolo sinistro</string>
+    <string name="table_special_colour">Il colore speciale è:</string>
+    <string name="table_turn">E\' il turno di:</string>
+    <string name="table_available_moves">Archi percorribili:</string>
 
     <!-- matchmaking room -->
     <string name="matchmaking_room_create_room_text">CREA STANZA</string>

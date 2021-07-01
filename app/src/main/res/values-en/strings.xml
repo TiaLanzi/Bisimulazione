@@ -78,6 +78,9 @@
     <!-- table -->
     <string name="table_table_right">Right table</string>
     <string name="table_table_left">Left table</string>
+    <string name="table_special_colour">The special colour is:</string>
+    <string name="table_turn">Turn of:</string>
+    <string name="table_available_moves">Available moves:</string>
 
     <!-- matchmaking room -->
     <string name="matchmaking_room_create_room_text">CREATE ROOM</string>
