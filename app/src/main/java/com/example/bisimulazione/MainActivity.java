@@ -10,25 +10,19 @@ import androidx.navigation.ui.AppBarConfiguration;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -81,6 +75,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         playGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                playerRef.setValue(playerName);
+                roomsRef.setValue(playerName);
+            }
+        });
+
+        /*playGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 playerRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent intent = new Intent(MainActivity.this, MatchmakingRoom.class);
                 startActivity(intent);
             }
-        });
+        });*/
         //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_container);
         //NavigationUI.setupActionBarWithNavController(navigationView, navController);
 

@@ -72,9 +72,9 @@ public class SignUp extends AppCompatActivity {
         // initialize shared preferences and persistent counter
         sharedPreferences = this.getSharedPreferences("sharedPreferencesCounter", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        // to (re)set counter
-        /*editor.putInt("Counter", 1);
-        editor.apply();*/
+        // to reset counter
+        //editor.putInt("Counter", 1);
+        editor.apply();
 
         // listener for button sign up
         signUp.setOnClickListener(new View.OnClickListener() {

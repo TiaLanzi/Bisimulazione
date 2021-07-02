@@ -118,21 +118,35 @@ public class DirectedGraph extends View {
                     switch (this.getEdges()[i].getId()) {
                         case 1:
                             rectF = rectFOneTwo();
-                            pathArc.addArc(rectF, 186 + (radius / 2), (84 - radius));
-                            canvas.drawPath(pathArc, paintArc);
                             // draw arrowhead on path end
-                            pathArc.moveTo(pointTwo.x, pointTwo.y);
-                            pathArc.lineTo((pointTwo.x - arrowHead), (pointTwo.y - arrowHead));
-                            pathArc.moveTo(pointTwo.x, pointTwo.y);
-                            pathArc.lineTo((pointTwo.x + arrowHead), (pointTwo.y - arrowHead));
-                            canvas.drawPath(pathArc, paintArc);
-                            //canvas.drawArc(rectF, 186 + (radius / 2), (86 - radius), false, paintArc);
+                            canvas.drawArc(rectF, 186 + (radius / 2), (84 - radius), false, paintArc);
                             //canvas.drawRect(rectF, paintRect);
+                            endPoint = new Point((int) (pointTwo.x + (radius / 2)), (int) (pointTwo.y - (radius)));
+                            a = new Point(endPoint.x, endPoint.y);
+                            b = new Point((int) (endPoint.x - arrowHead), ((int) (endPoint.y - arrowHead)));
+                            c = new Point((int) (endPoint.x + arrowHead), ((int) (endPoint.y - arrowHead)));
+                            path.moveTo(endPoint.x, endPoint.y);
+                            path.lineTo(b.x, b.y);
+                            path.lineTo(c.x, c.y);
+                            path.lineTo(a.x, a.y);
+                            canvas.drawPath(path, paintTriangle);
+                            path.reset();
                             break;
                         case 2:
                             rectF = rectFOneTwo();
-                            canvas.drawArc(rectF, 268 + (radius / 2), (86 - radius), false, paintArc);
+                            canvas.drawArc(rectF, 266 + (radius / 2), (86 - radius), false, paintArc);
                             //canvas.drawRect(rectF, paintRect);
+                            endPoint = new Point((int) (pointTwo.x - (radius / 2) + shiftArrowHead + 2), (int) (pointTwo.y - (radius)));
+                            a = new Point(endPoint.x, endPoint.y);
+                            b = new Point((int) (endPoint.x - arrowHead), ((int) (endPoint.y - arrowHead)));
+                            c = new Point((int) (endPoint.x + arrowHead), ((int) (endPoint.y - arrowHead)));
+                            path.moveTo(endPoint.x, endPoint.y);
+                            path.lineTo(b.x, b.y);
+                            path.lineTo(c.x, c.y);
+                            path.lineTo(a.x, a.y);
+                            canvas.drawPath(path, paintTriangle);
+                            path.reset();
+                            path.reset();
                             break;
                         case 3:
                             path.moveTo((pointOne.x + radius + (stroke / 2)), pointOne.y);
@@ -200,11 +214,31 @@ public class DirectedGraph extends View {
                             rectF = rectFOneTwo();
                             canvas.drawArc(rectF, 186 + (radius / 2), (86 - radius), false, paintArc);
                             //canvas.drawRect(rectF, paintRect);
+                            endPoint = new Point((int) (pointTwo.x + (radius / 2)), (int) (pointTwo.y - (radius)));
+                            a = new Point(endPoint.x, endPoint.y);
+                            b = new Point((int) (endPoint.x - arrowHead), ((int) (endPoint.y - arrowHead)));
+                            c = new Point((int) (endPoint.x + arrowHead), ((int) (endPoint.y - arrowHead)));
+                            path.moveTo(endPoint.x, endPoint.y);
+                            path.lineTo(b.x, b.y);
+                            path.lineTo(c.x, c.y);
+                            path.lineTo(a.x, a.y);
+                            canvas.drawPath(path, paintTriangle);
+                            path.reset();
                             break;
                         case 2:
                             rectF = rectFOneTwo();
                             canvas.drawArc(rectF, 268 + (radius / 2), (86 - radius), false, paintArc);
                             //canvas.drawRect(rectF, paintRect);
+                            endPoint = new Point((int) (pointTwo.x - (radius / 2) + shiftArrowHead + 2), (int) (pointTwo.y - (radius)));
+                            a = new Point(endPoint.x, endPoint.y);
+                            b = new Point((int) (endPoint.x - arrowHead), ((int) (endPoint.y - arrowHead)));
+                            c = new Point((int) (endPoint.x + arrowHead), ((int) (endPoint.y - arrowHead)));
+                            path.moveTo(endPoint.x, endPoint.y);
+                            path.lineTo(b.x, b.y);
+                            path.lineTo(c.x, c.y);
+                            path.lineTo(a.x, a.y);
+                            canvas.drawPath(path, paintTriangle);
+                            path.reset();
                             break;
                         case 3:
                             path.moveTo((pointOne.x - radius - (stroke / 2)), pointOne.y);

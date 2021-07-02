@@ -43,10 +43,6 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users");
-        reference.setValue("lol");
-        Log.i(TAG, "Ok");
-
         //initialize views
         username = findViewById(R.id.login_username_input);
         pwd = findViewById(R.id.login_password_input);

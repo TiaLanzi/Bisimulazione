@@ -14,8 +14,6 @@ public class Table extends AppCompatActivity {
 
     private final String TAG = "Bisimulazione";
 
-    private int shiftStartVertical = 200;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +24,7 @@ public class Table extends AppCompatActivity {
 
         // initialize root node
         //int shiftStartVertical = 140;
+        int shiftStartVertical = 200;
         Node root = new Node(1, 0, shiftStartVertical, true, false, false, true);
         Node second = new Node(2, root.getX(), root.getY(), false, true, false, true);
         Node third = new Node(3, root.getX(), root.getY(), false, false, true, true);
