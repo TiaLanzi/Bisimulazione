@@ -68,18 +68,10 @@ public class DirectedGraph extends View {
         return paint;
     }
 
-    private Paint paintArc(int color) {
+    private Paint paintLine(int color) {
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
-        paint.setStrokeWidth(stroke);
-        paint.setColor(color);
-        return paint;
-    }
-
-    private Paint paintLine(int color) {
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
         paint.setStrokeWidth(stroke);
         paint.setColor(color);
         return paint;
@@ -107,21 +99,16 @@ public class DirectedGraph extends View {
                 Point a;
                 Point b;
                 Point c;
-                Paint paintArc = paintArc(this.getEdges()[i].getColor());
+                Paint paintLine = paintLine(this.getEdges()[i].getColor());
                 Paint paintTriangle = paintTriangle(this.getEdges()[i].getColor());
                 Path path = new Path();
                 path.reset();
-                Path pathArc = new Path();
                 float arrowHead = 16f;
                 float shiftArrowHead = 4f;
                 if (this.getEdges()[i].isLeftTable()) {
                     switch (this.getEdges()[i].getId()) {
                         case 1:
-                            rectF = rectFOneTwo();
-                            // draw arrowhead on path end
-                            canvas.drawArc(rectF, 186 + (radius / 2), (84 - radius), false, paintArc);
-                            //canvas.drawRect(rectF, paintRect);
-                            endPoint = new Point((int) (pointTwo.x + (radius / 2)), (int) (pointTwo.y - (radius)));
+                            endPoint = new Point(pointTwo.x, ((int) (pointTwo.y - radius - stroke)));
                             a = new Point(endPoint.x, endPoint.y);
                             b = new Point((int) (endPoint.x - arrowHead), ((int) (endPoint.y - arrowHead)));
                             c = new Point((int) (endPoint.x + arrowHead), ((int) (endPoint.y - arrowHead)));
@@ -130,13 +117,13 @@ public class DirectedGraph extends View {
                             path.lineTo(c.x, c.y);
                             path.lineTo(a.x, a.y);
                             canvas.drawPath(path, paintTriangle);
+                            path.moveTo(((b.x + c.x) / 2f), ((b.y + c.y) / 2f));
+                            path.lineTo((pointOne.x - radius - (stroke / 2)), pointOne.y);
+                            canvas.drawPath(path, paintLine);
                             path.reset();
                             break;
                         case 2:
-                            rectF = rectFOneTwo();
-                            canvas.drawArc(rectF, 266 + (radius / 2), (86 - radius), false, paintArc);
-                            //canvas.drawRect(rectF, paintRect);
-                            endPoint = new Point((int) (pointTwo.x - (radius / 2) + shiftArrowHead + 2), (int) (pointTwo.y - (radius)));
+                            endPoint = new Point(pointTwo.x, ((int) (pointTwo.y - radius - stroke)));
                             a = new Point(endPoint.x, endPoint.y);
                             b = new Point((int) (endPoint.x - arrowHead), ((int) (endPoint.y - arrowHead)));
                             c = new Point((int) (endPoint.x + arrowHead), ((int) (endPoint.y - arrowHead)));
@@ -145,7 +132,9 @@ public class DirectedGraph extends View {
                             path.lineTo(c.x, c.y);
                             path.lineTo(a.x, a.y);
                             canvas.drawPath(path, paintTriangle);
-                            path.reset();
+                            path.moveTo(((b.x + c.x) / 2f), ((b.y + c.y) / 2f));
+                            path.lineTo((pointOne.x + radius + (stroke / 2)), pointOne.y);
+                            canvas.drawPath(path, paintLine);
                             path.reset();
                             break;
                         case 3:
@@ -211,10 +200,7 @@ public class DirectedGraph extends View {
                 } else {
                     switch (this.getEdges()[i].getId()) {
                         case 1:
-                            rectF = rectFOneTwo();
-                            canvas.drawArc(rectF, 186 + (radius / 2), (86 - radius), false, paintArc);
-                            //canvas.drawRect(rectF, paintRect);
-                            endPoint = new Point((int) (pointTwo.x + (radius / 2)), (int) (pointTwo.y - (radius)));
+                            endPoint = new Point(pointTwo.x, ((int) (pointTwo.y - radius - stroke)));
                             a = new Point(endPoint.x, endPoint.y);
                             b = new Point((int) (endPoint.x - arrowHead), ((int) (endPoint.y - arrowHead)));
                             c = new Point((int) (endPoint.x + arrowHead), ((int) (endPoint.y - arrowHead)));
@@ -223,13 +209,13 @@ public class DirectedGraph extends View {
                             path.lineTo(c.x, c.y);
                             path.lineTo(a.x, a.y);
                             canvas.drawPath(path, paintTriangle);
+                            path.moveTo(((b.x + c.x) / 2f), ((b.y + c.y) / 2f));
+                            path.lineTo((pointOne.x - radius - (stroke / 2)), pointOne.y);
+                            canvas.drawPath(path, paintLine);
                             path.reset();
                             break;
                         case 2:
-                            rectF = rectFOneTwo();
-                            canvas.drawArc(rectF, 268 + (radius / 2), (86 - radius), false, paintArc);
-                            //canvas.drawRect(rectF, paintRect);
-                            endPoint = new Point((int) (pointTwo.x - (radius / 2) + shiftArrowHead + 2), (int) (pointTwo.y - (radius)));
+                            endPoint = new Point(pointTwo.x, ((int) (pointTwo.y - radius - stroke)));
                             a = new Point(endPoint.x, endPoint.y);
                             b = new Point((int) (endPoint.x - arrowHead), ((int) (endPoint.y - arrowHead)));
                             c = new Point((int) (endPoint.x + arrowHead), ((int) (endPoint.y - arrowHead)));
@@ -238,6 +224,9 @@ public class DirectedGraph extends View {
                             path.lineTo(c.x, c.y);
                             path.lineTo(a.x, a.y);
                             canvas.drawPath(path, paintTriangle);
+                            path.moveTo(((b.x + c.x) / 2f), ((b.y + c.y) / 2f));
+                            path.lineTo((pointOne.x + radius + (stroke / 2)), pointOne.y);
+                            canvas.drawPath(path, paintLine);
                             path.reset();
                             break;
                         case 3:
@@ -301,7 +290,6 @@ public class DirectedGraph extends View {
                             break;
                     }
                 }
-                Paint paintLine = paintLine(this.getEdges()[i].getColor());
                 canvas.drawPath(path, paintLine);
                 // create paint for root;
                 paintNode = paintNode(getEdges()[i].getOne().getColor());

@@ -11,8 +11,6 @@ import com.example.bisimulazione.directedgraph.Node;
 
 public class Table extends AppCompatActivity {
 
-    private final String TAG = "Bisimulazione";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +20,6 @@ public class Table extends AppCompatActivity {
         LinearLayout tableLeftDirectedGraphLayout = findViewById(R.id.table_left_directed_graph_layout);
 
         // initialize root node
-        //int shiftStartVertical = 140;
         int shiftStartVertical = 200;
         Node root = new Node(1, 0, shiftStartVertical, true, false, false, true);
         Node second = new Node(2, root.getX(), root.getY(), false, true, false, true);
@@ -32,7 +29,7 @@ public class Table extends AppCompatActivity {
         // initialize array of edges
         Edge[] edges = new Edge[7];
         // initialize first edge
-        Edge uno = new Edge(1, root, second, getResources().getColor(R.color.red), true, true,  false);
+        Edge uno = new Edge(1, root, second, getResources().getColor(R.color.red), true, true, false);
         // assign first edge to index 0 of edges array
         edges[0] = uno;
         Edge due = new Edge(2, root, third, getResources().getColor(R.color.red), true, true, false);
