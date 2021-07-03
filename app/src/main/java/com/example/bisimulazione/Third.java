@@ -6,10 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +30,8 @@ public class Third extends AppCompatActivity {
     private String role = "";
     private String message = "";
 
+    private FirebaseAuth auth;
+    private FirebaseUser user;
 
     private FirebaseDatabase database;
     private DatabaseReference messageRef;
@@ -36,15 +41,20 @@ public class Third extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_third);
 
-        //button = findViewById(R.id.button);
+        button = findViewById(R.id.button_third);
         button.setEnabled(false);
 
         database = FirebaseDatabase.getInstance();
 
-        SharedPreferences preferences = getSharedPreferences("PREFS", Context.MODE_PRIVATE);
-        playerName = preferences.getString("playerName", "");
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
 
-        Bundle extras = getIntent().getExtras();
+        if (user != null) {
+            playerName = user.getDisplayName();
+            //Log.i(TAG, "Player name " + user.getDisplayName());
+        }
+
+         /*Bundle extras = getIntent().getExtras();
         if (extras != null) {
             roomName = extras.getString(playerName);
             if (roomName.equals(playerName)) {
@@ -52,9 +62,9 @@ public class Third extends AppCompatActivity {
             } else {
                 role = "guest";
             }
-        }
+        } */
 
-        button.setOnClickListener(new View.OnClickListener() {
+        /*button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 button.setEnabled(false);
@@ -90,6 +100,6 @@ public class Third extends AppCompatActivity {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
                 messageRef.setValue(message);
             }
-        });
+        });*/
     }
 }

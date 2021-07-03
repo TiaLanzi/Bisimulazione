@@ -87,10 +87,11 @@
     <string name="matchmaking_room_player_unknown_text">Unknown</string>
     <string name="matchmaking_room_creating_room_text">CREATING ROOM…</string>
     <string name="matchmaking_room_error_text">ERROR</string>
-    <string name="bottom_sheet_reset_pwd_text">RESET PASSWORD</string>
+    <string name="matchmaking_room_property">Room of</string>
 
     <!-- bottom sheet reset pwd -->
     <string name="bottom_sheet_reset_pwd_insert_mail">Insert your email address used during sign up:</string>
     <string name="bottom_sheet_reset_pwd_insert_mail_here">Insert your mail address here…</string>
     <string name="bottom_sheet_reset_pwd_reset">RESET</string>
+    <string name="bottom_sheet_reset_pwd_text">RESET PASSWORD</string>
 </resources>

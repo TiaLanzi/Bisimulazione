@@ -3,17 +3,17 @@ package com.example.bisimulazione;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
+import com.example.bisimulazione.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,27 +21,27 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.jetbrains.annotations.NotNull;
+import com.google.firebase.database.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MatchmakingRoom extends AppCompatActivity {
 
+    private static final String TAG = "Bisimulazione";
+
     private ListView listView;
-    private Button button;
+    private Button createRoom;
 
-    private List<String> roomList;
+    private List<String> roomsList;
 
-    private String playerName = "";
-    private String roomName = "";
+    private String playerName;
+    private String roomName;
 
-    private FirebaseAuth auth;
-    private FirebaseUser user;
     private FirebaseDatabase database;
-    private DatabaseReference roomRef;
     private DatabaseReference roomsRef;
+    private DatabaseReference roomNameRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,169 +50,91 @@ public class MatchmakingRoom extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
 
-        /*auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
             playerName = user.getDisplayName();
         } else {
             playerName = getString(R.string.matchmaking_room_player_unknown_text);
-        } */
+        }
 
-        SharedPreferences preferences = getSharedPreferences("PREFS", Context.MODE_PRIVATE);
-        playerName = preferences.getString("playerName", "");
         roomName = playerName;
 
         listView = findViewById(R.id.matchmaking_room_list_view);
-        button = findViewById(R.id.matchmaking_room_create_room_button);
-
-        roomList = new ArrayList<>();
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                button.setText("CREATING ROOM");
-                button.setEnabled(false);
-                roomName = playerName;
-                roomRef = database.getReference("rooms/" + roomName + "/player1");
-                addRoomEventListener();
-                roomRef.setValue(playerName);
-            }
-        });
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                roomName = roomList.get(position);
-                roomRef = database.getReference("rooms/" + roomName + "/player2");
-                addRoomEventListener();
-                roomRef.setValue(playerName);
-            }
-        });
-
-        addRoomsEventListener();
-
-        /*roomName = playerName;
-        // initialize ListView
-        listView = findViewById(R.id.matchmaking_room_list_view);
-        // initialize create room button
         createRoom = findViewById(R.id.matchmaking_room_create_room_button);
-        // initialize room list
-        roomPlayers = new ArrayList<String>();
+
+        roomsList = new ArrayList<>();
+
+        roomsRef = database.getReference().child("rooms");
 
         createRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // create room and add yourself as a player
+                // create room and add yourself as first player
                 createRoom.setText(getString(R.string.matchmaking_room_creating_room_text));
                 createRoom.setEnabled(false);
-                roomName = playerName;
-                reference = database.getReference("rooms/" + roomName + "/player1");
-                addRoomEventListener();
-                reference.setValue(playerName);
+                roomNameRef = roomsRef.child(roomName);
+                sendDataP1(roomNameRef, playerName);
+                startActivity();
             }
         });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // join an existing room and add yourself as player 2
-                roomName = roomPlayers.get(position);
-                reference = database.getReference("rooms/" + roomName + "/player1");
-                addRoomEventListener();
-                reference.setValue(playerName);
+                // join an existing room and add yourself as player two
+                String roomN = roomsList.get(position);
+                Log.i(TAG, "Room name complete " + roomN);
+                roomName = remove(roomN);
+                Log.i(TAG, "Room name " + roomName);
+                //roomName = roomsList.get(position);
+                roomsRef = roomsRef.child(roomName);
+                Log.i(TAG, "Room ref " + String.valueOf(roomsRef));
+                sendDataP2(roomsRef, playerName);
+                startActivity();
             }
         });
-        // show if new room is available
-        addRoomEventListener();
+        // show new rooms created
+        getRoomsList();
     }
 
-    private void addRoomEventListener() {
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                createRoom.setText(getString(R.string.matchmaking_room_create_room_text));
-                createRoom.setEnabled(true);
-                Intent intent = new Intent(getApplicationContext(), Table.class);
-                intent.putExtra("roomName", roomName);
-                intent.putExtra("playerName", playerName);
-                startActivity(intent);
-                finish();
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                createRoom.setText(getString(R.string.matchmaking_room_creating_room_text));
-                createRoom.setEnabled(false);
-                Toast.makeText(MatchmakingRoom.this, getString(R.string.matchmaking_room_error_text), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void addRoomsEventListener() {
-        reference = database.getReference("rooms/");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                // show list of rooms
-                roomPlayers.clear();
-                Iterable<DataSnapshot> rooms = snapshot.getChildren();
-                for (DataSnapshot snap : rooms) {
-                    roomPlayers.add(snap.getKey());
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(MatchmakingRoom.this, android.R.layout.simple_list_item_1, roomPlayers);
-                    listView.setAdapter(adapter);
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-    } */
-    }
-
-    private void addRoomEventListener() {
-        roomRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                button.setText("CREATE ROOM");
-                button.setEnabled(true);
-                Intent intent = new Intent(getApplicationContext(), Third.class);
-                intent.putExtra("roomName", roomName);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                button.setText("CREATE ROOM");
-                button.setEnabled(true);
-                Toast.makeText(MatchmakingRoom.this, "Error!", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-    }
-
-    private void addRoomsEventListener() {
-        roomsRef = database.getReference("rooms");
+    private void getRoomsList() {
         roomsRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                roomList.clear();
-                Iterable<DataSnapshot> rooms =  snapshot.getChildren();
-                for (DataSnapshot snap : rooms) {
-                    roomList.add(snap.getKey());
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(MatchmakingRoom.this, android.R.layout.simple_list_item_1);
+            public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                roomsList.clear();
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    roomsList.add(getString(R.string.matchmaking_room_property) + " " + data.getKey());
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(MatchmakingRoom.this, android.R.layout.simple_list_item_1, roomsList);
                     listView.setAdapter(adapter);
+                    // Log.i(TAG, String.valueOf(listView.isShown()));
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
 
             }
         });
+    }
+
+    private void sendDataP1(DatabaseReference reference, String playerName) {
+        reference.child("Player 1/").setValue(playerName);
+    }
+
+    private void sendDataP2(DatabaseReference reference, String playerName) {
+        reference.child("Player 2/").setValue(playerName);
+    }
+
+    private void startActivity() {
+        Intent intent = new Intent(MatchmakingRoom.this, Third.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private static String remove(String roomN) {
+        // WARNING : TRANSLATION!!
+        String remove = "Room of ";
+        return roomN.replace(remove, "");
     }
 }

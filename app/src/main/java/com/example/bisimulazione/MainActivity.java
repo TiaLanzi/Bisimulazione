@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toolbar;
 
+import com.example.bisimulazione.models.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,6 +26,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -34,15 +37,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private Toolbar toolbar;
 
-    private Button playGame;
-
-    private FirebaseAuth auth;
-    private FirebaseUser user;
-
     private String playerName;
-    private FirebaseDatabase database;
+    private DatabaseReference playersRef;
     private DatabaseReference playerRef;
-    private DatabaseReference roomsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +52,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_view).setDrawerLayout(drawerLayout).build();*/
 
-        playGame = findViewById(R.id.main_play_button);
+        Button playGame = findViewById(R.id.main_play_button);
 
-        database = FirebaseDatabase.getInstance();
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
 
         if (user != null) {
             playerName = user.getDisplayName();
@@ -67,49 +64,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         if (playerName != null) {
             if (!playerName.equals("")) {
-                playerRef = database.getReference().child("players");
-                roomsRef = database.getReference().child("rooms");
+                playersRef = database.getReference().child("players");
             }
         }
 
         playGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playerRef.setValue(playerName);
-                roomsRef.setValue(playerName);
-            }
-        });
-
-        /*playGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playerRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                        playerRef.setValue(playerName);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                    }
-                });
-                roomsRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                        roomsRef.setValue("Room: " + playerName);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                    }
-                });
-                // open matchmaking room
+                sendData(playersRef, playerName);
                 Intent intent = new Intent(MainActivity.this, MatchmakingRoom.class);
                 startActivity(intent);
             }
-        });*/
+        });
         //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_container);
         //NavigationUI.setupActionBarWithNavController(navigationView, navController);
 
@@ -163,27 +129,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.commit();
     }
 
-    /*private void addEventListener() {
-        playerRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (!playerName.equals("")) {
-                    SharedPreferences preferences = getSharedPreferences("PREFS", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("playerName", playerName);
-                    editor.apply();
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                button.setText("LOG IN");
-                button.setEnabled(false);
-                Toast.makeText(MainActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    } */
+    private void sendData(DatabaseReference playersRef, String playerName) {
+        Log.i(TAG, "Siamo qui arrivati");
+        playerRef = playersRef.child(playerName);
+        playerRef.setValue(playerName);
+    }
 }
