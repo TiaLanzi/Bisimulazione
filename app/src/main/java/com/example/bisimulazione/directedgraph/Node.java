@@ -1,7 +1,6 @@
 package com.example.bisimulazione.directedgraph;
 
 import android.content.res.Resources;
-import android.util.Log;
 
 import com.example.bisimulazione.R;
 

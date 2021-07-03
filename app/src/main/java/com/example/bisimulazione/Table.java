@@ -3,7 +3,6 @@ package com.example.bisimulazione;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.widget.EdgeEffect;
 import android.widget.LinearLayout;
 
 import com.example.bisimulazione.directedgraph.DirectedGraph;

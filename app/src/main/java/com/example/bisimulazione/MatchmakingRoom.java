@@ -5,15 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.example.bisimulazione.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,15 +18,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MatchmakingRoom extends AppCompatActivity {
-
-    private static final String TAG = "Bisimulazione";
 
     private ListView listView;
     private Button createRoom;
@@ -39,7 +32,6 @@ public class MatchmakingRoom extends AppCompatActivity {
     private String playerName;
     private String roomName;
 
-    private FirebaseDatabase database;
     private DatabaseReference roomsRef;
     private DatabaseReference roomNameRef;
 
@@ -48,7 +40,7 @@ public class MatchmakingRoom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_matchmaking_room);
 
-        database = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
@@ -84,12 +76,12 @@ public class MatchmakingRoom extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // join an existing room and add yourself as player two
                 String roomN = roomsList.get(position);
-                Log.i(TAG, "Room name complete " + roomN);
+                // Log.i(TAG, "Room name complete " + roomN);
                 roomName = remove(roomN);
-                Log.i(TAG, "Room name " + roomName);
+                // Log.i(TAG, "Room name " + roomName);
                 //roomName = roomsList.get(position);
                 roomsRef = roomsRef.child(roomName);
-                Log.i(TAG, "Room ref " + String.valueOf(roomsRef));
+                // Log.i(TAG, "Room ref " + String.valueOf(roomsRef));
                 sendDataP2(roomsRef, playerName);
                 startActivity();
             }
