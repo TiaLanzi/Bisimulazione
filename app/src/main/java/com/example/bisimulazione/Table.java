@@ -1,7 +1,9 @@
 package com.example.bisimulazione;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -34,6 +36,7 @@ public class Table extends AppCompatActivity {
     private DatabaseReference leftTableRef;
     private DatabaseReference rightTableRef;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +70,8 @@ public class Table extends AppCompatActivity {
             }
             sendData(player1);
         }
-        coloreSpeciale.setText(specialColour);
+        // set special colour text
+        setTextColour(specialColour);
         //Log.i(TAG, "Room name: " + roomName + ", role: " + role);
         /*
 
@@ -149,5 +153,26 @@ public class Table extends AppCompatActivity {
         } else {
             roomRef.child(roomName + "/" + "Player 2/").setValue(map);
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void setTextColour(String specialColour) {
+        switch (specialColour) {
+            case "red":
+                coloreSpeciale.setTextColor(getColor(R.color.red));
+                break;
+            case "green":
+                coloreSpeciale.setTextColor(getColor(R.color.green));
+                break;
+            case "black":
+                coloreSpeciale.setTextColor(getColor(R.color.black));
+                break;
+            case "blue":
+                coloreSpeciale.setTextColor(getColor(R.color.primaryColor));
+                break;
+            default:
+                break;
+        }
+        coloreSpeciale.setText(specialColour);
     }
 }
