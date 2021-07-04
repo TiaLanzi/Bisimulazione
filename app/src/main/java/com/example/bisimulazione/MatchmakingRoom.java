@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MatchmakingRoom extends AppCompatActivity {
@@ -41,7 +42,6 @@ public class MatchmakingRoom extends AppCompatActivity {
     private String playerName;
     private String roomName;
     private String specialColour;
-    private String getColor;
 
     private DatabaseReference roomsRef;
     private DatabaseReference roomNameRef;
@@ -78,7 +78,12 @@ public class MatchmakingRoom extends AppCompatActivity {
                 createRoom.setEnabled(false);
                 roomNameRef = roomsRef.child(roomName);
                 roomNameRef.child("show").setValue("true");
+                // set colour
                 specialColour = setColour(roomNameRef);
+                // set right graph
+                initializeRightGraph(roomNameRef);
+                // set left graph
+                initializeLeftGraph(roomNameRef);
                 sendDataP1(roomNameRef, playerName);
                 startActivity(roomName, true, specialColour);
             }
@@ -212,11 +217,27 @@ public class MatchmakingRoom extends AppCompatActivity {
         return color[0];*/
     }
 
-    private void setGetColor(String color) {
-        this.getColor = color;
+    private void initializeLeftGraph(DatabaseReference roomNameRef) {
+        DatabaseReference leftGraphRef = roomNameRef.child("leftGraph");
+        HashMap<String, Boolean> map = new HashMap<>();
+        map.put("One selected", true);
+        map.put("Two selected", false);
+        map.put("Three selected", false);
+        map.put("Four selected", false);
+        map.put("Five selected", false);
+
+        leftGraphRef.setValue(map);
     }
 
-    private String getGetColor() {
-        return this.getColor;
+    private void initializeRightGraph(DatabaseReference roomNameRef) {
+        DatabaseReference rightGraphRef = roomNameRef.child("rightGraph");
+        HashMap<String, Boolean> map = new HashMap<>();
+        map.put("One selected", true);
+        map.put("Two selected", false);
+        map.put("Three selected", false);
+        map.put("Four selected", false);
+        map.put("Five selected", false);
+
+        rightGraphRef.setValue(map);
     }
 }

@@ -31,6 +31,8 @@ public class Table extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference roomRef;
     private DatabaseReference roomRole;
+    private DatabaseReference leftTableRef;
+    private DatabaseReference rightTableRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +62,10 @@ public class Table extends AppCompatActivity {
             specialColour = extras.getString("specialColour");
             if (player1) {
                 role = getString(R.string.table_attacker);
-                sendData(player1);
             } else {
                 role = getString(R.string.table_defender);
-                sendData(player1);
             }
+            sendData(player1);
         }
         coloreSpeciale.setText(specialColour);
         //Log.i(TAG, "Room name: " + roomName + ", role: " + role);
@@ -107,6 +108,8 @@ public class Table extends AppCompatActivity {
         DirectedGraph directedGraphLeft = new DirectedGraph(this, edges);
         // add directed graph to linear layout
         tableLeftDirectedGraphLayout.addView(directedGraphLeft);
+
+        setLeftGraph();
 
         LinearLayout tableRightDirectedGraphLayout = findViewById(R.id.table_right_directed_graph_layout);
 
