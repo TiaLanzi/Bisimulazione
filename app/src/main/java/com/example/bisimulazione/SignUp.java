@@ -72,7 +72,7 @@ public class SignUp extends AppCompatActivity {
         sharedPreferences = this.getSharedPreferences("sharedPreferencesCounter", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         // to reset counter
-        // editor.putInt("Counter", 1);
+        //editor.putInt("Counter", 1);
         editor.apply();
 
         // listener for button sign up
@@ -127,7 +127,7 @@ public class SignUp extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Log.i(TAG, "Profilo aggiornato");
+                                                    //Log.i(TAG, "Profilo aggiornato");
                                                 }
                                             }
                                         });

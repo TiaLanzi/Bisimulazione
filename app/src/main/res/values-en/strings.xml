@@ -81,6 +81,12 @@
     <string name="table_special_colour">The special colour is:</string>
     <string name="table_turn">Turn of:</string>
     <string name="table_available_moves">Available moves:</string>
+    <string name="table_red">red</string>
+    <string name="table_green">green</string>
+    <string name="table_black">black</string>
+    <string name="table_blue">blue</string>
+    <string name="table_attacker">ATTACKER</string>
+    <string name="table_defender">DEFENDER</string>
 
     <!-- matchmaking room -->
     <string name="matchmaking_room_create_room_text">CREATE ROOM</string>

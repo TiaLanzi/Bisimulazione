@@ -73,9 +73,9 @@ public class Login extends AppCompatActivity {
         SharedPreferences sharedPreferences = this.getSharedPreferences("sharedPreferencesLogin", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         // to reset shared preferences
-        // editor.putBoolean("saveLoginData", false);
-        // editor.remove("username");
-        // editor.remove("pwd");
+        //editor.putBoolean("saveLoginData", false);
+        //editor.remove("username");
+        //editor.remove("pwd");
         editor.apply();
         // get shared preferences
         boolean saveLoginData = sharedPreferences.getBoolean("saveLoginData", false);

@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (user != null) {
             playerName = user.getDisplayName();
-            Log.i(TAG, "Player name " + user.getDisplayName());
+            // Log.i(TAG, "Player name " + user.getDisplayName());
         }
         if (playerName != null) {
             if (!playerName.equals("")) {
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void sendData(DatabaseReference playersRef, String playerName) {
-        Log.i(TAG, "Siamo qui arrivati");
+        //Log.i(TAG, "Siamo qui arrivati");
         playerRef = playersRef.child(playerName);
         playerRef.setValue(playerName);
     }

@@ -81,6 +81,12 @@
     <string name="table_special_colour">Il colore speciale è:</string>
     <string name="table_turn">E\' il turno di:</string>
     <string name="table_available_moves">Archi percorribili:</string>
+    <string name="table_red">rosso</string>
+    <string name="table_green">verde</string>
+    <string name="table_black">nero</string>
+    <string name="table_blue">blu</string>
+    <string name="table_attacker">ATTACCANTE</string>
+    <string name="table_defender">DIFENSORE</string>
 
     <!-- matchmaking room -->
     <string name="matchmaking_room_create_room_text">CREA STANZA</string>

@@ -43,6 +43,7 @@ public class Third extends AppCompatActivity {
             //Log.i(TAG, "Player name " + user.getDisplayName());
         }
 
+
          /*Bundle extras = getIntent().getExtras();
         if (extras != null) {
             roomName = extras.getString(playerName);

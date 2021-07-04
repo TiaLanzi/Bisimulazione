@@ -5,12 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -19,18 +23,25 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MatchmakingRoom extends AppCompatActivity {
 
+    private static final String TAG = "Bisimulazione";
+
     private ListView listView;
     private Button createRoom;
 
     private List<String> roomsList;
+    private ArrayAdapter<String> adapter;
 
     private String playerName;
     private String roomName;
+    private String specialColour;
+    private String getColor;
 
     private DatabaseReference roomsRef;
     private DatabaseReference roomNameRef;
@@ -66,8 +77,10 @@ public class MatchmakingRoom extends AppCompatActivity {
                 createRoom.setText(getString(R.string.matchmaking_room_creating_room_text));
                 createRoom.setEnabled(false);
                 roomNameRef = roomsRef.child(roomName);
+                roomNameRef.child("show").setValue("true");
+                specialColour = setColour(roomNameRef);
                 sendDataP1(roomNameRef, playerName);
-                startActivity();
+                startActivity(roomName, true, specialColour);
             }
         });
 
@@ -83,7 +96,13 @@ public class MatchmakingRoom extends AppCompatActivity {
                 roomsRef = roomsRef.child(roomName);
                 // Log.i(TAG, "Room ref " + String.valueOf(roomsRef));
                 sendDataP2(roomsRef, playerName);
-                startActivity();
+                // not to show when room is full
+                roomNameRef = roomsRef;
+                roomNameRef.child("show").setValue("false");
+                specialColour = getColour(roomNameRef);
+                Log.i(TAG, "IL COLORE[0] QUI 3: " + specialColour);
+                startActivity(roomName, false, specialColour);
+                finish();
             }
         });
         // show new rooms created
@@ -97,9 +116,8 @@ public class MatchmakingRoom extends AppCompatActivity {
                 roomsList.clear();
                 for (DataSnapshot data : snapshot.getChildren()) {
                     roomsList.add(getString(R.string.matchmaking_room_property) + " " + data.getKey());
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(MatchmakingRoom.this, android.R.layout.simple_list_item_1, roomsList);
+                    adapter = new ArrayAdapter<>(MatchmakingRoom.this, android.R.layout.simple_list_item_1, roomsList);
                     listView.setAdapter(adapter);
-                    // Log.i(TAG, String.valueOf(listView.isShown()));
                 }
             }
 
@@ -118,15 +136,87 @@ public class MatchmakingRoom extends AppCompatActivity {
         reference.child("Player 2/").setValue(playerName);
     }
 
-    private void startActivity() {
-        Intent intent = new Intent(MatchmakingRoom.this, Third.class);
+    private void startActivity(String roomName, boolean player1, String specialColour) {
+        Intent intent = new Intent(MatchmakingRoom.this, Table.class);
+        intent.putExtra("roomName", roomName);
+        intent.putExtra("player 1", player1);
+        intent.putExtra("specialColour", specialColour);
         startActivity(intent);
         finish();
     }
 
-    private static String remove(String roomN) {
-        // WARNING : TRANSLATION!!
-        String remove = "Room of ";
+    private String remove(String roomN) {
+        String remove = getString(R.string.matchmaking_room_property) + " ";
         return roomN.replace(remove, "");
+    }
+
+    private int getNumber() {
+        return (int) (Math.random() * 4);
+    }
+
+    private String setColour(DatabaseReference roomNameRef) {
+        int[] colours = {getResources().getColor(R.color.red), getResources().getColor(R.color.green), getResources().getColor(R.color.black),
+                getResources().getColor(R.color.primaryColor)};
+        // get random colour
+        int colour = colours[getNumber()];
+        String colore = "";
+        switch (colour) {
+            case -237502:
+                colore = getString(R.string.table_red);
+                break;
+            case -16711895:
+                colore = getString(R.string.table_green);
+                break;
+            case -16777216:
+                colore = getString(R.string.table_black);
+                break;
+            case -15774591:
+                colore = getString(R.string.table_blue);
+                break;
+            default:
+                break;
+        }
+        // set special colour
+        roomNameRef.child("specialColour").setValue(colore);
+        return colore;
+    }
+
+    private String getColour(DatabaseReference roomNameRef) {
+        final String[] color = {""};
+        roomNameRef.child("specialColour").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                color[0] = snapshot.getValue().toString();
+                Log.i(TAG, "IL COLORE QUI:" + color[0]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+        Log.i(TAG, "IL COLORE QUI 2:" + color[0]);
+        return color[0];
+        /*
+        final String[] color = {""};
+        roomNameRef.child("specialColour").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    color[0] = task.getResult().getValue().toString();
+                    Log.i(TAG, "IL COLORE[0] QUI:" + color[0]);
+                }
+            }
+        });
+        Log.i(TAG, "IL COLORE[0] QUI 2:" + color[0]);
+        return color[0];*/
+    }
+
+    private void setGetColor(String color) {
+        this.getColor = color;
+    }
+
+    private String getGetColor() {
+        return this.getColor;
     }
 }

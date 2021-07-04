@@ -3,18 +3,77 @@ package com.example.bisimulazione;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.bisimulazione.directedgraph.DirectedGraph;
 import com.example.bisimulazione.directedgraph.Edge;
 import com.example.bisimulazione.directedgraph.Node;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 public class Table extends AppCompatActivity {
+
+    private static final String TAG = "Bisimulazione";
+
+    private String playerName;
+    private String roomName;
+    private String role;
+    private String specialColour;
+
+    private TextView coloreSpeciale;
+
+    private FirebaseDatabase database;
+    private DatabaseReference roomRef;
+    private DatabaseReference roomRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table);
+
+        coloreSpeciale = findViewById(R.id.table_special_colour);
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+
+        if (user != null) {
+            playerName = user.getDisplayName();
+            //Log.i(TAG, "Player name " + user.getDisplayName());
+        }
+
+        database = FirebaseDatabase.getInstance();
+
+        roomRef = database.getReference("rooms");
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            boolean player1 = extras.getBoolean("player 1");
+            //Log.i(TAG, "Player 1? " + player1);
+            roomName = extras.getString("roomName");
+            //Log.i(TAG, "Room name: " + roomName);
+            specialColour = extras.getString("specialColour");
+            if (player1) {
+                role = getString(R.string.table_attacker);
+                sendData(player1);
+            } else {
+                role = getString(R.string.table_defender);
+                sendData(player1);
+            }
+        }
+        coloreSpeciale.setText(specialColour);
+        //Log.i(TAG, "Room name: " + roomName + ", role: " + role);
+        /*
+
+        //Log.i(TAG, "Red: " + colours[0]);
+        //Log.i(TAG, "Green: " + colours[1]);
+        //Log.i(TAG, "Black: " + colours[2]);
+        //Log.i(TAG, "Blue: " + colours[3]);
 
         // initialize layout
         LinearLayout tableLeftDirectedGraphLayout = findViewById(R.id.table_left_directed_graph_layout);
@@ -74,6 +133,18 @@ public class Table extends AppCompatActivity {
         edgesR[6] = setteR;
 
         DirectedGraph directedGraphRight = new DirectedGraph(this, edgesR);
-        tableRightDirectedGraphLayout.addView(directedGraphRight);
+        tableRightDirectedGraphLayout.addView(directedGraphRight);*/
+    }
+
+    private void sendData(boolean player1) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("playerName", playerName);
+        map.put("role", role);
+        // Log.i(TAG, "Siamo qui arrivati");
+        if (player1) {
+            roomRef.child(roomName + "/" + "Player 1/").setValue(map);
+        } else {
+            roomRef.child(roomName + "/" + "Player 2/").setValue(map);
+        }
     }
 }
