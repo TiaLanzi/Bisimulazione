@@ -10,6 +10,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 @SuppressLint("ViewConstructor")
 public class DirectedGraph extends View {
 
@@ -18,17 +21,20 @@ public class DirectedGraph extends View {
     private Edge[] edges;
     private Node[] nodes;
 
+    private String roomName;
+
     private final float stroke = 8f;
     private final float radius = 40f;
 
     private Paint paintNode;
 
-    private Canvas canvas;
+    //private Canvas canvas;
 
-    public DirectedGraph(Context context, Edge[] edges, Node[] nodes) {
+    public DirectedGraph(Context context, Edge[] edges, Node[] nodes, String roomName) {
         super(context);
         setEdges(edges);
         setNodes(nodes);
+        setRoomName(roomName);
     }
 
     private void setEdges(Edge[] edges) {
@@ -47,13 +53,21 @@ public class DirectedGraph extends View {
         return this.nodes;
     }
 
-    private void setCanvas(Canvas canvas) {
+    private void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+
+    public String getRoomName() {
+        return this.roomName;
+    }
+
+    /*private void setCanvas(Canvas canvas) {
         this.canvas = canvas;
     }
 
     private Canvas getCanvas() {
         return this.canvas;
-    }
+    }*/
 
     @SuppressLint("DrawAllocation")
     @Override
@@ -65,36 +79,77 @@ public class DirectedGraph extends View {
         drawGraph(canvas);
     }
 
-    private Paint paintNode(int color) {
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setAntiAlias(true);
-        paint.setStrokeWidth(stroke);
-        paint.setColor(color);
-        return paint;
-    }
-
-    private Paint paintLine(int color) {
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAntiAlias(true);
-        paint.setStrokeWidth(stroke);
-        paint.setColor(color);
-        return paint;
-    }
-
-    private Paint paintTriangle(int color) {
-        Paint paint = new Paint();
-        paint.setColor(color);
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setStrokeWidth(stroke);
-        paint.setAntiAlias(true);
-        return paint;
-    }
-
     private void drawGraph(Canvas canvas) {
         drawNodes(canvas);
         drawEdges(canvas);
+    }
+
+    private void drawNodes(Canvas canvas) {
+        // draw nodes if not exist
+        for (Node node : this.getNodes()) {
+            if (node.isLeftTable()) {
+                paintNode = paintNode(node.getColor());
+                if (!node.isAlreadyDrawn()) {
+                    //Log.i(TAG, "1 - Id node " + node.getId() + ", already drawn? " + node.isAlreadyDrawn());
+                    canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
+                    Log.i(TAG, "1 - Drawn node " + node.getId());
+                    node.setAlreadyDrawn(true);
+                }
+            } /*else {
+                if (!node.isAlreadyDrawn()) {
+                    canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
+                    Log.i(TAG, "2 - Drawn node " + node.getId());
+                    node.setAlreadyDrawn(true);
+                }
+            }*/
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference roomNameRef = database.getReference("rooms").child(roomName);
+
+        for (Node node : this.getNodes()) {
+            if (node != null) {
+                boolean isTouched = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
+                if (isTouched) {
+                    Log.i(TAG, "Circle touched: " + node.getId() + "table: " + node.isLeftTable());
+                    if (node.isLeftTable()) {
+                        roomNameRef = roomNameRef.child("leftGraph");
+                        switch (node.getId()) {
+                            case 1:
+                                roomNameRef.child("One selected").setValue(true);
+                                break;
+                            case 2:
+                                roomNameRef.child("Two selected").setValue(true);
+                                break;
+                            case 3:
+                                roomNameRef.child("Three selected").setValue(true);
+                                break;
+                            case 4:
+                                roomNameRef.child("Four selected").setValue(true);
+                                break;
+                            case 5:
+                                roomNameRef.child("Five selected").setValue(true);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean touchIsInCircle(float x, float y, float centreX, float centreY, float radius) {
+        double dx = Math.pow(x - centreX, 2);
+        double dy = Math.pow(y - centreY, 2);
+
+        return (dx + dy) < Math.pow(radius, 2);
     }
 
     private void drawEdges(Canvas canvas) {
@@ -303,47 +358,30 @@ public class DirectedGraph extends View {
         }
     }
 
-    private void drawNodes(Canvas canvas) {
-        // draw nodes if not exist
-        for (Node node : this.getNodes()) {
-            if (node.isLeftTable()) {
-                paintNode = paintNode(node.getColor());
-                if (!node.isAlreadyDrawn()) {
-                    //Log.i(TAG, "1 - Id node " + node.getId() + ", already drawn? " + node.isAlreadyDrawn());
-                    canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
-                    Log.i(TAG, "1 - Drawn node " + node.getId());
-                    node.setAlreadyDrawn(true);
-                }
-            } else {
-                if (!node.isAlreadyDrawn()) {
-                    canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
-                    Log.i(TAG, "2 - Drawn node " + node.getId());
-                    node.setAlreadyDrawn(true);
-                }
-            }
-        }
+    private Paint paintNode(int color) {
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setAntiAlias(true);
+        paint.setStrokeWidth(stroke);
+        paint.setColor(color);
+        return paint;
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        super.onTouchEvent(event);
-        for (Node node : this.getNodes()) {
-            if (node != null) {
-                boolean isTouched = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
-                if (isTouched) {
-                    Log.i(TAG, "Circle touched: " + node.getId() + "table: " + node.isLeftTable());
-
-                }
-            }
-        }
-        return true;
+    private Paint paintLine(int color) {
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAntiAlias(true);
+        paint.setStrokeWidth(stroke);
+        paint.setColor(color);
+        return paint;
     }
 
-    private boolean touchIsInCircle(float x, float y, float centreX, float centreY,
-                                    float radius) {
-        double dx = Math.pow(x - centreX, 2);
-        double dy = Math.pow(y - centreY, 2);
-
-        return (dx + dy) < Math.pow(radius, 2);
+    private Paint paintTriangle(int color) {
+        Paint paint = new Paint();
+        paint.setColor(color);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setStrokeWidth(stroke);
+        paint.setAntiAlias(true);
+        return paint;
     }
 }

@@ -94,6 +94,8 @@
     <string name="matchmaking_room_creating_room_text">CREANDO LA STANZA…</string>
     <string name="matchmaking_room_error_text">ERRORE</string>
     <string name="matchmaking_room_property">Stanza di</string>
+    <string name="matchmaking_room_attacker">attaccante</string>
+    <string name="matchmaking_room_defender">difensore</string>
 
     <!-- bottom sheet reset pwd -->
     <string name="bottom_sheet_reset_pwd_insert_mail">Inserisci il tuo indirizzo mail usato durante la registrazione:</string>

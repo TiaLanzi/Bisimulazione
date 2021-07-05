@@ -114,7 +114,7 @@ public class Table extends AppCompatActivity {
         Edge sette = new Edge(7, fifth, fourth, getResources().getColor(R.color.primaryColor), true, false, true);
         edges[6] = sette;
         // initialize DirectedGraph
-        DirectedGraph directedGraphLeft = new DirectedGraph(this, edges, nodes);
+        DirectedGraph directedGraphLeft = new DirectedGraph(this, edges, nodes, roomName);
         // add directed graph to linear layout
         tableLeftDirectedGraphLayout.addView(directedGraphLeft);
 
@@ -148,7 +148,7 @@ public class Table extends AppCompatActivity {
         Edge setteR = new Edge(7, thirdR, fifthR, getResources().getColor(R.color.black), false, true, true);
         edgesR[6] = setteR;
 
-        DirectedGraph directedGraphRight = new DirectedGraph(this, edgesR, nodesR);
+        DirectedGraph directedGraphRight = new DirectedGraph(this, edgesR, nodesR, roomName);
         tableRightDirectedGraphLayout.addView(directedGraphRight);
     }
 

@@ -3,8 +3,10 @@ package com.example.bisimulazione;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.EventLog;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.view.Event;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,9 +39,14 @@ public class MatchmakingRoom extends AppCompatActivity {
     private List<String> roomsList;
     private ArrayAdapter<String> adapter;
 
+    private List<String> setup;
+    private ArrayAdapter<String> setupAdapter;
+
     private String playerName;
     private String roomName;
     private String specialColour;
+    private String colour;
+    private String turnOf;
 
     private DatabaseReference roomsRef;
     private DatabaseReference roomNameRef;
@@ -65,6 +73,9 @@ public class MatchmakingRoom extends AppCompatActivity {
 
         roomsList = new ArrayList<>();
 
+        setup = new ArrayList<>();
+        //setupAdapter = new ArrayAdapter<String>()
+
         roomsRef = database.getReference().child("rooms");
 
         createRoom.setOnClickListener(new View.OnClickListener() {
@@ -74,9 +85,12 @@ public class MatchmakingRoom extends AppCompatActivity {
                 createRoom.setText(getString(R.string.matchmaking_room_creating_room_text));
                 createRoom.setEnabled(false);
                 roomNameRef = roomsRef.child(roomName);
+                // set show
                 roomNameRef.child("show").setValue("true");
                 // set colour
                 specialColour = setColour(roomNameRef);
+                // set turn of
+                setTurnOf(roomNameRef);
                 // set right graph
                 initializeRightGraph(roomNameRef);
                 // set left graph
@@ -184,12 +198,11 @@ public class MatchmakingRoom extends AppCompatActivity {
     }
 
     private String getColour(DatabaseReference roomNameRef) {
-        final String[] color = {""};
-        roomNameRef.child("specialColour").addListenerForSingleValueEvent(new ValueEventListener() {
+        roomNameRef.child("specialColour").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                color[0] = snapshot.getValue().toString();
-                Log.i(TAG, "IL COLORE QUI:" + color[0]);
+                colour = snapshot.getValue().toString();
+                Log.i(TAG, "1 " + colour);
             }
 
             @Override
@@ -197,21 +210,12 @@ public class MatchmakingRoom extends AppCompatActivity {
 
             }
         });
-        Log.i(TAG, "IL COLORE QUI 2:" + color[0]);
-        return color[0];
-        /*
-        final String[] color = {""};
-        roomNameRef.child("specialColour").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    color[0] = task.getResult().getValue().toString();
-                    Log.i(TAG, "IL COLORE[0] QUI:" + color[0]);
-                }
-            }
-        });
-        Log.i(TAG, "IL COLORE[0] QUI 2:" + color[0]);
-        return color[0];*/
+        Log.i(TAG, "2 " + colour);
+        return colour;
+    }
+
+    private void setTurnOf(DatabaseReference roomNameRef) {
+        roomNameRef.child("turnOf").setValue(getString(R.string.matchmaking_room_attacker));
     }
 
     private void initializeLeftGraph(DatabaseReference roomNameRef) {

@@ -94,6 +94,8 @@
     <string name="matchmaking_room_creating_room_text">CREATING ROOM…</string>
     <string name="matchmaking_room_error_text">ERROR</string>
     <string name="matchmaking_room_property">Room of</string>
+    <string name="matchmaking_room_attacker">attacker</string>
+    <string name="matchmaking_room_defender">defender</string>
 
     <!-- bottom sheet reset pwd -->
     <string name="bottom_sheet_reset_pwd_insert_mail">Insert your email address used during sign up:</string>
