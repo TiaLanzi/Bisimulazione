@@ -26,8 +26,6 @@ public class DirectedGraph extends View {
     private final float stroke = 8f;
     private final float radius = 40f;
 
-    private RectF rectF;
-
     private Paint paintNode;
 
     //private Canvas canvas;
@@ -100,6 +98,11 @@ public class DirectedGraph extends View {
     }
 
     private void drawGraph(Canvas canvas) {
+        drawNodes(canvas);
+        drawEdges(canvas);
+    }
+
+    private void drawEdges(Canvas canvas) {
         for (int i = 0; i < this.getEdges().length; i++) {
             if (this.getEdges()[i] != null) {
                 // coordinates of centre of first vertex
@@ -303,35 +306,38 @@ public class DirectedGraph extends View {
                 }
             }
         }
-        //canvas.drawPath(path, paintLine);
-        // create paint for root
+    }
+
+    private void drawNodes(Canvas canvas) {
         // draw nodes if not exist
         for (Node node : this.getNodes()) {
             if (node.isLeftTable()) {
                 paintNode = paintNode(node.getColor());
                 if (!node.isAlreadyDrawn()) {
-                    Log.i(TAG, "1 - Id node " + node.getId() + ", already drawn? " + node.isAlreadyDrawn());
+                    //Log.i(TAG, "1 - Id node " + node.getId() + ", already drawn? " + node.isAlreadyDrawn());
                     canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
+                    //Log.i(TAG, "2 - Drawn node " + node.getId());
                     node.setAlreadyDrawn(true);
                 }
             } else {
                 if (!node.isAlreadyDrawn()) {
-                    Log.i(TAG, "2 - Id node " + node.getId() + ", already drawn? " + node.isAlreadyDrawn());
+                    //Log.i(TAG, "2 - Id node " + node.getId() + ", already drawn? " + node.isAlreadyDrawn());
                     canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
+                    //Log.i(TAG, "2 - Drawn node " + node.getId());
                     node.setAlreadyDrawn(true);
                 }
             }
         }
     }
 
-    private RectF rectFOneTwo() {
+    /*private RectF rectFOneTwo() {
         Point pointOne;
         Point pointTwo;
         pointOne = new Point(this.getEdges()[1].getOne().getX(), this.getEdges()[1].getOne().getY());
         pointTwo = new Point(this.getEdges()[1].getTwo().getX(), this.getEdges()[1].getTwo().getY());
         rectF = new RectF((pointOne.x / 2), pointOne.y, pointTwo.x, (pointTwo.y * 2));
         return rectF;
-    }
+    }*/
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
