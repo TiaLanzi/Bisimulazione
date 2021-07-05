@@ -71,9 +71,9 @@ public class Table extends AppCompatActivity {
             sendData(player1);
         }
         // set special colour text
-        setTextColour(specialColour);
+        //setTextColour(specialColour);
         //Log.i(TAG, "Room name: " + roomName + ", role: " + role);
-        /*
+
 
         //Log.i(TAG, "Red: " + colours[0]);
         //Log.i(TAG, "Green: " + colours[1]);
@@ -85,11 +85,17 @@ public class Table extends AppCompatActivity {
 
         // initialize root node
         int shiftStartVertical = 200;
-        Node root = new Node(1, 0, shiftStartVertical, true, false, false, true);
-        Node second = new Node(2, root.getX(), root.getY(), false, true, false, true);
-        Node third = new Node(3, root.getX(), root.getY(), false, false, true, true);
-        Node fourth = new Node(4, second.getX(), second.getY(), false, false, false, true);
-        Node fifth = new Node(5, third.getX(), third.getY(), false, false, false, true);
+        Node[] nodes = new Node[5];
+        Node root = new Node(1, 0, shiftStartVertical, true, false, false, true, getColor(R.color.primaryColor));
+        nodes[0] = root;
+        Node second = new Node(2, root.getX(), root.getY(), false, true, false, true, getColor(R.color.black));
+        nodes[1] = second;
+        Node third = new Node(3, root.getX(), root.getY(), false, false, true, true, getColor(R.color.black));
+        nodes[2] = third;
+        Node fourth = new Node(4, second.getX(), second.getY(), false, false, false, true, getColor(R.color.black));
+        nodes[3] = fourth;
+        Node fifth = new Node(5, third.getX(), third.getY(), false, false, false, true, getColor(R.color.black));
+        nodes[4] = fifth;
         // initialize array of edges
         Edge[] edges = new Edge[7];
         // initialize first edge
@@ -109,19 +115,23 @@ public class Table extends AppCompatActivity {
         Edge sette = new Edge(7, fifth, fourth, getResources().getColor(R.color.primaryColor), true, false, true);
         edges[6] = sette;
         // initialize DirectedGraph
-        DirectedGraph directedGraphLeft = new DirectedGraph(this, edges);
+        DirectedGraph directedGraphLeft = new DirectedGraph(this, edges, nodes);
         // add directed graph to linear layout
         tableLeftDirectedGraphLayout.addView(directedGraphLeft);
 
-        setLeftGraph();
-
         LinearLayout tableRightDirectedGraphLayout = findViewById(R.id.table_right_directed_graph_layout);
 
-        Node rootR = new Node(1, 0, shiftStartVertical, true, false, false, false);
-        Node secondR = new Node(2, rootR.getX(), rootR.getY(), false, true, false, false);
-        Node thirdR = new Node(3, rootR.getX(), rootR.getY(), false, false, true, false);
-        Node fourthR = new Node(4, second.getX(), second.getY(), false, false, false, false);
-        Node fifthR = new Node(5, thirdR.getX(), thirdR.getY(), false, false, false, false);
+        /*Node[] nodesR = new Node[5];
+        Node rootR = new Node(1, 0, shiftStartVertical, true, false, false, false, getColor(R.color.primaryColor));
+        nodesR[0] = rootR;
+        Node secondR = new Node(2, rootR.getX(), rootR.getY(), false, true, false, false, getColor(R.color.black));
+        nodesR[1] = secondR;
+        Node thirdR = new Node(3, rootR.getX(), rootR.getY(), false, false, true, false, getColor(R.color.black));
+        nodesR[2] = thirdR;
+        Node fourthR = new Node(4, second.getX(), second.getY(), false, false, false, false, getColor(R.color.black));
+        nodesR[3] = fourthR;
+        Node fifthR = new Node(5, thirdR.getX(), thirdR.getY(), false, false, false, false, getColor(R.color.black));
+        nodesR[4] = fifthR;
 
         Edge[] edgesR = new Edge[7];
         Edge unoR = new Edge(1, rootR, secondR, getResources().getColor(R.color.red), false, true, false);
@@ -139,8 +149,8 @@ public class Table extends AppCompatActivity {
         Edge setteR = new Edge(7, thirdR, fifthR, getResources().getColor(R.color.black), false, true, true);
         edgesR[6] = setteR;
 
-        DirectedGraph directedGraphRight = new DirectedGraph(this, edgesR);
-        tableRightDirectedGraphLayout.addView(directedGraphRight);*/
+        DirectedGraph directedGraphRight = new DirectedGraph(this, edgesR, nodesR);
+        tableRightDirectedGraphLayout.addView(directedGraphRight); */
     }
 
     private void sendData(boolean player1) {
@@ -155,9 +165,9 @@ public class Table extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void setTextColour(String specialColour) {
-        switch (specialColour) {
+    /*@RequiresApi(api = Build.VERSION_CODES.M)
+    private void setTextColour(String sColour) {
+        switch (sColour) {
             case "red":
                 coloreSpeciale.setTextColor(getColor(R.color.red));
                 break;
@@ -174,5 +184,5 @@ public class Table extends AppCompatActivity {
                 break;
         }
         coloreSpeciale.setText(specialColour);
-    }
+    }*/
 }

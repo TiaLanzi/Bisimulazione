@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.viewpager.widget.PagerTabStrip;
+
 import com.example.bisimulazione.R;
 
 @SuppressLint("ViewConstructor")
@@ -19,6 +21,8 @@ public class DirectedGraph extends View {
     private static final String TAG = "Bisimulazione";
 
     private Edge[] edges;
+    private Node[] nodes;
+
     private final float stroke = 8f;
     private final float radius = 40f;
 
@@ -28,9 +32,10 @@ public class DirectedGraph extends View {
 
     //private Canvas canvas;
 
-    public DirectedGraph(Context context, Edge[] edges) {
+    public DirectedGraph(Context context, Edge[] edges, Node[] nodes) {
         super(context);
         setEdges(edges);
+        setNodes(nodes);
     }
 
     private void setEdges(Edge[] edges) {
@@ -39,6 +44,14 @@ public class DirectedGraph extends View {
 
     public Edge[] getEdges() {
         return this.edges;
+    }
+
+    private void setNodes(Node[] nodes) {
+        this.nodes = nodes;
+    }
+
+    public Node[] getNodes() {
+        return this.nodes;
     }
 
     /*private void setCanvas(Canvas canvas) {
@@ -87,8 +100,6 @@ public class DirectedGraph extends View {
     }
 
     private void drawGraph(Canvas canvas) {
-        Paint paintRect = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paintRect.setStyle(Paint.Style.STROKE);
         for (int i = 0; i < this.getEdges().length; i++) {
             if (this.getEdges()[i] != null) {
                 // coordinates of centre of first vertex
@@ -290,21 +301,24 @@ public class DirectedGraph extends View {
                             break;
                     }
                 }
-                canvas.drawPath(path, paintLine);
-                // create paint for root;
-                paintNode = paintNode(getEdges()[i].getOne().getColor());
-                // draw first vertex if not already drawn
-                if (!getEdges()[i].getOne().isAlreadyDrawn()) {
-                    canvas.drawCircle(pointOne.x, pointOne.y, radius, paintNode);
-                    // set already drawn
-                    getEdges()[i].getOne().setAlreadyDrawn(true);
+            }
+        }
+        //canvas.drawPath(path, paintLine);
+        // create paint for root
+        // draw nodes if not exist
+        for (Node node : this.getNodes()) {
+            if (node.isLeftTable()) {
+                paintNode = paintNode(node.getColor());
+                if (!node.isAlreadyDrawn()) {
+                    Log.i(TAG, "1 - Id node " + node.getId() + ", already drawn? " + node.isAlreadyDrawn());
+                    canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
+                    node.setAlreadyDrawn(true);
                 }
-                paintNode = paintNode(getEdges()[i].getTwo().getColor());
-                // draw second vertex if not already drawn
-                if (!getEdges()[i].getTwo().isAlreadyDrawn()) {
-                    canvas.drawCircle(pointTwo.x, pointTwo.y, radius, paintNode);
-                    // set already drawn
-                    getEdges()[i].getTwo().setAlreadyDrawn(true);
+            } else {
+                if (!node.isAlreadyDrawn()) {
+                    Log.i(TAG, "2 - Id node " + node.getId() + ", already drawn? " + node.isAlreadyDrawn());
+                    canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
+                    node.setAlreadyDrawn(true);
                 }
             }
         }
@@ -321,6 +335,16 @@ public class DirectedGraph extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        for (Node node : this.getNodes()) {
+            if (node != null) {
+                boolean isTouched = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
+                if (isTouched) {
+                    Log.i(TAG, "Circle touched: " + node.getId() + "table: " + node.isLeftTable());
+
+                }
+            }
+        }
+        /*
         paintNode = paintNode(getResources().getColor(R.color.primaryColor));
         super.onTouchEvent(event);
         for (Edge edge : this.getEdges()) {
@@ -336,11 +360,12 @@ public class DirectedGraph extends View {
                     }
                 }
             }
-        }
+        }*/
         return true;
     }
 
-    private boolean touchIsInCircle(float x, float y, float centreX, float centreY, float radius) {
+    private boolean touchIsInCircle(float x, float y, float centreX, float centreY,
+                                    float radius) {
         double dx = Math.pow(x - centreX, 2);
         double dy = Math.pow(y - centreY, 2);
 

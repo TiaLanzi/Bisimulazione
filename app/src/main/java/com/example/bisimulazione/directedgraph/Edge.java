@@ -51,8 +51,8 @@ public class Edge {
         return this.color;
     }
 
-    private void setLeftTable(boolean leftTable) {
-        this.leftTable = leftTable;
+    private void setLeftTable(boolean lTable) {
+        this.leftTable = lTable;
     }
 
     protected boolean isLeftTable() {

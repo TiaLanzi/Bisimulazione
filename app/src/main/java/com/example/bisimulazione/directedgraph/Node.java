@@ -11,19 +11,19 @@ public class Node {
     private int id;
     private int x;
     private int y;
+    private boolean leftTable;
     private boolean root;
     private boolean toLeft;
     private boolean toRight;
     private boolean alreadyDrawn;
-    private int color = R.color.black;
+    private int color;
 
-    public Node(int id, int x, int y, boolean root, boolean toLeft, boolean toRight, boolean leftTable) {
+    public Node(int id, int x, int y, boolean root, boolean toLeft, boolean toRight, boolean leftTable, int color) {
         super();
         setId(id);
         int shiftHorizontal = 120;
         int shiftVertical = 200;
         if (root) {
-            setColor(R.color.primaryColor);
             if (leftTable) {
                 setX((Resources.getSystem().getDisplayMetrics().widthPixels / 4) - 40);
             } else {
@@ -34,7 +34,7 @@ public class Node {
             setY(y);
             setRoot(true);
         } else {
-            setColor(color);
+            setRoot(false);
             if (toLeft) {
                 setX(x - shiftHorizontal);
                 setY(y + shiftVertical);
@@ -46,8 +46,9 @@ public class Node {
                 setY(y + shiftVertical);
             }
         }
+        setLeftTable(leftTable);
+        setColor(color);
         setAlreadyDrawn(false);
-        setRoot(false);
         setToLeft(toLeft);
         setToRight(toRight);
     }
@@ -84,6 +85,14 @@ public class Node {
         return this.color;
     }
 
+    private void setLeftTable(boolean leftTable)  {
+        this.leftTable = leftTable;
+    }
+
+    public boolean isLeftTable() {
+        return this.leftTable;
+    }
+
     private void setRoot(boolean root) {
         this.root = root;
     }
@@ -114,5 +123,21 @@ public class Node {
 
     public boolean isAlreadyDrawn() {
         return this.alreadyDrawn;
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "TAG='" + TAG + '\'' +
+                ", id=" + id +
+                ", x=" + x +
+                ", y=" + y +
+                ", leftTable=" + leftTable +
+                ", root=" + root +
+                ", toLeft=" + toLeft +
+                ", toRight=" + toRight +
+                ", alreadyDrawn=" + alreadyDrawn +
+                ", color=" + color +
+                '}';
     }
 }
