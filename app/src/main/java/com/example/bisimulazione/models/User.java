@@ -8,18 +8,6 @@ public class User {
     private String mail;
     private String password;
 
-    // constructor without arguments set all to "unknown"
-    public User() {
-        super();
-        // setFirstName(R.string.user_unknown);
-        String unknown = "sconosciuto";
-        this.setFirstName(unknown);
-        this.setLastName(unknown);
-        this.setUsername(unknown);
-        this.setMail(unknown);
-        this.setPassword(unknown);
-    }
-
     public User(String firstName, String lastName, String username, String mail, String password) {
         setFirstName(firstName);
         setLastName(lastName);

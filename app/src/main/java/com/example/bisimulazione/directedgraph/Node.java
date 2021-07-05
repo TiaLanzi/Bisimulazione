@@ -2,19 +2,13 @@ package com.example.bisimulazione.directedgraph;
 
 import android.content.res.Resources;
 
-import com.example.bisimulazione.R;
-
 public class Node {
-
-    private final String TAG = "Bisimulazione";
 
     private int id;
     private int x;
     private int y;
     private boolean leftTable;
     private boolean root;
-    private boolean toLeft;
-    private boolean toRight;
     private boolean alreadyDrawn;
     private int color;
 
@@ -24,13 +18,7 @@ public class Node {
         int shiftHorizontal = 120;
         int shiftVertical = 200;
         if (root) {
-            if (leftTable) {
-                setX((Resources.getSystem().getDisplayMetrics().widthPixels / 4) - 40);
-            } else {
-                //int shift = Resources.getSystem().getDisplayMetrics().widthPixels / 4;
-                setX((Resources.getSystem().getDisplayMetrics().widthPixels / 4) - 40);
-                //Log.i(TAG, "xxxxxxxxxx" + String.valueOf(this.getX()));
-            }
+            setX((Resources.getSystem().getDisplayMetrics().widthPixels / 4) - 40);
             setY(y);
             setRoot(true);
         } else {
@@ -49,8 +37,6 @@ public class Node {
         setLeftTable(leftTable);
         setColor(color);
         setAlreadyDrawn(false);
-        setToLeft(toLeft);
-        setToRight(toRight);
     }
 
     private void setId(int id) {
@@ -85,7 +71,7 @@ public class Node {
         return this.color;
     }
 
-    private void setLeftTable(boolean leftTable)  {
+    private void setLeftTable(boolean leftTable) {
         this.leftTable = leftTable;
     }
 
@@ -101,43 +87,11 @@ public class Node {
         return this.root;
     }
 
-    private void setToLeft(boolean toLeft) {
-        this.toLeft = toLeft;
-    }
-
-    public boolean isToLeft() {
-        return this.toLeft;
-    }
-
-    private void setToRight(boolean toRight) {
-        this.toRight = toRight;
-    }
-
-    public boolean isToRight() {
-        return this.toRight;
-    }
-
     protected void setAlreadyDrawn(boolean drawn) {
         this.alreadyDrawn = drawn;
     }
 
     public boolean isAlreadyDrawn() {
         return this.alreadyDrawn;
-    }
-
-    @Override
-    public String toString() {
-        return "Node{" +
-                "TAG='" + TAG + '\'' +
-                ", id=" + id +
-                ", x=" + x +
-                ", y=" + y +
-                ", leftTable=" + leftTable +
-                ", root=" + root +
-                ", toLeft=" + toLeft +
-                ", toRight=" + toRight +
-                ", alreadyDrawn=" + alreadyDrawn +
-                ", color=" + color +
-                '}';
     }
 }

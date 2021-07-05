@@ -6,14 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-
-import androidx.viewpager.widget.PagerTabStrip;
-
-import com.example.bisimulazione.R;
 
 @SuppressLint("ViewConstructor")
 public class DirectedGraph extends View {
@@ -341,6 +336,7 @@ public class DirectedGraph extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
         for (Node node : this.getNodes()) {
             if (node != null) {
                 boolean isTouched = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
@@ -350,23 +346,6 @@ public class DirectedGraph extends View {
                 }
             }
         }
-        /*
-        paintNode = paintNode(getResources().getColor(R.color.primaryColor));
-        super.onTouchEvent(event);
-        for (Edge edge : this.getEdges()) {
-            if (edge != null) {
-                if (edge.getOne() != null && edge.getTwo() != null) {
-                    boolean isTouched = touchIsInCircle(event.getX(), event.getY(), edge.getOne().getX(), edge.getOne().getY(), radius);
-                    if (isTouched) {
-                        Log.i(TAG, "Circle touched");
-                        //canvas.drawCircle(edge.getTwo().getX(), edge.getTwo().getY(), radius, paintVertex);
-                        //edge.getTwo().setColor(getResources().getColor(R.color.primaryColor));
-                        invalidate();
-                        //onDraw(this.getCanvas());
-                    }
-                }
-            }
-        }*/
         return true;
     }
 

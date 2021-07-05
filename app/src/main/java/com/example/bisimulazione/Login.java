@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 public class Login extends AppCompatActivity {
 
     private static final String TAG = "Bisimulazione";
+
     private EditText resetEmail;
     private Button reset;
     private EditText username;

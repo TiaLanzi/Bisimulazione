@@ -126,9 +126,8 @@ public class SignUp extends AppCompatActivity {
                                         user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull @NotNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    //Log.i(TAG, "Profilo aggiornato");
-                                                }
+                                                task.isSuccessful();
+                                                //Log.i(TAG, "Profilo aggiornato");
                                             }
                                         });
                                         Toast.makeText(getApplicationContext(), getString(R.string.sign_up_successful), Toast.LENGTH_SHORT).show();
@@ -221,9 +220,5 @@ public class SignUp extends AppCompatActivity {
         startActivity(intent);
         // ... and close this activity
         finish();
-    }
-
-    private int getCounter() {
-        return sharedPreferences.getInt("Counter", 0);
     }
 }
