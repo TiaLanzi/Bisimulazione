@@ -120,7 +120,7 @@ public class Table extends AppCompatActivity {
 
         LinearLayout tableRightDirectedGraphLayout = findViewById(R.id.table_right_directed_graph_layout);
 
-        /*Node[] nodesR = new Node[5];
+        Node[] nodesR = new Node[5];
         Node rootR = new Node(1, 0, shiftStartVertical, true, false, false, false, getColor(R.color.primaryColor));
         nodesR[0] = rootR;
         Node secondR = new Node(2, rootR.getX(), rootR.getY(), false, true, false, false, getColor(R.color.black));
@@ -149,7 +149,7 @@ public class Table extends AppCompatActivity {
         edgesR[6] = setteR;
 
         DirectedGraph directedGraphRight = new DirectedGraph(this, edgesR, nodesR);
-        tableRightDirectedGraphLayout.addView(directedGraphRight); */
+        tableRightDirectedGraphLayout.addView(directedGraphRight);
     }
 
     private void sendData(boolean player1) {

@@ -23,7 +23,7 @@ public class DirectedGraph extends View {
 
     private Paint paintNode;
 
-    //private Canvas canvas;
+    private Canvas canvas;
 
     public DirectedGraph(Context context, Edge[] edges, Node[] nodes) {
         super(context);
@@ -47,13 +47,13 @@ public class DirectedGraph extends View {
         return this.nodes;
     }
 
-    /*private void setCanvas(Canvas canvas) {
+    private void setCanvas(Canvas canvas) {
         this.canvas = canvas;
     }
 
     private Canvas getCanvas() {
         return this.canvas;
-    }*/
+    }
 
     @SuppressLint("DrawAllocation")
     @Override
@@ -311,28 +311,18 @@ public class DirectedGraph extends View {
                 if (!node.isAlreadyDrawn()) {
                     //Log.i(TAG, "1 - Id node " + node.getId() + ", already drawn? " + node.isAlreadyDrawn());
                     canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
-                    //Log.i(TAG, "2 - Drawn node " + node.getId());
+                    Log.i(TAG, "1 - Drawn node " + node.getId());
                     node.setAlreadyDrawn(true);
                 }
             } else {
                 if (!node.isAlreadyDrawn()) {
-                    //Log.i(TAG, "2 - Id node " + node.getId() + ", already drawn? " + node.isAlreadyDrawn());
                     canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
-                    //Log.i(TAG, "2 - Drawn node " + node.getId());
+                    Log.i(TAG, "2 - Drawn node " + node.getId());
                     node.setAlreadyDrawn(true);
                 }
             }
         }
     }
-
-    /*private RectF rectFOneTwo() {
-        Point pointOne;
-        Point pointTwo;
-        pointOne = new Point(this.getEdges()[1].getOne().getX(), this.getEdges()[1].getOne().getY());
-        pointTwo = new Point(this.getEdges()[1].getTwo().getX(), this.getEdges()[1].getTwo().getY());
-        rectF = new RectF((pointOne.x / 2), pointOne.y, pointTwo.x, (pointTwo.y * 2));
-        return rectF;
-    }*/
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
