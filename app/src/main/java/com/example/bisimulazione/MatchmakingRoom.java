@@ -3,11 +3,8 @@ package com.example.bisimulazione;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.EventLog;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,7 +18,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.core.view.Event;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +25,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MatchmakingRoom extends AppCompatActivity {
+import interfaces.CallbackColor;
+
+public class MatchmakingRoom extends AppCompatActivity implements CallbackColor {
 
     private static final String TAG = "Bisimulazione";
 
@@ -115,10 +113,22 @@ public class MatchmakingRoom extends AppCompatActivity {
                 // not to show when room is full
                 roomNameRef = roomsRef;
                 roomNameRef.child("show").setValue("false");
-                specialColour = getColour(roomNameRef);
-                Log.i(TAG, "IL COLORE[0] QUI 3: " + specialColour);
-                startActivity(roomName, false, specialColour);
-                finish();
+                specialColour = "";
+                getColour(roomNameRef, new CallbackColor() {
+                    @Override
+                    public void onCallbackColor(String color) {
+                        boolean retrievedColor = false;
+                        while (!retrievedColor) {
+                            if (color != null) {
+                                specialColour = color;
+                                retrievedColor = true;
+                                //Log.i(TAG, "2 - " + specialColour);
+                                startActivity(roomName, false, specialColour);
+                                finish();
+                            }
+                        }
+                    }
+                });
             }
         });
         // show new rooms created
@@ -197,12 +207,12 @@ public class MatchmakingRoom extends AppCompatActivity {
         return colore;
     }
 
-    private String getColour(DatabaseReference roomNameRef) {
-        roomNameRef.child("specialColour").addValueEventListener(new ValueEventListener() {
+    private void getColour(DatabaseReference roomNameRef, CallbackColor callback) {
+        roomNameRef.child("specialColour").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                colour = snapshot.getValue().toString();
-                Log.i(TAG, "1 " + colour);
+                String value = snapshot.getValue().toString();
+                callback.onCallbackColor(value);
             }
 
             @Override
@@ -210,8 +220,6 @@ public class MatchmakingRoom extends AppCompatActivity {
 
             }
         });
-        Log.i(TAG, "2 " + colour);
-        return colour;
     }
 
     private void setTurnOf(DatabaseReference roomNameRef) {
@@ -240,5 +248,10 @@ public class MatchmakingRoom extends AppCompatActivity {
         map.put("Five selected", false);
 
         rightGraphRef.setValue(map);
+    }
+
+    @Override
+    public void onCallbackColor(String color) {
+
     }
 }

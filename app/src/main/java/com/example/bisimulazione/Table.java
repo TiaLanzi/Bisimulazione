@@ -1,10 +1,12 @@
 package com.example.bisimulazione;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,12 +15,19 @@ import com.example.bisimulazione.directedgraph.Edge;
 import com.example.bisimulazione.directedgraph.Node;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public class Table extends AppCompatActivity {
+import interfaces.Callback;
+
+public class Table extends AppCompatActivity implements Callback {
 
     private static final String TAG = "Bisimulazione";
 
@@ -28,6 +37,7 @@ public class Table extends AppCompatActivity {
     private String specialColour;
 
     private TextView coloreSpeciale;
+    private TextView turnoDi;
 
     private FirebaseDatabase database;
     private DatabaseReference roomRef;
@@ -42,6 +52,7 @@ public class Table extends AppCompatActivity {
         setContentView(R.layout.activity_table);
 
         coloreSpeciale = findViewById(R.id.table_special_colour);
+        turnoDi = findViewById(R.id.table_turn_of);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
@@ -70,7 +81,11 @@ public class Table extends AppCompatActivity {
             sendData(player1);
         }
         // set special colour text
-        //setTextColour(specialColour);
+        setTextColour(specialColour);
+        // set turn of text
+        setTurnOf();
+
+
         //Log.i(TAG, "Room name: " + roomName + ", role: " + role);
 
 
@@ -164,7 +179,7 @@ public class Table extends AppCompatActivity {
         }
     }
 
-    /*@RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void setTextColour(String sColour) {
         switch (sColour) {
             case "red":
@@ -183,5 +198,43 @@ public class Table extends AppCompatActivity {
                 break;
         }
         coloreSpeciale.setText(specialColour);
-    }*/
+    }
+
+    private void setTurnOf() {
+        getTurnOf(roomRef.child(roomName), new Callback() {
+            @Override
+            public void onCallbackTurnOf(String turnOf) {
+                boolean retrievedTurnOf = false;
+                while (!retrievedTurnOf) {
+                    if (turnOf != null) {
+                        turnoDi.setText(turnOf);
+                        retrievedTurnOf = true;
+                        Log.i(TAG, "Turn of " + turnOf);
+
+                    }
+                }
+            }
+        });
+    }
+
+    private void getTurnOf(DatabaseReference roomNameRef, Callback callback) {
+        roomNameRef.child("turnOf").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String value = snapshot.getValue().toString();
+                callback.onCallbackTurnOf(value);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    @Override
+    public void onCallbackTurnOf(String turnOf) {
+
+    }
 }

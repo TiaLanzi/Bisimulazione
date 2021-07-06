@@ -94,6 +94,7 @@ public class DirectedGraph extends View {
                     canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
                     Log.i(TAG, "1 - Drawn node " + node.getId());
                     node.setAlreadyDrawn(true);
+
                 }
             } /*else {
                 if (!node.isAlreadyDrawn()) {
@@ -139,10 +140,55 @@ public class DirectedGraph extends View {
                                 break;
                         }
                     }
+                    refreshNodes(node.isLeftTable(), node.getId());
                 }
             }
         }
         return true;
+    }
+
+    private void refreshNodes(boolean isLeftTable, int id) {
+        Log.i(TAG, "Entra nel metodo");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference roomNameRef = database.getReference("rooms").child(roomName);
+
+        if (isLeftTable) {
+            roomNameRef = roomNameRef.child("leftGraph");
+        } else {
+            roomNameRef = roomNameRef.child("rightGraph");
+        }
+
+        //Log.i(TAG, "REF: " + roomNameRef.toString());
+
+        for (Node node : this.getNodes()) {
+            if (node.getId() != id) {
+                Log.i(TAG, "Node: " + node.getId());
+                switch (node.getId()) {
+                    case 1:
+                        //Log.i(TAG, "Cambia il valore al nodo 1");
+                        roomNameRef.child("One selected").setValue(false);
+                        break;
+                    case 2:
+                        //Log.i(TAG, "Cambia il valore al nodo 2");
+                        roomNameRef.child("Two selected").setValue(false);
+                        break;
+                    case 3:
+                        //Log.i(TAG, "Cambia il valore al nodo 3");
+                        roomNameRef.child("Three selected").setValue(false);
+                        break;
+                    case 4:
+                        //Log.i(TAG, "Cambia il valore al nodo 4");
+                        roomNameRef.child("Four selected").setValue(false);
+                        break;
+                    case 5:
+                        //Log.i(TAG, "Cambia il valore al nodo 5");
+                        roomNameRef.child("Five selected").setValue(false);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 
     private boolean touchIsInCircle(float x, float y, float centreX, float centreY, float radius) {
