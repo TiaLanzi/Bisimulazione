@@ -48,6 +48,11 @@ public class Table extends AppCompatActivity implements Callback {
     private DatabaseReference leftTableRef;
     private DatabaseReference rightTableRef;
 
+    private ArrayList<List<Edge>> incomingEdgesLeft;
+    private ArrayList<List<Edge>> outgoingEdgesLeft;
+    private ArrayList<List<Edge>> incomingEdgesRight;
+    private ArrayList<List<Edge>> outgoingEdgesRight;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +137,9 @@ public class Table extends AppCompatActivity implements Callback {
         // add directed graph to linear layout
         tableLeftDirectedGraphLayout.addView(directedGraphLeft);
 
-        getEntryEdges(edges);
+        incomingEdgesLeft = getIncomingEdgesLeft(edges);
+        outgoingEdgesLeft = getOutgoingEdgesLeft(edges);
+
 
         LinearLayout tableRightDirectedGraphLayout = findViewById(R.id.table_right_directed_graph_layout);
 
@@ -167,6 +174,8 @@ public class Table extends AppCompatActivity implements Callback {
         DirectedGraph directedGraphRight = new DirectedGraph(this, this, edgesR, nodesR, roomName);
         tableRightDirectedGraphLayout.addView(directedGraphRight);
     }
+
+
 
     private void sendData(boolean player1) {
         HashMap<String, String> map = new HashMap<>();
@@ -238,56 +247,109 @@ public class Table extends AppCompatActivity implements Callback {
 
     }
 
-    //private ArrayList<List<Edge>> getEntryEdges(Edge[] edges) {
-    private void getEntryEdges(Edge[] edges) {
+    private ArrayList<List<Edge>> getIncomingEdgesLeft(Edge[] edges) {
+        //private void getIncomingEdges(Edge[] edges) {
 
-        List<Edge> entryEdgesNodeOne = new ArrayList<Edge>();
-        List<Edge> entryEdgesNodeTwo = new ArrayList<Edge>();
-        List<Edge> entryEdgesNodeThree = new ArrayList<Edge>();
-        List<Edge> entryEdgesNodeFour = new ArrayList<Edge>();
-        List<Edge> entryEdgesNodeFive = new ArrayList<Edge>();
+        List<Edge> incomingEdgesNodeOne = new ArrayList<Edge>();
+        List<Edge> incomingEdgesNodeTwo = new ArrayList<Edge>();
+        List<Edge> incomingEdgesNodeThree = new ArrayList<Edge>();
+        List<Edge> incomingEdgesNodeFour = new ArrayList<Edge>();
+        List<Edge> incomingEdgesNodeFive = new ArrayList<Edge>();
 
         for (Edge edge : edges) {
             switch (edge.getId()) {
                 case 1:
-                    entryEdgesNodeTwo.add(edge);
+                    incomingEdgesNodeTwo.add(edge);
                     break;
                 case 2:
-                    entryEdgesNodeThree.add(edge);
+                    incomingEdgesNodeThree.add(edge);
                     break;
                 case 3:
                 case 4:
-                    entryEdgesNodeOne.add(edge);
+                    incomingEdgesNodeOne.add(edge);
                     break;
                 case 5:
-                    entryEdgesNodeFive.add(edge);
+                    incomingEdgesNodeFive.add(edge);
                     break;
                 case 6:
                 case 7:
-                    entryEdgesNodeFour.add(edge);
+                    incomingEdgesNodeFour.add(edge);
                     break;
                 default:
                     break;
             }
         }
         ArrayList<List<Edge>> arrayList = new ArrayList<>(5);
-        arrayList.add(entryEdgesNodeOne);
-        arrayList.add(entryEdgesNodeTwo);
-        arrayList.add(entryEdgesNodeThree);
-        arrayList.add(entryEdgesNodeFour);
-        arrayList.add(entryEdgesNodeFive);
-        Iterator listOfListsIterator = arrayList.iterator();
+        arrayList.add(incomingEdgesNodeOne);
+        arrayList.add(incomingEdgesNodeTwo);
+        arrayList.add(incomingEdgesNodeThree);
+        arrayList.add(incomingEdgesNodeFour);
+        arrayList.add(incomingEdgesNodeFive);
+
+        /*Iterator<List<Edge>> listOfListsIterator = arrayList.iterator();
         while (listOfListsIterator.hasNext()) {
             List<Edge> list = new ArrayList<>();
-            list = (List<Edge>) listOfListsIterator.next();
+            list = listOfListsIterator.next();
 
-            Iterator eachListIterator = list.iterator();
+            Iterator<Edge> eachListIterator = list.iterator();
             while (eachListIterator.hasNext()) {
                 Log.i(TAG, "LOL " + eachListIterator.next().toString());
+                eachListIterator.next().
                 //int id = eachListIterator.next().getId();
             }
+        } */
+        return arrayList;
+    }
 
+    private ArrayList<List<Edge>> getOutgoingEdgesLeft(Edge[] edges) {
+        //private void getIncomingEdges(Edge[] edges) {
+
+        List<Edge> outgoingEdgesNodeOne = new ArrayList<Edge>();
+        List<Edge> outgoingEdgesNodeTwo = new ArrayList<Edge>();
+        List<Edge> outgoingEdgesNodeThree = new ArrayList<Edge>();
+        List<Edge> outgoingEdgesNodeFour = new ArrayList<Edge>();
+        List<Edge> outgoingEdgesNodeFive = new ArrayList<Edge>();
+
+        for (Edge edge : edges) {
+            switch (edge.getId()) {
+                case 1:
+                case 2:
+                    outgoingEdgesNodeOne.add(edge);
+                    break;
+                case 3:
+                case 6:
+                    outgoingEdgesNodeTwo.add(edge);
+                    break;
+                case 4:
+                case 5:
+                    outgoingEdgesNodeThree.add(edge);
+                    break;
+                case 7:
+                    outgoingEdgesNodeFive.add(edge);
+                    break;
+                default:
+                    break;
+            }
         }
-        //return arrayList;
+        ArrayList<List<Edge>> arrayList = new ArrayList<>(5);
+        arrayList.add(outgoingEdgesNodeOne);
+        arrayList.add(outgoingEdgesNodeTwo);
+        arrayList.add(outgoingEdgesNodeThree);
+        arrayList.add(outgoingEdgesNodeFour);
+        arrayList.add(outgoingEdgesNodeFive);
+
+        /*Iterator<List<Edge>> listOfListsIterator = arrayList.iterator();
+        while (listOfListsIterator.hasNext()) {
+            List<Edge> list = new ArrayList<>();
+            list = listOfListsIterator.next();
+
+            Iterator<Edge> eachListIterator = list.iterator();
+            while (eachListIterator.hasNext()) {
+                Log.i(TAG, "LOL " + eachListIterator.next().toString());
+                eachListIterator.next().
+                //int id = eachListIterator.next().getId();
+            }
+        } */
+        return arrayList;
     }
 }

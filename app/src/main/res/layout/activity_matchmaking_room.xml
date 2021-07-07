@@ -20,5 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="@string/matchmaking_room_create_room_text" />
+        android:background="@drawable/corner_radius_button"
+        android:text="@string/matchmaking_room_create_room_text"
+        android:textColor="@color/white" />
 </RelativeLayout>

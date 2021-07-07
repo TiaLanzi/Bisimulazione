@@ -87,6 +87,9 @@
     <string name="table_blue">blue</string>
     <string name="table_attacker">ATTACKER</string>
     <string name="table_defender">DEFENDER</string>
+    <string name="table_attacker_is">The attacker is:</string>
+    <string name="table_defender_is">The defender is:</string>
+    <string name="table_no_move">DON\'T MOVE</string>
 
     <!-- matchmaking room -->
     <string name="matchmaking_room_create_room_text">CREATE ROOM</string>
@@ -102,6 +105,8 @@
     <string name="bottom_sheet_reset_pwd_insert_mail_here">Insert your mail address here…</string>
     <string name="bottom_sheet_reset_pwd_reset">RESET</string>
     <string name="bottom_sheet_reset_pwd_text">RESET PASSWORD</string>
+
+    <!-- directed graph -->
     <string name="directed_graph_attacker">attacker</string>
     <string name="directed_graph_defender">defender</string>
 </resources>

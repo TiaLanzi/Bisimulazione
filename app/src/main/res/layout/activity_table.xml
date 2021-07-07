@@ -112,6 +112,74 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/table_attacker_is_text"
+                style="@style/Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@string/table_attacker_is" />
+
+            <TextView
+                android:id="@+id/table_attacker_is"
+                style="@style/Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:clickable="false"
+                android:focusable="false" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/table_horizontal_separator_one"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_marginHorizontal="4dp"
+            android:background="@color/black" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginVertical="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/table_defender_is_text"
+                style="@style/Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@string/table_defender_is" />
+
+            <TextView
+                android:id="@+id/table_defender_is"
+                style="@style/Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:clickable="false"
+                android:focusable="false" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/table_horizontal_separator_two"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_marginHorizontal="4dp"
+            android:background="@color/black" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginVertical="4dp"
+            android:orientation="horizontal">
+
+            <TextView
                 android:id="@+id/table_special_colour_text"
                 style="@style/Body2"
                 android:layout_width="wrap_content"
@@ -132,7 +200,7 @@
         </LinearLayout>
 
         <View
-            android:id="@+id/table_horizontal_separator_one"
+            android:id="@+id/table_horizontal_separator_three"
             android:layout_width="match_parent"
             android:layout_height="1dip"
             android:layout_marginHorizontal="4dp"
@@ -166,7 +234,7 @@
         </LinearLayout>
 
         <View
-            android:id="@+id/table_horizontal_separator_two"
+            android:id="@+id/table_horizontal_separator_four"
             android:layout_width="match_parent"
             android:layout_height="1dip"
             android:layout_marginHorizontal="4dp"
@@ -189,7 +257,7 @@
                 android:text="@string/table_available_moves" />
 
             <TextView
-                android:id="@+id/table__available_moves"
+                android:id="@+id/table_available_moves"
                 style="@style/Body2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -199,4 +267,22 @@
                 android:focusable="false" />
         </LinearLayout>
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp">
+
+        <Button
+            android:id="@+id/table_epsilon_move"
+            style="@style/BUTTON"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/corner_radius_button"
+            android:text="@string/table_no_move"
+            android:textColor="@color/white" />
+    </RelativeLayout>
 </LinearLayout>
