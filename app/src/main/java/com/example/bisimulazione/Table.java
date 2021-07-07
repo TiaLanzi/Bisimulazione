@@ -39,6 +39,8 @@ public class Table extends AppCompatActivity implements Callback {
     private String role;
     private String specialColour;
 
+    private boolean player1;
+
     private TextView coloreSpeciale;
     private TextView turnoDi;
 
@@ -76,7 +78,7 @@ public class Table extends AppCompatActivity implements Callback {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            boolean player1 = extras.getBoolean("player 1");
+            player1 = extras.getBoolean("player 1");
             //Log.i(TAG, "Player 1? " + player1);
             roomName = extras.getString("roomName");
             //Log.i(TAG, "Room name: " + roomName);
@@ -88,6 +90,8 @@ public class Table extends AppCompatActivity implements Callback {
             }
             sendData(player1);
         }
+        // set attacker and defender
+        setAttackerDefender();
         // set special colour text
         setTextColour(specialColour);
         // set turn of text
@@ -175,6 +179,86 @@ public class Table extends AppCompatActivity implements Callback {
         tableRightDirectedGraphLayout.addView(directedGraphRight);
     }
 
+    private void setAttackerDefender() {
+        Log.i(TAG, "Entra nel metodo generale");
+        TextView attacker = findViewById(R.id.table_attacker_is);
+        TextView defender = findViewById(R.id.table_defender_is);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference roomNameRef = database.getReference().child("rooms").child(roomName);
+
+        if (player1) {
+            getPlayerOneName(roomNameRef, new Callback() {
+                @Override
+                public void onCallbackPlayerName(String playerName) {
+                    boolean retrievedPlayerName = false;
+                    while (!retrievedPlayerName) {
+                        if (playerName != null) {
+                            Log.i(TAG, "Player name: " + playerName);
+                            attacker.setText(playerName);
+                            retrievedPlayerName = true;
+                        }
+                    }
+                }
+
+                @Override
+                public void onCallbackTurnOf(String turnOf) {
+
+                }
+            });
+        } else {
+            getPlayerTwoName(roomNameRef, new Callback() {
+                @Override
+                public void onCallbackPlayerName(String playerName) {
+                    Log.i(TAG, "Player name: " + playerName);
+                    defender.setText(playerName);
+                }
+
+                @Override
+                public void onCallbackTurnOf(String turnOf) {
+
+                }
+            });
+        }
+    }
+
+    private void getPlayerOneName(DatabaseReference roomNameRef, Callback callback) {
+        Log.i(TAG, "Entra nel metodo specifico one");
+        roomNameRef.child("Player 1").child("playerName").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    String value = snapshot.getValue().toString();
+                    callback.onCallbackTurnOf(value);
+                    Log.i(TAG, "Legge valore one");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void getPlayerTwoName(DatabaseReference roomNameRef, Callback callback) {
+        Log.i(TAG, "Entra nel metodo specifico two");
+        roomNameRef.child("Player 2").child("playerName").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    String value = snapshot.getValue().toString();
+                    callback.onCallbackTurnOf(value);
+                    Log.i(TAG, "Legge valore two");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
 
 
     private void sendData(boolean player1) {
@@ -213,6 +297,11 @@ public class Table extends AppCompatActivity implements Callback {
     private void setTurnOf() {
         getTurnOf(roomRef.child(roomName), new Callback() {
             @Override
+            public void onCallbackPlayerName(String playerName) {
+
+            }
+
+            @Override
             public void onCallbackTurnOf(String turnOf) {
                 boolean retrievedTurnOf = false;
                 while (!retrievedTurnOf) {
@@ -241,6 +330,11 @@ public class Table extends AppCompatActivity implements Callback {
         });
     }
 
+
+    @Override
+    public void onCallbackPlayerName(String playerName) {
+
+    }
 
     @Override
     public void onCallbackTurnOf(String turnOf) {

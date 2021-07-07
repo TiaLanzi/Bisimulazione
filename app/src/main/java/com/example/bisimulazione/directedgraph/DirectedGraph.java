@@ -219,6 +219,11 @@ public class DirectedGraph extends View implements Callback {
     }
 
     @Override
+    public void onCallbackPlayerName(String playerName) {
+
+    }
+
+    @Override
     public void onCallbackTurnOf(String turnOf) {
 
     }
@@ -246,6 +251,10 @@ public class DirectedGraph extends View implements Callback {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference roomNameRef = database.getReference("rooms").child(roomName);
         getTurnOf(new Callback() {
+            @Override
+            public void onCallbackPlayerName(String playerName) {
+            }
+
             @Override
             public void onCallbackTurnOf(String turnOf) {
                 boolean retrievedTurnOf = false;
