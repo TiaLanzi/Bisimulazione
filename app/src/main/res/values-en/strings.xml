@@ -102,4 +102,6 @@
     <string name="bottom_sheet_reset_pwd_insert_mail_here">Insert your mail address here…</string>
     <string name="bottom_sheet_reset_pwd_reset">RESET</string>
     <string name="bottom_sheet_reset_pwd_text">RESET PASSWORD</string>
+    <string name="directed_graph_attacker">attacker</string>
+    <string name="directed_graph_defender">defender</string>
 </resources>

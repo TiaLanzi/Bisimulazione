@@ -23,7 +23,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import interfaces.Callback;
 
@@ -84,11 +87,7 @@ public class Table extends AppCompatActivity implements Callback {
         setTextColour(specialColour);
         // set turn of text
         setTurnOf();
-
-
         //Log.i(TAG, "Room name: " + roomName + ", role: " + role);
-
-
         //Log.i(TAG, "Red: " + colours[0]);
         //Log.i(TAG, "Green: " + colours[1]);
         //Log.i(TAG, "Black: " + colours[2]);
@@ -129,9 +128,11 @@ public class Table extends AppCompatActivity implements Callback {
         Edge sette = new Edge(7, fifth, fourth, getResources().getColor(R.color.primaryColor), true, false, true);
         edges[6] = sette;
         // initialize DirectedGraph
-        DirectedGraph directedGraphLeft = new DirectedGraph(this, edges, nodes, roomName);
+        DirectedGraph directedGraphLeft = new DirectedGraph(this, this, edges, nodes, roomName);
         // add directed graph to linear layout
         tableLeftDirectedGraphLayout.addView(directedGraphLeft);
+
+        getEntryEdges(edges);
 
         LinearLayout tableRightDirectedGraphLayout = findViewById(R.id.table_right_directed_graph_layout);
 
@@ -163,7 +164,7 @@ public class Table extends AppCompatActivity implements Callback {
         Edge setteR = new Edge(7, thirdR, fifthR, getResources().getColor(R.color.black), false, true, true);
         edgesR[6] = setteR;
 
-        DirectedGraph directedGraphRight = new DirectedGraph(this, edgesR, nodesR, roomName);
+        DirectedGraph directedGraphRight = new DirectedGraph(this, this, edgesR, nodesR, roomName);
         tableRightDirectedGraphLayout.addView(directedGraphRight);
     }
 
@@ -209,8 +210,7 @@ public class Table extends AppCompatActivity implements Callback {
                     if (turnOf != null) {
                         turnoDi.setText(turnOf);
                         retrievedTurnOf = true;
-                        Log.i(TAG, "Turn of " + turnOf);
-
+                        //Log.i(TAG, "Turn of " + turnOf);
                     }
                 }
             }
@@ -236,5 +236,58 @@ public class Table extends AppCompatActivity implements Callback {
     @Override
     public void onCallbackTurnOf(String turnOf) {
 
+    }
+
+    //private ArrayList<List<Edge>> getEntryEdges(Edge[] edges) {
+    private void getEntryEdges(Edge[] edges) {
+
+        List<Edge> entryEdgesNodeOne = new ArrayList<Edge>();
+        List<Edge> entryEdgesNodeTwo = new ArrayList<Edge>();
+        List<Edge> entryEdgesNodeThree = new ArrayList<Edge>();
+        List<Edge> entryEdgesNodeFour = new ArrayList<Edge>();
+        List<Edge> entryEdgesNodeFive = new ArrayList<Edge>();
+
+        for (Edge edge : edges) {
+            switch (edge.getId()) {
+                case 1:
+                    entryEdgesNodeTwo.add(edge);
+                    break;
+                case 2:
+                    entryEdgesNodeThree.add(edge);
+                    break;
+                case 3:
+                case 4:
+                    entryEdgesNodeOne.add(edge);
+                    break;
+                case 5:
+                    entryEdgesNodeFive.add(edge);
+                    break;
+                case 6:
+                case 7:
+                    entryEdgesNodeFour.add(edge);
+                    break;
+                default:
+                    break;
+            }
+        }
+        ArrayList<List<Edge>> arrayList = new ArrayList<>(5);
+        arrayList.add(entryEdgesNodeOne);
+        arrayList.add(entryEdgesNodeTwo);
+        arrayList.add(entryEdgesNodeThree);
+        arrayList.add(entryEdgesNodeFour);
+        arrayList.add(entryEdgesNodeFive);
+        Iterator listOfListsIterator = arrayList.iterator();
+        while (listOfListsIterator.hasNext()) {
+            List<Edge> list = new ArrayList<>();
+            list = (List<Edge>) listOfListsIterator.next();
+
+            Iterator eachListIterator = list.iterator();
+            while (eachListIterator.hasNext()) {
+                Log.i(TAG, "LOL " + eachListIterator.next().toString());
+                //int id = eachListIterator.next().getId();
+            }
+
+        }
+        //return arrayList;
     }
 }

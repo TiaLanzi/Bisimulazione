@@ -23,7 +23,7 @@ public class Edge {
         this.id = id;
     }
 
-    protected int getId() {
+    public int getId() {
         return this.id;
     }
 

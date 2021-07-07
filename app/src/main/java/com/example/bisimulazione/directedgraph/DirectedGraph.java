@@ -1,6 +1,7 @@
 package com.example.bisimulazione.directedgraph;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -9,14 +10,28 @@ import android.graphics.Point;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
+import com.example.bisimulazione.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
+
+import interfaces.Callback;
+import interfaces.CallbackColor;
 
 @SuppressLint("ViewConstructor")
-public class DirectedGraph extends View {
+public class DirectedGraph extends View implements Callback {
 
     private static final String TAG = "Bisimulazione";
+
+    private Activity activityTable;
 
     private Edge[] edges;
     private Node[] nodes;
@@ -30,11 +45,20 @@ public class DirectedGraph extends View {
 
     //private Canvas canvas;
 
-    public DirectedGraph(Context context, Edge[] edges, Node[] nodes, String roomName) {
+    public DirectedGraph(Context context, Activity activityTable, Edge[] edges, Node[] nodes, String roomName) {
         super(context);
+        setActivity(activityTable);
         setEdges(edges);
         setNodes(nodes);
         setRoomName(roomName);
+    }
+
+    private void setActivity(Activity activityTable) {
+        this.activityTable = activityTable;
+    }
+
+    public Activity getActivityTable() {
+        return this.activityTable;
     }
 
     private void setEdges(Edge[] edges) {
@@ -92,7 +116,7 @@ public class DirectedGraph extends View {
                 if (!node.isAlreadyDrawn()) {
                     //Log.i(TAG, "1 - Id node " + node.getId() + ", already drawn? " + node.isAlreadyDrawn());
                     canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
-                    Log.i(TAG, "1 - Drawn node " + node.getId());
+                    //Log.i(TAG, "1 - Drawn node " + node.getId());
                     node.setAlreadyDrawn(true);
 
                 }
@@ -112,35 +136,38 @@ public class DirectedGraph extends View {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference roomNameRef = database.getReference("rooms").child(roomName);
-
-        for (Node node : this.getNodes()) {
-            if (node != null) {
-                boolean isTouched = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
-                if (isTouched) {
-                    Log.i(TAG, "Circle touched: " + node.getId() + "table: " + node.isLeftTable());
-                    if (node.isLeftTable()) {
-                        roomNameRef = roomNameRef.child("leftGraph");
-                        switch (node.getId()) {
-                            case 1:
-                                roomNameRef.child("One selected").setValue(true);
-                                break;
-                            case 2:
-                                roomNameRef.child("Two selected").setValue(true);
-                                break;
-                            case 3:
-                                roomNameRef.child("Three selected").setValue(true);
-                                break;
-                            case 4:
-                                roomNameRef.child("Four selected").setValue(true);
-                                break;
-                            case 5:
-                                roomNameRef.child("Five selected").setValue(true);
-                                break;
-                            default:
-                                break;
+        // perform on touch only once
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            for (Node node : this.getNodes()) {
+                if (node != null) {
+                    boolean isTouched = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
+                    if (isTouched) {
+                        // Log.i(TAG, "Circle touched: " + node.getId() + "table: " + node.isLeftTable());
+                        if (node.isLeftTable()) {
+                            roomNameRef = roomNameRef.child("leftGraph");
+                            switch (node.getId()) {
+                                case 1:
+                                    roomNameRef.child("One selected").setValue(true);
+                                    break;
+                                case 2:
+                                    roomNameRef.child("Two selected").setValue(true);
+                                    break;
+                                case 3:
+                                    roomNameRef.child("Three selected").setValue(true);
+                                    break;
+                                case 4:
+                                    roomNameRef.child("Four selected").setValue(true);
+                                    break;
+                                case 5:
+                                    roomNameRef.child("Five selected").setValue(true);
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
+                        refreshNodes(node.isLeftTable(), node.getId());
+                        refreshTurnOf();
                     }
-                    refreshNodes(node.isLeftTable(), node.getId());
                 }
             }
         }
@@ -148,7 +175,7 @@ public class DirectedGraph extends View {
     }
 
     private void refreshNodes(boolean isLeftTable, int id) {
-        Log.i(TAG, "Entra nel metodo");
+        //Log.i(TAG, "Entra nel metodo");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference roomNameRef = database.getReference("rooms").child(roomName);
 
@@ -162,7 +189,7 @@ public class DirectedGraph extends View {
 
         for (Node node : this.getNodes()) {
             if (node.getId() != id) {
-                Log.i(TAG, "Node: " + node.getId());
+                //Log.i(TAG, "Node: " + node.getId());
                 switch (node.getId()) {
                     case 1:
                         //Log.i(TAG, "Cambia il valore al nodo 1");
@@ -189,6 +216,73 @@ public class DirectedGraph extends View {
                 }
             }
         }
+    }
+
+    @Override
+    public void onCallbackTurnOf(String turnOf) {
+
+    }
+
+    private void getTurnOf(Callback callback) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference roomNameRef = database.getReference("rooms").child(roomName);
+        roomNameRef.child("turnOf").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String value = snapshot.getValue().toString();
+                callback.onCallbackTurnOf(value);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void refreshTurnOf() {
+        TextView turnoDi = this.getActivityTable().findViewById(R.id.table_turn_of);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference roomNameRef = database.getReference("rooms").child(roomName);
+        getTurnOf(new Callback() {
+            @Override
+            public void onCallbackTurnOf(String turnOf) {
+                boolean retrievedTurnOf = false;
+                while (!retrievedTurnOf) {
+                    if (turnOf != null) {
+                        // Log.i(TAG, "Turno di " + turnOf);
+                        if (turnOf.equalsIgnoreCase(getResources().getString(R.string.directed_graph_attacker))) {
+                            turnoDi.setText(getResources().getString(R.string.directed_graph_defender));
+                            roomNameRef.child("turnOf").setValue(getResources().getString(R.string.directed_graph_defender));
+                            // Log.i(TAG, "Setta a difensore");
+                        } else {
+                            turnoDi.setText(getResources().getString(R.string.directed_graph_attacker));
+                            roomNameRef.child("turnOf").setValue(getResources().getString(R.string.directed_graph_attacker));
+                            // Log.i(TAG, "Setta ad attaccante");
+                        }
+                        retrievedTurnOf = true;
+                    }
+                }
+            }
+        });
+
+
+        /*getColour(roomNameRef, new CallbackColor() {
+            @Override
+            public void onCallbackColor(String color) {
+                boolean retrievedColor = false;
+                while (!retrievedColor) {
+                    if (color != null) {
+                        specialColour = color;
+                        retrievedColor = true;
+                        //Log.i(TAG, "2 - " + specialColour);
+                        startActivity(roomName, false, specialColour);
+                        finish();
+                    }
+                }
+            }
+        });*/
     }
 
     private boolean touchIsInCircle(float x, float y, float centreX, float centreY, float radius) {
