@@ -136,9 +136,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
         boolean left = true;
         // get node of left graph
-        nodesL = divideNodesGraph(nodes, left);
+        nodesL = divideNodes(nodes, left);
         // get edges of left graph
-        //edgesL = divideEdgesLeftGraph();
+        edgesL = divideEdges(edges, left);
 
         // initialize layout
         LinearLayout tableLeftDirectedGraphLayout = findViewById(R.id.table_left_directed_graph_layout);
@@ -151,8 +151,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         //outgoingEdgesLeft = getOutgoingEdgesLeft(edgesL);
 
         left = false;
-        nodesR = divideNodesGraph(nodes, left);
-        //edgesR = divideEdgesLeftGraph();
+        nodesR = divideNodes(nodes, left);
+        edgesR = divideEdges(edges, left);
 
         LinearLayout tableRightDirectedGraphLayout = findViewById(R.id.table_right_directed_graph_layout);
 
@@ -160,7 +160,19 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         tableRightDirectedGraphLayout.addView(directedGraphRight);
     }
 
-    private Node[] divideNodesGraph(Node[] nodes, boolean left) {
+    private Edge[] divideEdges(Edge[] edges, boolean left) {
+        Edge[] appoggio = new Edge[7];
+        if (left) {
+            System.arraycopy(edges, 0, appoggio, 0, 7);
+        } else {
+            for (int i = 7; i < 14; i++) {
+                appoggio[i - 7] = edges[i];
+            }
+        }
+        return appoggio;
+    }
+
+    private Node[] divideNodes(Node[] nodes, boolean left) {
         Node[] appoggio = new Node[5];
         if (left) {
             System.arraycopy(nodes, 0, appoggio, 0, 5);
