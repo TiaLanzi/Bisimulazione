@@ -201,8 +201,6 @@ public class SignUp extends AppCompatActivity {
         map.put("email", utente.getMail());
         map.put("pwd", utente.getPassword());
 
-        // Log.i(TAG, "Siamo qui arrivati");
-
         // if lastName + firstName already exists --> add a counter (or something like this)
         if (userFullName.equalsIgnoreCase("")) {
             reference.child(utente.getLastName() + " " + utente.getFirstName()).setValue(map);

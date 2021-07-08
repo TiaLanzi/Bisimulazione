@@ -124,11 +124,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         setTextColour(specialColour);
         // set turn of text
         setTurnOf();
-        //Log.i(TAG, "Room name: " + roomName + ", role: " + role);
-        //Log.i(TAG, "Red: " + colours[0]);
-        //Log.i(TAG, "Green: " + colours[1]);
-        //Log.i(TAG, "Black: " + colours[2]);
-        //Log.i(TAG, "Blue: " + colours[3]);
 
         // initialize nodes
         nodes = new Node[10];
@@ -142,9 +137,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         boolean left = true;
         // get node of left graph
         nodesL = divideNodesGraph(nodes, left);
-        for (Node node : nodesL) {
-            Log.i(TAG, "Node " + node.getId() + ", left Table? " + node.isLeftTable());
-        }
         // get edges of left graph
         //edgesL = divideEdgesLeftGraph();
 
@@ -160,9 +152,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
         left = false;
         nodesR = divideNodesGraph(nodes, left);
-        for (Node node : nodesR) {
-            Log.i(TAG, "Node " + node.getId() + ", left Table? " + node.isLeftTable());
-        }
         //edgesR = divideEdgesLeftGraph();
 
         LinearLayout tableRightDirectedGraphLayout = findViewById(R.id.table_right_directed_graph_layout);
@@ -313,14 +302,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void getPlayerOneName(CallbackPlayerOne callback) {
-        //Log.i(TAG, "Entra nel metodo specifico one");
         roomNameRef.child("Player 1").child("playerName").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if (snapshot.getValue() != null) {
                     String value = snapshot.getValue().toString();
                     callback.onCallbackPlayerOneName(value);
-                    // Log.i(TAG, "Legge valore one" + value);
                 }
             }
 
@@ -347,14 +334,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void getPlayerTwoName(CallbackPlayerTwo callback) {
-        //Log.i(TAG, "Entra nel metodo specifico one");
         roomNameRef.child("Player 2").child("playerName").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if (snapshot.getValue() != null) {
                     String value = snapshot.getValue().toString();
                     callback.onCallbackPlayerTwoName(value);
-                    // Log.i(TAG, "Legge valore one" + value);
                 }
             }
 
@@ -369,7 +354,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         HashMap<String, String> map = new HashMap<>();
         map.put("playerName", playerName);
         map.put("role", role);
-        // Log.i(TAG, "Siamo qui arrivati");
         if (player1) {
             roomsRef.child(roomName + "/" + "Player 1/").setValue(map);
         } else {
@@ -407,7 +391,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     if (turnOf != null) {
                         turnoDi.setText(turnOf);
                         retrievedTurnOf = true;
-                        //Log.i(TAG, "Turn of " + turnOf);
                     }
                 }
             }
@@ -475,7 +458,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
             Iterator<Edge> eachListIterator = list.iterator();
             while (eachListIterator.hasNext()) {
-                Log.i(TAG, "LOL " + eachListIterator.next().toString());
                 eachListIterator.next().
                 //int id = eachListIterator.next().getId();
             }
@@ -527,7 +509,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
             Iterator<Edge> eachListIterator = list.iterator();
             while (eachListIterator.hasNext()) {
-                Log.i(TAG, "LOL " + eachListIterator.next().toString());
                 eachListIterator.next().
                 //int id = eachListIterator.next().getId();
             }

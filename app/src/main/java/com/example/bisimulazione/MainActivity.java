@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void sendData(DatabaseReference playersRef, String playerName) {
-        //Log.i(TAG, "Siamo qui arrivati");
         playerRef = playersRef.child(playerName);
         playerRef.setValue(playerName);
     }
