@@ -57,11 +57,21 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private DatabaseReference roomsRef;
     private DatabaseReference roomNameRef;
 
+    private Node[] nodes;
+    private Edge[] edges;
+
+    private Node[] nodesL;
+    private Edge[] edgesL;
+
+    private Node[] nodesR;
+    private Edge[] edgesR;
 
     private ArrayList<List<Edge>> incomingEdgesLeft;
     private ArrayList<List<Edge>> outgoingEdgesLeft;
     private ArrayList<List<Edge>> incomingEdgesRight;
     private ArrayList<List<Edge>> outgoingEdgesRight;
+
+    private final float radius = 40f;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -120,86 +130,171 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         //Log.i(TAG, "Black: " + colours[2]);
         //Log.i(TAG, "Blue: " + colours[3]);
 
+        // initialize nodes
+        nodes = new Node[10];
+        // set nodes
+        setNodes();
+        // initialize edges
+        edges = new Edge[14];
+        // set edges
+        setEdges();
+
+        boolean left = true;
+        // get node of left graph
+        nodesL = divideNodesGraph(nodes, left);
+        for (Node node : nodesL) {
+            Log.i(TAG, "Node " + node.getId() + ", left Table? " + node.isLeftTable());
+        }
+        // get edges of left graph
+        //edgesL = divideEdgesLeftGraph();
+
         // initialize layout
         LinearLayout tableLeftDirectedGraphLayout = findViewById(R.id.table_left_directed_graph_layout);
-
-        // initialize root node
-        int shiftStartVertical = 200;
-        Node[] nodes = new Node[5];
-        Node root = new Node(1, 0, shiftStartVertical, true, false, false, true, getColor(R.color.primaryColor));
-        nodes[0] = root;
-        Node second = new Node(2, root.getX(), root.getY(), false, true, false, true, getColor(R.color.black));
-        nodes[1] = second;
-        Node third = new Node(3, root.getX(), root.getY(), false, false, true, true, getColor(R.color.black));
-        nodes[2] = third;
-        Node fourth = new Node(4, second.getX(), second.getY(), false, false, false, true, getColor(R.color.black));
-        nodes[3] = fourth;
-        Node fifth = new Node(5, third.getX(), third.getY(), false, false, false, true, getColor(R.color.black));
-        nodes[4] = fifth;
-        // initialize array of edges
-        Edge[] edges = new Edge[7];
-        // initialize first edge
-        Edge uno = new Edge(1, root, second, getResources().getColor(R.color.red), true, true, false);
-        // assign first edge to index 0 of edges array
-        edges[0] = uno;
-        Edge due = new Edge(2, root, third, getResources().getColor(R.color.red), true, true, false);
-        edges[1] = due;
-        Edge tre = new Edge(3, second, root, getResources().getColor(R.color.green), true, false, true);
-        edges[2] = tre;
-        Edge quattro = new Edge(4, third, root, getResources().getColor(R.color.green), true, false, true);
-        edges[3] = quattro;
-        Edge cinque = new Edge(5, third, fifth, getResources().getColor(R.color.black), true, true, true);
-        edges[4] = cinque;
-        Edge sei = new Edge(6, second, fourth, getResources().getColor(R.color.primaryColor), true, true, true);
-        edges[5] = sei;
-        Edge sette = new Edge(7, fifth, fourth, getResources().getColor(R.color.primaryColor), true, false, true);
-        edges[6] = sette;
-        // initialize DirectedGraph
+        // initialize directed graph left
         directedGraphLeft = new DirectedGraph(this, edges, nodes, roomName);
         // add directed graph to linear layout
         tableLeftDirectedGraphLayout.addView(directedGraphLeft);
 
-        incomingEdgesLeft = getIncomingEdgesLeft(edges);
-        outgoingEdgesLeft = getOutgoingEdgesLeft(edges);
+        //incomingEdgesLeft = getIncomingEdgesLeft(edgesL);
+        //outgoingEdgesLeft = getOutgoingEdgesLeft(edgesL);
+
+        left = false;
+        nodesR = divideNodesGraph(nodes, left);
+        for (Node node : nodesR) {
+            Log.i(TAG, "Node " + node.getId() + ", left Table? " + node.isLeftTable());
+        }
+        //edgesR = divideEdgesLeftGraph();
 
         LinearLayout tableRightDirectedGraphLayout = findViewById(R.id.table_right_directed_graph_layout);
-
-        Node[] nodesR = new Node[5];
-        Node rootR = new Node(1, 0, shiftStartVertical, true, false, false, false, getColor(R.color.primaryColor));
-        nodesR[0] = rootR;
-        Node secondR = new Node(2, rootR.getX(), rootR.getY(), false, true, false, false, getColor(R.color.black));
-        nodesR[1] = secondR;
-        Node thirdR = new Node(3, rootR.getX(), rootR.getY(), false, false, true, false, getColor(R.color.black));
-        nodesR[2] = thirdR;
-        Node fourthR = new Node(4, second.getX(), second.getY(), false, false, false, false, getColor(R.color.black));
-        nodesR[3] = fourthR;
-        Node fifthR = new Node(5, thirdR.getX(), thirdR.getY(), false, false, false, false, getColor(R.color.black));
-        nodesR[4] = fifthR;
-
-        Edge[] edgesR = new Edge[7];
-        Edge unoR = new Edge(1, rootR, secondR, getResources().getColor(R.color.red), false, true, false);
-        edgesR[0] = unoR;
-        Edge dueR = new Edge(2, rootR, thirdR, getResources().getColor(R.color.red), false, true, false);
-        edgesR[1] = dueR;
-        Edge treR = new Edge(3, thirdR, rootR, getResources().getColor(R.color.green), false, false, true);
-        edgesR[2] = treR;
-        Edge quattroR = new Edge(4, fifthR, rootR, getResources().getColor(R.color.green), false, false, false);
-        edgesR[3] = quattroR;
-        Edge cinqueR = new Edge(5, secondR, fourthR, getResources().getColor(R.color.primaryColor), false, true, true);
-        edgesR[4] = cinqueR;
-        Edge seiR = new Edge(6, fifthR, fourthR, getResources().getColor(R.color.primaryColor), false, false, true);
-        edgesR[5] = seiR;
-        Edge setteR = new Edge(7, thirdR, fifthR, getResources().getColor(R.color.black), false, true, true);
-        edgesR[6] = setteR;
 
         directedGraphRight = new DirectedGraph(this, edgesR, nodesR, roomName);
         tableRightDirectedGraphLayout.addView(directedGraphRight);
     }
 
+    private Node[] divideNodesGraph(Node[] nodes, boolean left) {
+        Node[] appoggio = new Node[5];
+        if (left) {
+            System.arraycopy(nodes, 0, appoggio, 0, 5);
+        } else {
+            for (int i = 5; i < 10; i++) {
+                appoggio[i - 5] = nodes[i];
+            }
+        }
+        return appoggio;
+    }
+
+    private void setNodes() {
+        int shiftStartVertical = 200;
+        // left graph
+        // initialize root node
+        Node root = new Node(1, 0, shiftStartVertical, true, false, false, true, getResources().getColor(R.color.primaryColor));
+        // assign root node to index 0 of nodes array
+        nodes[0] = root;
+        Node second = new Node(2, root.getX(), root.getY(), false, true, false, true, getResources().getColor(R.color.black));
+        nodes[1] = second;
+        Node third = new Node(3, root.getX(), root.getY(), false, false, true, true, getResources().getColor(R.color.black));
+        nodes[2] = third;
+        Node fourth = new Node(4, second.getX(), second.getY(), false, false, false, true, getResources().getColor(R.color.black));
+        nodes[3] = fourth;
+        Node fifth = new Node(5, third.getX(), third.getY(), false, false, false, true, getResources().getColor(R.color.black));
+        nodes[4] = fifth;
+
+        //right graph
+        Node rootR = new Node(1, 0, shiftStartVertical, true, false, false, false, getResources().getColor(R.color.primaryColor));
+        nodes[5] = rootR;
+        Node secondR = new Node(2, rootR.getX(), rootR.getY(), false, true, false, false, getResources().getColor(R.color.black));
+        nodes[6] = secondR;
+        Node thirdR = new Node(3, rootR.getX(), rootR.getY(), false, false, true, false, getResources().getColor(R.color.black));
+        nodes[7] = thirdR;
+        Node fourthR = new Node(4, second.getX(), second.getY(), false, false, false, false, getResources().getColor(R.color.black));
+        nodes[8] = fourthR;
+        Node fifthR = new Node(5, thirdR.getX(), thirdR.getY(), false, false, false, false, getResources().getColor(R.color.black));
+        nodes[9] = fifthR;
+    }
+
+    private void setEdges() {
+        // left graph
+        // initialize first edge
+        Edge uno = new Edge(1, nodes[0], nodes[1], getResources().getColor(R.color.red), true, true, false);
+        // assign first edge to index 0 of edges array
+        edges[0] = uno;
+        Edge due = new Edge(2, nodes[0], nodes[2], getResources().getColor(R.color.red), true, true, false);
+        edges[1] = due;
+        Edge tre = new Edge(3, nodes[1], nodes[0], getResources().getColor(R.color.green), true, false, true);
+        edges[2] = tre;
+        Edge quattro = new Edge(4, nodes[2], nodes[0], getResources().getColor(R.color.green), true, false, true);
+        edges[3] = quattro;
+        Edge cinque = new Edge(5, nodes[2], nodes[4], getResources().getColor(R.color.black), true, true, true);
+        edges[4] = cinque;
+        Edge sei = new Edge(6, nodes[1], nodes[3], getResources().getColor(R.color.primaryColor), true, true, true);
+        edges[5] = sei;
+        Edge sette = new Edge(7, nodes[4], nodes[3], getResources().getColor(R.color.primaryColor), true, false, true);
+        edges[6] = sette;
+
+        // right graph
+        Edge unoR = new Edge(1, nodes[5], nodes[6], getResources().getColor(R.color.red), false, true, false);
+        edges[7] = unoR;
+        Edge dueR = new Edge(2, nodes[5], nodes[7], getResources().getColor(R.color.red), false, true, false);
+        edges[8] = dueR;
+        Edge treR = new Edge(3, nodes[7], nodes[5], getResources().getColor(R.color.green), false, false, true);
+        edges[9] = treR;
+        Edge quattroR = new Edge(4, nodes[9], nodes[5], getResources().getColor(R.color.green), false, false, false);
+        edges[10] = quattroR;
+        Edge cinqueR = new Edge(5, nodes[6], nodes[8], getResources().getColor(R.color.primaryColor), false, true, true);
+        edges[11] = cinqueR;
+        Edge seiR = new Edge(6, nodes[9], nodes[8], getResources().getColor(R.color.primaryColor), false, false, true);
+        edges[12] = seiR;
+        Edge setteR = new Edge(7, nodes[7], nodes[9], getResources().getColor(R.color.black), false, true, true);
+        edges[13] = setteR;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
+        super.onTouchEvent(event);
 
+        // perform on touch only once
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            for (Node node : nodes) {
+                if (node != null) {
+                    boolean isTouched = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
+                    if (isTouched) {
+                        // Log.i(TAG, "Circle touched: " + node.getId() + "table: " + node.isLeftTable());
+                        if (node.isLeftTable()) {
+                            roomNameRef = roomNameRef.child("leftGraph");
+                            switch (node.getId()) {
+                                case 1:
+                                    roomNameRef.child("One selected").setValue(true);
+                                    break;
+                                case 2:
+                                    roomNameRef.child("Two selected").setValue(true);
+                                    break;
+                                case 3:
+                                    roomNameRef.child("Three selected").setValue(true);
+                                    break;
+                                case 4:
+                                    roomNameRef.child("Four selected").setValue(true);
+                                    break;
+                                case 5:
+                                    roomNameRef.child("Five selected").setValue(true);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        //refreshNodes(node.isLeftTable(), node.getId());
+                        //refreshTurnOf();
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean touchIsInCircle(float x, float y, float centreX, float centreY, float radius) {
+        double dx = Math.pow(x - centreX, 2);
+        double dy = Math.pow(y - centreY, 2);
+
+        return (dx + dy) < Math.pow(radius, 2);
     }
 
     private void setAttacker() {

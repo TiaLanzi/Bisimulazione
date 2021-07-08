@@ -107,7 +107,7 @@ public class DirectedGraph extends View {
 
     @SuppressLint("DrawAllocation")
     @Override
-    protected void onDraw(Canvas canvas) {
+    public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.save();
         //this.setCanvas(canvas);
@@ -141,50 +141,6 @@ public class DirectedGraph extends View {
                 }
             }*/
         }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        super.onTouchEvent(event);
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference roomNameRef = database.getReference("rooms").child(roomName);
-        // perform on touch only once
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            for (Node node : this.getNodes()) {
-                if (node != null) {
-                    boolean isTouched = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
-                    if (isTouched) {
-                        // Log.i(TAG, "Circle touched: " + node.getId() + "table: " + node.isLeftTable());
-                        if (node.isLeftTable()) {
-                            roomNameRef = roomNameRef.child("leftGraph");
-                            switch (node.getId()) {
-                                case 1:
-                                    roomNameRef.child("One selected").setValue(true);
-                                    break;
-                                case 2:
-                                    roomNameRef.child("Two selected").setValue(true);
-                                    break;
-                                case 3:
-                                    roomNameRef.child("Three selected").setValue(true);
-                                    break;
-                                case 4:
-                                    roomNameRef.child("Four selected").setValue(true);
-                                    break;
-                                case 5:
-                                    roomNameRef.child("Five selected").setValue(true);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        refreshNodes(node.isLeftTable(), node.getId());
-                        //refreshTurnOf();
-                    }
-                }
-            }
-        }
-        return true;
     }
 
     private void refreshNodes(boolean isLeftTable, int id) {
@@ -279,13 +235,6 @@ public class DirectedGraph extends View {
             }
         });
     }*/
-
-    private boolean touchIsInCircle(float x, float y, float centreX, float centreY, float radius) {
-        double dx = Math.pow(x - centreX, 2);
-        double dy = Math.pow(y - centreY, 2);
-
-        return (dx + dy) < Math.pow(radius, 2);
-    }
 
     private void drawEdges(Canvas canvas) {
         for (int i = 0; i < this.getEdges().length; i++) {
