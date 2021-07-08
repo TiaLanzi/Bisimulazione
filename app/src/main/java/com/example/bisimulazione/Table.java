@@ -134,39 +134,26 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         boolean left = true;
         // get node of left graph
         nodesL = divideNodes(nodes, left);
-        for (Node node : nodesL) {
-            Log.i(TAG, "1 - Nodes " + node.getId());
-        }
         // get edges of left graph
         edgesL = divideEdges(edges, left);
-       /* for (Edge edge : edgesL) {
-            Log.i(TAG, "1 - Edge " + edge.getId());
-        } */
-        //dGraphLeft.setNodes(nodesL);
-        // initialize directed graphs
-        com.example.bisimulazione.directedgraph.DirectedGraph dGraphLeft = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_left_table_directed_graph);
-        //com.example.bisimulazione.directedgraph.DirectedGraph dGraphRight = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_right_table_directed_graph);
-        dGraphLeft.setNodes(nodesL);
-        dGraphLeft.setEdges(edgesL);
-        // initialize layout
-        //LinearLayout tableLeftDirectedGraphLayout = findViewById(R.id.table_left_directed_graph_layout);
         // initialize directed graph left
-
-        // add directed graph to linear layout
-        //tableLeftDirectedGraphLayout.removeView(dGraphLeft);
-        //tableLeftDirectedGraphLayout.addView(dGraphLeft);
+        com.example.bisimulazione.directedgraph.DirectedGraph directedGraphLeft = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_left_table_directed_graph);
+        // set nodes for left graph
+        directedGraphLeft.setNodes(nodesL);
+        // set edges for left graph
+        directedGraphLeft.setEdges(edgesL);
 
         //incomingEdgesLeft = getIncomingEdgesLeft(edgesL);
         //outgoingEdgesLeft = getOutgoingEdgesLeft(edgesL);
 
         left = false;
-        /*nodesR = divideNodes(nodes, left);
+        nodesR = divideNodes(nodes, left);
         edgesR = divideEdges(edges, left);
 
-        LinearLayout tableRightDirectedGraphLayout = findViewById(R.id.table_right_directed_graph_layout);
+        com.example.bisimulazione.directedgraph.DirectedGraph directedGraphRight = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_right_table_directed_graph);
 
-        DirectedGraph directedGraphRight = new DirectedGraph(this, edgesR, nodesR, roomName);
-        tableRightDirectedGraphLayout.addView(directedGraphRight); */
+        directedGraphRight.setNodes(nodesR);
+        directedGraphRight.setEdges(edgesR);
     }
 
     private Edge[] divideEdges(Edge[] edges, boolean left) {

@@ -31,8 +31,6 @@ public class DirectedGraph extends View {
 
     private static final String TAG = "Bisimulazione";
 
-    private Activity activityTable;
-
     private Edge[] edges;
     private Node[] nodes;
 
@@ -59,7 +57,6 @@ public class DirectedGraph extends View {
 
     public DirectedGraph(Context context, Edge[] edges, Node[] nodes, String roomName) {
         super(context);
-        //setActivity(activityTable);
         setEdges(edges);
         for (Edge edge : edges) {
             Log.i(TAG, "2 - Edge " + edge.getId());
@@ -119,7 +116,7 @@ public class DirectedGraph extends View {
         //this.setCanvas(canvas);
         drawGraph(canvas);
 
-        //canvas.restore();
+        canvas.restore();
     }
 
     private void drawGraph(Canvas canvas) {
@@ -131,14 +128,11 @@ public class DirectedGraph extends View {
         // draw nodes if not exist
         if (this.getNodes() != null) {
             for (Node node : this.getNodes()) {
+                paintNode = paintNode(node.getColor());
                 if (node.isLeftTable()) {
-                    paintNode = paintNode(node.getColor());
                     if (!node.isAlreadyDrawn()) {
-                        //Log.i(TAG, "1 - Id node " + node.getId() + ", already drawn? " + node.isAlreadyDrawn());
                         canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
-                        //Log.i(TAG, "1 - Drawn node " + node.getId());
                         node.setAlreadyDrawn(true);
-
                     }
                 } else {
                     if (!node.isAlreadyDrawn()) {

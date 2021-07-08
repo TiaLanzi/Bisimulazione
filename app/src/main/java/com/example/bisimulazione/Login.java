@@ -137,14 +137,13 @@ public class Login extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(Login.this, getString(R.string.login_bottom_sheet_mail_sent_to), Toast.LENGTH_LONG).show();
+                                            Toast.makeText(Login.this, getString(R.string.login_bottom_sheet_mail_sent_to) + " " + fromEditTextToString(resetEmail), Toast.LENGTH_LONG).show();
                                             username.setText(fromEditTextToString(resetEmail));
                                             rememberMe.setChecked(true);
                                             bottomSheetDialog.dismiss();
                                         }
                                     }
                                 });
-
                     }
                 });
             }
