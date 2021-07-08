@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,11 +24,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
-import interfaces.Callback;
 import interfaces.CallbackColor;
 
 @SuppressLint("ViewConstructor")
-public class DirectedGraph extends View implements Callback {
+public class DirectedGraph extends View {
 
     private static final String TAG = "Bisimulazione";
 
@@ -45,21 +45,33 @@ public class DirectedGraph extends View implements Callback {
 
     //private Canvas canvas;
 
-    public DirectedGraph(Context context, Activity activityTable, Edge[] edges, Node[] nodes, String roomName) {
+    public DirectedGraph(Context context) {
         super(context);
-        setActivity(activityTable);
+    }
+
+    public DirectedGraph(Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
+    }
+
+    public DirectedGraph(Context context, AttributeSet attributeSet, int defStyle) {
+        super(context, attributeSet, defStyle);
+    }
+
+    public DirectedGraph(Context context, Edge[] edges, Node[] nodes, String roomName) {
+        super(context);
+        //setActivity(activityTable);
         setEdges(edges);
         setNodes(nodes);
         setRoomName(roomName);
     }
 
-    private void setActivity(Activity activityTable) {
+    /*private void setActivity(Activity activityTable) {
         this.activityTable = activityTable;
     }
 
     public Activity getActivityTable() {
         return this.activityTable;
-    }
+    } */
 
     private void setEdges(Edge[] edges) {
         this.edges = edges;
@@ -97,10 +109,11 @@ public class DirectedGraph extends View implements Callback {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
+        canvas.save();
         //this.setCanvas(canvas);
+        //drawGraph(canvas);
 
-        drawGraph(canvas);
+        canvas.restore();
     }
 
     private void drawGraph(Canvas canvas) {
@@ -166,7 +179,7 @@ public class DirectedGraph extends View implements Callback {
                             }
                         }
                         refreshNodes(node.isLeftTable(), node.getId());
-                        refreshTurnOf();
+                        //refreshTurnOf();
                     }
                 }
             }
@@ -218,34 +231,7 @@ public class DirectedGraph extends View implements Callback {
         }
     }
 
-    @Override
-    public void onCallbackPlayerName(String playerName) {
-
-    }
-
-    @Override
-    public void onCallbackTurnOf(String turnOf) {
-
-    }
-
-    private void getTurnOf(Callback callback) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference roomNameRef = database.getReference("rooms").child(roomName);
-        roomNameRef.child("turnOf").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String value = snapshot.getValue().toString();
-                callback.onCallbackTurnOf(value);
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void refreshTurnOf() {
+    /*private void refreshTurnOf() {
         TextView turnoDi = this.getActivityTable().findViewById(R.id.table_turn_of);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -291,8 +277,8 @@ public class DirectedGraph extends View implements Callback {
                     }
                 }
             }
-        });*/
-    }
+        });
+    }*/
 
     private boolean touchIsInCircle(float x, float y, float centreX, float centreY, float radius) {
         double dx = Math.pow(x - centreX, 2);

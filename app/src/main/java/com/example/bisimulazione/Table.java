@@ -4,9 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -28,9 +31,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import interfaces.Callback;
+import javax.security.auth.callback.Callback;
 
-public class Table extends AppCompatActivity implements Callback {
+import interfaces.CallbackPlayerOne;
+import interfaces.CallbackPlayerTwo;
+import interfaces.CallbackTurnOf;
+
+public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo {
 
     private static final String TAG = "Bisimulazione";
 
@@ -43,12 +50,13 @@ public class Table extends AppCompatActivity implements Callback {
 
     private TextView coloreSpeciale;
     private TextView turnoDi;
+    private TextView attacker;
+    private TextView defender;
 
     private FirebaseDatabase database;
-    private DatabaseReference roomRef;
-    private DatabaseReference roomRole;
-    private DatabaseReference leftTableRef;
-    private DatabaseReference rightTableRef;
+    private DatabaseReference roomsRef;
+    private DatabaseReference roomNameRef;
+
 
     private ArrayList<List<Edge>> incomingEdgesLeft;
     private ArrayList<List<Edge>> outgoingEdgesLeft;
@@ -60,22 +68,27 @@ public class Table extends AppCompatActivity implements Callback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table);
-
+        // initialize directed graphs
+        com.example.bisimulazione.directedgraph.DirectedGraph directedGraphLeft = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_left_table_directed_graph);
+        com.example.bisimulazione.directedgraph.DirectedGraph directedGraphRight = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_right_table_directed_graph);
+        // initialize text views for special colour, turn of, attacker and defender
         coloreSpeciale = findViewById(R.id.table_special_colour);
         turnoDi = findViewById(R.id.table_turn_of);
-
+        attacker = findViewById(R.id.table_attacker_is);
+        defender = findViewById(R.id.table_defender_is);
+        // initialize firebase user
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
-
+        // get user name if not null
         if (user != null) {
             playerName = user.getDisplayName();
             //Log.i(TAG, "Player name " + user.getDisplayName());
         }
-
+        // initialize database
         database = FirebaseDatabase.getInstance();
-
-        roomRef = database.getReference("rooms");
-
+        // initialize reference to rooms
+        roomsRef = database.getReference("rooms");
+        // get data from matchmaking
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             player1 = extras.getBoolean("player 1");
@@ -88,10 +101,15 @@ public class Table extends AppCompatActivity implements Callback {
             } else {
                 role = getString(R.string.table_defender);
             }
+            // send to DB player name and his role whether player 1 or 2
             sendData(player1);
         }
-        // set attacker and defender
-        setAttackerDefender();
+        // set reference to room name
+        roomNameRef = roomsRef.child(roomName);
+        // set attacker
+        setAttacker();
+        // set defender
+        setDefender();
         // set special colour text
         setTextColour(specialColour);
         // set turn of text
@@ -137,13 +155,12 @@ public class Table extends AppCompatActivity implements Callback {
         Edge sette = new Edge(7, fifth, fourth, getResources().getColor(R.color.primaryColor), true, false, true);
         edges[6] = sette;
         // initialize DirectedGraph
-        DirectedGraph directedGraphLeft = new DirectedGraph(this, this, edges, nodes, roomName);
+        directedGraphLeft = new DirectedGraph(this, edges, nodes, roomName);
         // add directed graph to linear layout
         tableLeftDirectedGraphLayout.addView(directedGraphLeft);
 
         incomingEdgesLeft = getIncomingEdgesLeft(edges);
         outgoingEdgesLeft = getOutgoingEdgesLeft(edges);
-
 
         LinearLayout tableRightDirectedGraphLayout = findViewById(R.id.table_right_directed_graph_layout);
 
@@ -175,62 +192,40 @@ public class Table extends AppCompatActivity implements Callback {
         Edge setteR = new Edge(7, thirdR, fifthR, getResources().getColor(R.color.black), false, true, true);
         edgesR[6] = setteR;
 
-        DirectedGraph directedGraphRight = new DirectedGraph(this, this, edgesR, nodesR, roomName);
+        directedGraphRight = new DirectedGraph(this, edgesR, nodesR, roomName);
         tableRightDirectedGraphLayout.addView(directedGraphRight);
     }
 
-    private void setAttackerDefender() {
-        Log.i(TAG, "Entra nel metodo generale");
-        TextView attacker = findViewById(R.id.table_attacker_is);
-        TextView defender = findViewById(R.id.table_defender_is);
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference roomNameRef = database.getReference().child("rooms").child(roomName);
-
-        if (player1) {
-            getPlayerOneName(roomNameRef, new Callback() {
-                @Override
-                public void onCallbackPlayerName(String playerName) {
-                    boolean retrievedPlayerName = false;
-                    while (!retrievedPlayerName) {
-                        if (playerName != null) {
-                            Log.i(TAG, "Player name: " + playerName);
-                            attacker.setText(playerName);
-                            retrievedPlayerName = true;
-                        }
-                    }
-                }
-
-                @Override
-                public void onCallbackTurnOf(String turnOf) {
-
-                }
-            });
-        } else {
-            getPlayerTwoName(roomNameRef, new Callback() {
-                @Override
-                public void onCallbackPlayerName(String playerName) {
-                    Log.i(TAG, "Player name: " + playerName);
-                    defender.setText(playerName);
-                }
-
-                @Override
-                public void onCallbackTurnOf(String turnOf) {
-
-                }
-            });
-        }
     }
 
-    private void getPlayerOneName(DatabaseReference roomNameRef, Callback callback) {
-        Log.i(TAG, "Entra nel metodo specifico one");
+    private void setAttacker() {
+        getPlayerOneName(new CallbackPlayerOne() {
+            @Override
+            public void onCallbackPlayerOneName(String playerName) {
+                boolean retrievedPlayerName = false;
+                while (!retrievedPlayerName) {
+                    if (playerName != null) {
+                        attacker.setText(playerName);
+                        retrievedPlayerName = true;
+                    }
+                }
+            }
+        });
+    }
+
+    private void getPlayerOneName(CallbackPlayerOne callback) {
+        //Log.i(TAG, "Entra nel metodo specifico one");
         roomNameRef.child("Player 1").child("playerName").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if (snapshot.getValue() != null) {
                     String value = snapshot.getValue().toString();
-                    callback.onCallbackTurnOf(value);
-                    Log.i(TAG, "Legge valore one");
+                    callback.onCallbackPlayerOneName(value);
+                    // Log.i(TAG, "Legge valore one" + value);
                 }
             }
 
@@ -241,15 +236,30 @@ public class Table extends AppCompatActivity implements Callback {
         });
     }
 
-    private void getPlayerTwoName(DatabaseReference roomNameRef, Callback callback) {
-        Log.i(TAG, "Entra nel metodo specifico two");
-        roomNameRef.child("Player 2").child("playerName").addListenerForSingleValueEvent(new ValueEventListener() {
+    private void setDefender() {
+        getPlayerTwoName(new CallbackPlayerTwo() {
+            @Override
+            public void onCallbackPlayerTwoName(String playerName) {
+                boolean retrievedPlayerName = false;
+                while (!retrievedPlayerName) {
+                    if (playerName != null) {
+                        defender.setText(playerName);
+                        retrievedPlayerName = true;
+                    }
+                }
+            }
+        });
+    }
+
+    private void getPlayerTwoName(CallbackPlayerTwo callback) {
+        //Log.i(TAG, "Entra nel metodo specifico one");
+        roomNameRef.child("Player 2").child("playerName").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if (snapshot.getValue() != null) {
                     String value = snapshot.getValue().toString();
-                    callback.onCallbackTurnOf(value);
-                    Log.i(TAG, "Legge valore two");
+                    callback.onCallbackPlayerTwoName(value);
+                    // Log.i(TAG, "Legge valore one" + value);
                 }
             }
 
@@ -259,7 +269,6 @@ public class Table extends AppCompatActivity implements Callback {
             }
         });
     }
-
 
     private void sendData(boolean player1) {
         HashMap<String, String> map = new HashMap<>();
@@ -267,9 +276,9 @@ public class Table extends AppCompatActivity implements Callback {
         map.put("role", role);
         // Log.i(TAG, "Siamo qui arrivati");
         if (player1) {
-            roomRef.child(roomName + "/" + "Player 1/").setValue(map);
+            roomsRef.child(roomName + "/" + "Player 1/").setValue(map);
         } else {
-            roomRef.child(roomName + "/" + "Player 2/").setValue(map);
+            roomsRef.child(roomName + "/" + "Player 2/").setValue(map);
         }
     }
 
@@ -295,12 +304,7 @@ public class Table extends AppCompatActivity implements Callback {
     }
 
     private void setTurnOf() {
-        getTurnOf(roomRef.child(roomName), new Callback() {
-            @Override
-            public void onCallbackPlayerName(String playerName) {
-
-            }
-
+        getTurnOf(roomsRef.child(roomName), new CallbackTurnOf() {
             @Override
             public void onCallbackTurnOf(String turnOf) {
                 boolean retrievedTurnOf = false;
@@ -315,7 +319,7 @@ public class Table extends AppCompatActivity implements Callback {
         });
     }
 
-    private void getTurnOf(DatabaseReference roomNameRef, Callback callback) {
+    private void getTurnOf(DatabaseReference roomNameRef, CallbackTurnOf callback) {
         roomNameRef.child("turnOf").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -328,17 +332,6 @@ public class Table extends AppCompatActivity implements Callback {
 
             }
         });
-    }
-
-
-    @Override
-    public void onCallbackPlayerName(String playerName) {
-
-    }
-
-    @Override
-    public void onCallbackTurnOf(String turnOf) {
-
     }
 
     private ArrayList<List<Edge>> getIncomingEdgesLeft(Edge[] edges) {
@@ -445,5 +438,20 @@ public class Table extends AppCompatActivity implements Callback {
             }
         } */
         return arrayList;
+    }
+
+    @Override
+    public void onCallbackTurnOf(String turnOf) {
+
+    }
+
+    @Override
+    public void onCallbackPlayerOneName(String playerName) {
+
+    }
+
+    @Override
+    public void onCallbackPlayerTwoName(String playerName) {
+
     }
 }

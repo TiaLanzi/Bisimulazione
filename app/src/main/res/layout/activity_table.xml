@@ -50,7 +50,16 @@
                     android:layout_marginVertical="4dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:orientation="vertical" />
+                    android:orientation="vertical">
+
+                    <com.example.bisimulazione.directedgraph.DirectedGraph
+                        android:id="@+id/table_left_table_directed_graph"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
 
@@ -91,7 +100,16 @@
                     android:layout_marginVertical="4dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:orientation="vertical" />
+                    android:orientation="vertical">
+
+                    <com.example.bisimulazione.directedgraph.DirectedGraph
+                        android:id="@+id/table_right_table_directed_graph"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
