@@ -78,9 +78,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table);
-        // initialize directed graphs
-        com.example.bisimulazione.directedgraph.DirectedGraph directedGraphLeft = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_left_table_directed_graph);
-        com.example.bisimulazione.directedgraph.DirectedGraph directedGraphRight = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_right_table_directed_graph);
         // initialize text views for special colour, turn of, attacker and defender
         coloreSpeciale = findViewById(R.id.table_special_colour);
         turnoDi = findViewById(R.id.table_turn_of);
@@ -137,27 +134,39 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         boolean left = true;
         // get node of left graph
         nodesL = divideNodes(nodes, left);
+        for (Node node : nodesL) {
+            Log.i(TAG, "1 - Nodes " + node.getId());
+        }
         // get edges of left graph
         edgesL = divideEdges(edges, left);
-
+       /* for (Edge edge : edgesL) {
+            Log.i(TAG, "1 - Edge " + edge.getId());
+        } */
+        //dGraphLeft.setNodes(nodesL);
+        // initialize directed graphs
+        com.example.bisimulazione.directedgraph.DirectedGraph dGraphLeft = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_left_table_directed_graph);
+        //com.example.bisimulazione.directedgraph.DirectedGraph dGraphRight = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_right_table_directed_graph);
+        dGraphLeft.setNodes(nodesL);
+        dGraphLeft.setEdges(edgesL);
         // initialize layout
-        LinearLayout tableLeftDirectedGraphLayout = findViewById(R.id.table_left_directed_graph_layout);
+        //LinearLayout tableLeftDirectedGraphLayout = findViewById(R.id.table_left_directed_graph_layout);
         // initialize directed graph left
-        directedGraphLeft = new DirectedGraph(this, edges, nodes, roomName);
+
         // add directed graph to linear layout
-        tableLeftDirectedGraphLayout.addView(directedGraphLeft);
+        //tableLeftDirectedGraphLayout.removeView(dGraphLeft);
+        //tableLeftDirectedGraphLayout.addView(dGraphLeft);
 
         //incomingEdgesLeft = getIncomingEdgesLeft(edgesL);
         //outgoingEdgesLeft = getOutgoingEdgesLeft(edgesL);
 
         left = false;
-        nodesR = divideNodes(nodes, left);
+        /*nodesR = divideNodes(nodes, left);
         edgesR = divideEdges(edges, left);
 
         LinearLayout tableRightDirectedGraphLayout = findViewById(R.id.table_right_directed_graph_layout);
 
-        directedGraphRight = new DirectedGraph(this, edgesR, nodesR, roomName);
-        tableRightDirectedGraphLayout.addView(directedGraphRight);
+        DirectedGraph directedGraphRight = new DirectedGraph(this, edgesR, nodesR, roomName);
+        tableRightDirectedGraphLayout.addView(directedGraphRight); */
     }
 
     private Edge[] divideEdges(Edge[] edges, boolean left) {
@@ -255,7 +264,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
         // perform on touch only once
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            for (Node node : nodes) {
+            /*for (Node node : nodes) {
                 if (node != null) {
                     boolean isTouched = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
                     if (isTouched) {
@@ -284,11 +293,31 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         }
                         //refreshNodes(node.isLeftTable(), node.getId());
                         //refreshTurnOf();
+                    } */
+            refreshTurnOf();
+        }
+        //}
+        //}
+        return true;
+    }
+
+    private void refreshTurnOf() {
+        getTurnOf(roomsRef.child(roomName), new CallbackTurnOf() {
+            @Override
+            public void onCallbackTurnOf(String turnOf) {
+                boolean retrievedTurnOf = false;
+                while (!retrievedTurnOf) {
+                    if (turnOf != null) {
+                        if (turnOf.equalsIgnoreCase(getString(R.string.table_attacker))) {
+                            turnoDi.setText(getString(R.string.table_defender));
+                        } else {
+                            turnoDi.setText(getString(R.string.table_attacker));
+                        }
+                        retrievedTurnOf = true;
                     }
                 }
             }
-        }
-        return true;
+        }, true);
     }
 
     private boolean touchIsInCircle(float x, float y, float centreX, float centreY, float radius) {
@@ -406,23 +435,41 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     }
                 }
             }
-        });
+        }, false);
     }
 
-    private void getTurnOf(DatabaseReference roomNameRef, CallbackTurnOf callback) {
-        roomNameRef.child("turnOf").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String value = snapshot.getValue().toString();
-                callback.onCallbackTurnOf(value);
-            }
+    private void getTurnOf(DatabaseReference roomNameRef, CallbackTurnOf callback, boolean persistent) {
+        if (!persistent) {
+            roomNameRef.child("turnOf").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    String value = snapshot.getValue().toString();
+                    callback.onCallbackTurnOf(value);
+                }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        } else {
+            roomNameRef.child("turnOf").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    if (snapshot.getValue().toString() != null) {
+                        String value = snapshot.getValue().toString();
+                        callback.onCallbackTurnOf(value);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                }
+            });
+        }
     }
+
 
     private ArrayList<List<Edge>> getIncomingEdgesLeft(Edge[] edges) {
         //private void getIncomingEdges(Edge[] edges) {
