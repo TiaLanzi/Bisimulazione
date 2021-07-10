@@ -109,4 +109,6 @@
     <!-- directed graph -->
     <string name="directed_graph_attacker">attacker</string>
     <string name="directed_graph_defender">defender</string>
+    <string name="navigation_drawer_open">open</string>
+    <string name="navigation_drawer_close">close</string>
 </resources>

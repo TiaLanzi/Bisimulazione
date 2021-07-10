@@ -11,4 +11,8 @@
     <color name="dark_grey">#A9A9A9</color>
     <color name="background_color">#F4F6FB</color>
     <color name="background_table">#F1FAEE</color>
+    <color name="background_first_card_start">#EB3349</color>
+    <color name="background_first_card_end">#F45C43</color>
+    <color name="background_second_card_start">#DA22FF</color>
+    <color name="background_second_card_end">#9733EE</color>
 </resources>

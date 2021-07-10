@@ -1,44 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginHorizontal="64dp"
-    android:layout_marginTop="272dp"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
-    <Button
-        android:id="@+id/main_play_button"
-        style="@style/BUTTON"
+    <include
+        layout="@layout/app_bar_navigation_drawer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/button"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:text="@string/main_play_now"
-        android:textColor="@color/white"
-        android:visibility="visible" />
+        android:layout_height="match_parent" />
 
-    <Button
-        android:id="@+id/main_options_button"
-        style="@style/BUTTON"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginVertical="32dp"
-        android:background="@drawable/button"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:text="@string/main_options"
-        android:textColor="@color/white"
-        android:visibility="visible" />
-
-</LinearLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/navigation_header_main"
+        app:menu="@menu/activity_main_drawer" />
+</androidx.drawerlayout.widget.DrawerLayout>

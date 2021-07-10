@@ -1,12 +1,17 @@
 package com.example.bisimulazione;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.Toolbar;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,55 +35,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private AppBarConfiguration appBarConfiguration;
 
-    private Toolbar toolbar;
-
-    private String playerName;
-    private DatabaseReference playersRef;
-    private DatabaseReference playerRef;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // initialize views about navigation drawer and header
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        /*DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_view).setDrawerLayout(drawerLayout).build();*/
 
-        Button playGame = findViewById(R.id.main_play_button);
+        //Toolbar toolbar = findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
 
-        if (user != null) {
-            playerName = user.getDisplayName();
-            // Log.i(TAG, "Player name " + user.getDisplayName());
-        }
-        if (playerName != null) {
-            if (!playerName.equals("")) {
-                playersRef = database.getReference().child("players");
-            }
-        }
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.navigation_host_fragment).setDrawerLayout(drawerLayout).build();
 
-        playGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendData(playersRef, playerName);
-                Intent intent = new Intent(MainActivity.this, MatchmakingRoom.class);
-                startActivity(intent);
-            }
-        });
-        //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_container);
-        //NavigationUI.setupActionBarWithNavController(navigationView, navController);
+        NavController navController = Navigation.findNavController(this, R.id.navigation_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
 
+        initDrawerLayout();
     }
 
-    private void setSupportActionBar(Toolbar toolbar) {
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.navigation_host_fragment);
+        return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
     }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
@@ -96,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawers();
         return false;
     }
@@ -104,6 +84,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
+    }
+
+    private void initDrawerLayout() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     private void navigateTo(Fragment fragment) {
@@ -123,10 +108,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.replace(R.id.nav_host_fragment_container, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-    }
-
-    private void sendData(DatabaseReference playersRef, String playerName) {
-        playerRef = playersRef.child(playerName);
-        playerRef.setValue(playerName);
     }
 }
