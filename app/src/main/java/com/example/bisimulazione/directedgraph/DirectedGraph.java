@@ -145,98 +145,6 @@ public class DirectedGraph extends View {
         }
     }
 
-    private void refreshNodes(boolean isLeftTable, int id) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference roomNameRef = database.getReference("rooms").child(roomName);
-
-        if (isLeftTable) {
-            roomNameRef = roomNameRef.child("leftGraph");
-        } else {
-            roomNameRef = roomNameRef.child("rightGraph");
-        }
-
-        //Log.i(TAG, "REF: " + roomNameRef.toString());
-
-        for (Node node : this.getNodes()) {
-            if (node.getId() != id) {
-                //Log.i(TAG, "Node: " + node.getId());
-                switch (node.getId()) {
-                    case 1:
-                        //Log.i(TAG, "Cambia il valore al nodo 1");
-                        roomNameRef.child("One selected").setValue(false);
-                        break;
-                    case 2:
-                        //Log.i(TAG, "Cambia il valore al nodo 2");
-                        roomNameRef.child("Two selected").setValue(false);
-                        break;
-                    case 3:
-                        //Log.i(TAG, "Cambia il valore al nodo 3");
-                        roomNameRef.child("Three selected").setValue(false);
-                        break;
-                    case 4:
-                        //Log.i(TAG, "Cambia il valore al nodo 4");
-                        roomNameRef.child("Four selected").setValue(false);
-                        break;
-                    case 5:
-                        //Log.i(TAG, "Cambia il valore al nodo 5");
-                        roomNameRef.child("Five selected").setValue(false);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    }
-
-    /*private void refreshTurnOf() {
-        TextView turnoDi = this.getActivityTable().findViewById(R.id.table_turn_of);
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference roomNameRef = database.getReference("rooms").child(roomName);
-        getTurnOf(new Callback() {
-            @Override
-            public void onCallbackPlayerName(String playerName) {
-            }
-
-            @Override
-            public void onCallbackTurnOf(String turnOf) {
-                boolean retrievedTurnOf = false;
-                while (!retrievedTurnOf) {
-                    if (turnOf != null) {
-                        // Log.i(TAG, "Turno di " + turnOf);
-                        if (turnOf.equalsIgnoreCase(getResources().getString(R.string.directed_graph_attacker))) {
-                            turnoDi.setText(getResources().getString(R.string.directed_graph_defender));
-                            roomNameRef.child("turnOf").setValue(getResources().getString(R.string.directed_graph_defender));
-                            // Log.i(TAG, "Setta a difensore");
-                        } else {
-                            turnoDi.setText(getResources().getString(R.string.directed_graph_attacker));
-                            roomNameRef.child("turnOf").setValue(getResources().getString(R.string.directed_graph_attacker));
-                            // Log.i(TAG, "Setta ad attaccante");
-                        }
-                        retrievedTurnOf = true;
-                    }
-                }
-            }
-        });
-
-
-        /*getColour(roomNameRef, new CallbackColor() {
-            @Override
-            public void onCallbackColor(String color) {
-                boolean retrievedColor = false;
-                while (!retrievedColor) {
-                    if (color != null) {
-                        specialColour = color;
-                        retrievedColor = true;
-                        //Log.i(TAG, "2 - " + specialColour);
-                        startActivity(roomName, false, specialColour);
-                        finish();
-                    }
-                }
-            }
-        });
-    }*/
-
     private void drawEdges(Canvas canvas) {
         if (this.getEdges() != null) {
             for (int i = 0; i < this.getEdges().length; i++) {
@@ -470,5 +378,10 @@ public class DirectedGraph extends View {
         paint.setStrokeWidth(stroke);
         paint.setAntiAlias(true);
         return paint;
+    }
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
     }
 }

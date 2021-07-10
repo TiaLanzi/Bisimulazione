@@ -63,7 +63,7 @@ public class Node {
         return this.y;
     }
 
-    protected void setColor(int color) {
+    public void setColor(int color) {
         this.color = color;
     }
 
