@@ -37,14 +37,9 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColor 
     private List<String> roomsList;
     private ArrayAdapter<String> adapter;
 
-    private List<String> setup;
-    private ArrayAdapter<String> setupAdapter;
-
     private String playerName;
     private String roomName;
     private String specialColour;
-    private String colour;
-    private String turnOf;
 
     private DatabaseReference roomsRef;
     private DatabaseReference roomNameRef;
@@ -70,9 +65,6 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColor 
         createRoom = findViewById(R.id.matchmaking_room_create_room_button);
 
         roomsList = new ArrayList<>();
-
-        setup = new ArrayList<>();
-        //setupAdapter = new ArrayAdapter<String>()
 
         roomsRef = database.getReference().child("rooms");
 

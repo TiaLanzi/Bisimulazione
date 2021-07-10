@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -41,8 +40,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private String role;
     private String specialColour;
 
-    private boolean player1;
-    private boolean left;
     private boolean touchable;
 
     private TextView coloreSpeciale;
@@ -50,7 +47,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private TextView attacker;
     private TextView defender;
 
-    private FirebaseDatabase database;
     private DatabaseReference roomsRef;
     private DatabaseReference roomNameRef;
     private DatabaseReference leftGraphRef;
@@ -91,13 +87,13 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             //Log.i(TAG, "Player name " + user.getDisplayName());
         }
         // initialize database
-        database = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
         // initialize reference to rooms
         roomsRef = database.getReference("rooms");
         // get data from matchmaking
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            player1 = extras.getBoolean("player 1");
+            boolean player1 = extras.getBoolean("player 1");
             //Log.i(TAG, "Player 1? " + player1);
             roomName = extras.getString("roomName");
             //Log.i(TAG, "Room name: " + roomName);
@@ -130,7 +126,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         // set edges
         setEdges();
 
-        left = true;
+        boolean left = true;
         // get node of left graph
         nodesL = divideNodes(nodes, left);
         // get edges of left graph
@@ -322,7 +318,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     break;
                             }
                         }
-                        directedGraph.invalidate();
+                        //directedGraph.invalidate();
 
                         //directedGraph = new DirectedGraph(this.getApplicationContext());
                         refreshNodes(node.isLeftTable(), node.getId());

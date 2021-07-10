@@ -1,30 +1,13 @@
 package com.example.bisimulazione.directedgraph;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-
-import com.example.bisimulazione.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import org.jetbrains.annotations.NotNull;
-
-import interfaces.CallbackColor;
 
 @SuppressLint("ViewConstructor")
 public class DirectedGraph extends View {
@@ -34,14 +17,8 @@ public class DirectedGraph extends View {
     private Edge[] edges;
     private Node[] nodes;
 
-    private String roomName;
-
     private final float stroke = 8f;
     private final float radius = 40f;
-
-    private Paint paintNode;
-
-    //private Canvas canvas;
 
     public DirectedGraph(Context context) {
         super(context);
@@ -54,27 +31,6 @@ public class DirectedGraph extends View {
     public DirectedGraph(Context context, AttributeSet attributeSet, int defStyle) {
         super(context, attributeSet, defStyle);
     }
-
-    public DirectedGraph(Context context, Edge[] edges, Node[] nodes, String roomName) {
-        super(context);
-        setEdges(edges);
-        for (Edge edge : edges) {
-            Log.i(TAG, "2 - Edge " + edge.getId());
-        }
-        setNodes(nodes);
-        for (Node node : nodes) {
-            Log.i(TAG, "2 - Nodes " + node.getId());
-        }
-        setRoomName(roomName);
-    }
-
-    /*private void setActivity(Activity activityTable) {
-        this.activityTable = activityTable;
-    }
-
-    public Activity getActivityTable() {
-        return this.activityTable;
-    } */
 
     public void setEdges(Edge[] edges) {
         this.edges = edges;
@@ -92,31 +48,16 @@ public class DirectedGraph extends View {
         return this.nodes;
     }
 
-    private void setRoomName(String roomName) {
-        this.roomName = roomName;
-    }
-
-    public String getRoomName() {
-        return this.roomName;
-    }
-
-    /*private void setCanvas(Canvas canvas) {
-        this.canvas = canvas;
-    }
-
-    private Canvas getCanvas() {
-        return this.canvas;
-    }*/
-
     @SuppressLint("DrawAllocation")
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.save();
+        //canvas.save();
         //this.setCanvas(canvas);
         drawGraph(canvas);
 
-        canvas.restore();
+        //canvas.restore();
+        //invalidate();
     }
 
     private void drawGraph(Canvas canvas) {
@@ -128,18 +69,10 @@ public class DirectedGraph extends View {
         // draw nodes if not exist
         if (this.getNodes() != null) {
             for (Node node : this.getNodes()) {
-                paintNode = paintNode(node.getColor());
-                if (node.isLeftTable()) {
-                    if (!node.isAlreadyDrawn()) {
-                        canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
-                        node.setAlreadyDrawn(true);
-                    }
-                } else {
-                    if (!node.isAlreadyDrawn()) {
-                        canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
-                        Log.i(TAG, "2 - Drawn node " + node.getId());
-                        node.setAlreadyDrawn(true);
-                    }
+                Paint paintNode = paintNode(node.getColor());
+                if (!node.isAlreadyDrawn()) {
+                    canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
+                    node.setAlreadyDrawn(true);
                 }
             }
         }

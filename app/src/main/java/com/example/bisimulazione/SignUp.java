@@ -29,7 +29,6 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.regex.Pattern;
 
 public class SignUp extends AppCompatActivity {
 
@@ -127,7 +126,6 @@ public class SignUp extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                 task.isSuccessful();
-                                                //Log.i(TAG, "Profilo aggiornato");
                                             }
                                         });
                                         Toast.makeText(getApplicationContext(), getString(R.string.sign_up_successful), Toast.LENGTH_SHORT).show();
@@ -161,17 +159,6 @@ public class SignUp extends AppCompatActivity {
             return false;
         } else {
             return true;
-        }
-    }
-
-    private boolean isValidEmail(EditText editText) {
-        String email = fromEditTextToString(editText);
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." + "[a-zA-Z0-9+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        if (email != null) {
-            return pattern.matcher(email).matches();
-        } else {
-            return false;
         }
     }
 
