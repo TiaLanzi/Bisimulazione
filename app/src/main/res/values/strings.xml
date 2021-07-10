@@ -109,8 +109,14 @@
     <string name="directed_graph_attacker">attaccante</string>
     <string name="directed_graph_defender">difensore</string>
     <string name="table_no_move">DON\'T MOVE</string>
+
+    <!-- navigation -->
     <string name="navigation_drawer_open">open</string>
     <string name="navigation_drawer_close">close</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- menu -->
+    <string name="menu_home">Home</string>
+    <string name="menu_bug_report">Segnala un problema</string>
+    <string name="menu_faq">FAQ</string>
+    <string name="menu_play_game">Gioca ora</string>
 </resources>

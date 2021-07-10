@@ -109,6 +109,14 @@
     <!-- directed graph -->
     <string name="directed_graph_attacker">attacker</string>
     <string name="directed_graph_defender">defender</string>
+
+    <!-- navigation -->
     <string name="navigation_drawer_open">open</string>
     <string name="navigation_drawer_close">close</string>
+
+    <!-- menu -->
+    <string name="menu_home">Home</string>
+    <string name="menu_bug_report">Bug Report</string>
+    <string name="menu_faq">FAQ</string>
+    <string name="menu_play_game">Play Game</string>
 </resources>
