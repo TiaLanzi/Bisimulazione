@@ -119,4 +119,7 @@
     <string name="menu_bug_report">Bug Report</string>
     <string name="menu_faq">FAQ</string>
     <string name="menu_play_game">Play Game</string>
+
+    <!-- FAQ -->
+    <string name="faq">FAQ</string>
 </resources>
