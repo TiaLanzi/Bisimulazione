@@ -119,7 +119,12 @@
     <string name="menu_bug_report">Bug Report</string>
     <string name="menu_faq">FAQ</string>
     <string name="menu_play_game">Play Game</string>
+    <string name="menu_settings">Settings</string>
 
     <!-- FAQ -->
     <string name="faq">FAQ</string>
+
+    <!-- settings -->
+    <string name="settings">SETTINGS</string>
+    <string name="settings_language">Change language</string>
 </resources>

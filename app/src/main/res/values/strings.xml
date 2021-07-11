@@ -108,18 +108,23 @@
     <!-- directed graph -->
     <string name="directed_graph_attacker">attaccante</string>
     <string name="directed_graph_defender">difensore</string>
-    <string name="table_no_move">DON\'T MOVE</string>
+    <string name="table_no_move">RESTA FERMO</string>
 
     <!-- navigation -->
-    <string name="navigation_drawer_open">open</string>
-    <string name="navigation_drawer_close">close</string>
+    <string name="navigation_drawer_open">apri</string>
+    <string name="navigation_drawer_close">chiudi</string>
 
     <!-- menu -->
     <string name="menu_home">Home</string>
     <string name="menu_bug_report">Segnala un problema</string>
     <string name="menu_faq">FAQ</string>
     <string name="menu_play_game">Gioca ora</string>
+    <string name="menu_settings">Impostazioni</string>
 
     <!-- FAQ -->
     <string name="faq">FAQ</string>
+
+    <!-- settings -->
+    <string name="settings">IMPOSTAZIONI</string>
+    <string name="settings_language">Scegli la lingua</string>
 </resources>

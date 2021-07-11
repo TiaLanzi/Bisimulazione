@@ -12,6 +12,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,9 +20,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
 import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 import info.androidhive.fontawesome.FontDrawable;
 
@@ -42,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
-        appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.navigation_host_fragment).setDrawerLayout(drawerLayout).build();
+        appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home, R.id.navigation_host_fragment).setDrawerLayout(drawerLayout).build();
 
         NavController navController = Navigation.findNavController(this, R.id.navigation_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -57,10 +61,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.nav_home:
+            case R.id.navigation_home:
                 getSupportActionBar().setTitle(getString(R.string.menu_home));
                 navigateTo(new Home());
                 break;
@@ -78,6 +83,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportActionBar().setTitle(getString(R.string.menu_play_game));
                 Intent intentGame = new Intent(this, MatchmakingRoom.class);
                 startActivity(intentGame);
+                break;
+            case R.id.navigation_settings:
+                getSupportActionBar().setTitle(getString(R.string.menu_settings));
+                Intent intentSettings = new Intent(this, Settings.class);
+                startActivity(intentSettings);
                 break;
             default:
                 break;
