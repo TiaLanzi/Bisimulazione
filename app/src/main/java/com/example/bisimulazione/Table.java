@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import interfaces.CallbackPlayerOne;
@@ -151,8 +153,17 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             }
         });
 
-        //incomingEdgesLeft = getIncomingEdgesLeft(edgesL);
-        //outgoingEdgesLeft = getOutgoingEdgesLeft(edgesL);
+        setIncomingEdgesLeft();
+        for (Node node : nodesL) {
+            Log.i(TAG, "Node: " + node.getId());
+            node.getIncomingEdges();
+        }
+
+        setOutgoingEdgesLeft();
+        for (Node node : nodesL) {
+            Log.i(TAG, "Node: " + node.getId());
+            node.getOutgoingEdges();
+        }
 
         left = false;
         nodesR = divideNodes(nodes, left);
@@ -174,6 +185,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             }
         });
     }
+
 
     private Edge[] divideEdges(Edge[] edges, boolean left) {
         Edge[] appoggio = new Edge[7];
@@ -198,6 +210,43 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         }
         return appoggio;
     }
+
+    private void setIncomingEdgesLeft() {
+        // set incoming edges
+        Edge[] edgesRootLeft = {edgesL[2], edgesL[3]};
+        nodesL[0].setIncomingEdges(edgesRootLeft);
+
+        Edge[] edgesSecondLeft = {edgesL[0]};
+        nodesL[1].setIncomingEdges(edgesSecondLeft);
+
+        Edge[] edgesThirdLeft = {edgesL[1]};
+        nodesL[2].setIncomingEdges(edgesThirdLeft);
+
+        Edge[] edgesFourthLeft = {edgesL[5], edgesL[6]};
+        nodesL[3].setIncomingEdges(edgesFourthLeft);
+
+        Edge[] edgesFifthLeft = {edgesL[4]};
+        nodesL[4].setIncomingEdges(edgesFifthLeft);
+    }
+
+    private void setOutgoingEdgesLeft() {
+        // set outgoing edges
+        Edge[] edgesRootLeftO = {edgesL[0], edgesL[1]};
+        nodesL[0].setOutgoingEdges(edgesRootLeftO);
+
+        Edge[] edgesSecondLeftO = {edgesL[2], edgesL[5]};
+        nodesL[1].setOutgoingEdges(edgesSecondLeftO);
+
+        Edge[] edgesThirdLeftO = {edgesL[3], edgesL[4]};
+        nodesL[2].setOutgoingEdges(edgesThirdLeftO);
+
+        Edge[] edgesSFourthLeftO = {};
+        nodesL[3].setOutgoingEdges(edgesSFourthLeftO);
+
+        Edge[] edgesFifthLeftO = {edgesL[6]};
+        nodesL[4].setOutgoingEdges(edgesFifthLeftO);
+    }
+
 
     private void setNodes() {
         int shiftStartVertical = 200;
@@ -381,7 +430,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         }
     }
 
-    // NOT WORKING!!
     private void refreshTurnOf() {
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
             roomsRef.child(roomName).child("turnOf").setValue(getString(R.string.table_defender));
@@ -465,20 +513,19 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private void setTextColour(String sColour) {
         switch (sColour) {
             case "red":
-                coloreSpeciale.setTextColor(getColor(R.color.red));
+                coloreSpeciale.setTextColor(getResources().getColor(R.color.red));
                 break;
             case "green":
-                coloreSpeciale.setTextColor(getColor(R.color.green));
+                coloreSpeciale.setTextColor(getResources().getColor(R.color.green));
                 break;
             case "black":
-                coloreSpeciale.setTextColor(getColor(R.color.black));
+                coloreSpeciale.setTextColor(getResources().getColor(R.color.black));
                 break;
             case "blue":
-                coloreSpeciale.setTextColor(getColor(R.color.primaryColor));
+                coloreSpeciale.setTextColor(getResources().getColor(R.color.primaryColor));
                 break;
             default:
                 break;
@@ -516,110 +563,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
     }
 
-
-    private ArrayList<List<Edge>> getIncomingEdgesLeft(Edge[] edges) {
-        //private void getIncomingEdges(Edge[] edges) {
-
-        List<Edge> incomingEdgesNodeOne = new ArrayList<Edge>();
-        List<Edge> incomingEdgesNodeTwo = new ArrayList<Edge>();
-        List<Edge> incomingEdgesNodeThree = new ArrayList<Edge>();
-        List<Edge> incomingEdgesNodeFour = new ArrayList<Edge>();
-        List<Edge> incomingEdgesNodeFive = new ArrayList<Edge>();
-
-        for (Edge edge : edges) {
-            switch (edge.getId()) {
-                case 1:
-                    incomingEdgesNodeTwo.add(edge);
-                    break;
-                case 2:
-                    incomingEdgesNodeThree.add(edge);
-                    break;
-                case 3:
-                case 4:
-                    incomingEdgesNodeOne.add(edge);
-                    break;
-                case 5:
-                    incomingEdgesNodeFive.add(edge);
-                    break;
-                case 6:
-                case 7:
-                    incomingEdgesNodeFour.add(edge);
-                    break;
-                default:
-                    break;
-            }
-        }
-        ArrayList<List<Edge>> arrayList = new ArrayList<>(5);
-        arrayList.add(incomingEdgesNodeOne);
-        arrayList.add(incomingEdgesNodeTwo);
-        arrayList.add(incomingEdgesNodeThree);
-        arrayList.add(incomingEdgesNodeFour);
-        arrayList.add(incomingEdgesNodeFive);
-
-        /*Iterator<List<Edge>> listOfListsIterator = arrayList.iterator();
-        while (listOfListsIterator.hasNext()) {
-            List<Edge> list = new ArrayList<>();
-            list = listOfListsIterator.next();
-
-            Iterator<Edge> eachListIterator = list.iterator();
-            while (eachListIterator.hasNext()) {
-                eachListIterator.next().
-                //int id = eachListIterator.next().getId();
-            }
-        } */
-        return arrayList;
-    }
-
-    private ArrayList<List<Edge>> getOutgoingEdgesLeft(Edge[] edges) {
-        //private void getIncomingEdges(Edge[] edges) {
-
-        List<Edge> outgoingEdgesNodeOne = new ArrayList<Edge>();
-        List<Edge> outgoingEdgesNodeTwo = new ArrayList<Edge>();
-        List<Edge> outgoingEdgesNodeThree = new ArrayList<Edge>();
-        List<Edge> outgoingEdgesNodeFour = new ArrayList<Edge>();
-        List<Edge> outgoingEdgesNodeFive = new ArrayList<Edge>();
-
-        for (Edge edge : edges) {
-            switch (edge.getId()) {
-                case 1:
-                case 2:
-                    outgoingEdgesNodeOne.add(edge);
-                    break;
-                case 3:
-                case 6:
-                    outgoingEdgesNodeTwo.add(edge);
-                    break;
-                case 4:
-                case 5:
-                    outgoingEdgesNodeThree.add(edge);
-                    break;
-                case 7:
-                    outgoingEdgesNodeFive.add(edge);
-                    break;
-                default:
-                    break;
-            }
-        }
-        ArrayList<List<Edge>> arrayList = new ArrayList<>(5);
-        arrayList.add(outgoingEdgesNodeOne);
-        arrayList.add(outgoingEdgesNodeTwo);
-        arrayList.add(outgoingEdgesNodeThree);
-        arrayList.add(outgoingEdgesNodeFour);
-        arrayList.add(outgoingEdgesNodeFive);
-
-        /*Iterator<List<Edge>> listOfListsIterator = arrayList.iterator();
-        while (listOfListsIterator.hasNext()) {
-            List<Edge> list = new ArrayList<>();
-            list = listOfListsIterator.next();
-
-            Iterator<Edge> eachListIterator = list.iterator();
-            while (eachListIterator.hasNext()) {
-                eachListIterator.next().
-                //int id = eachListIterator.next().getId();
-            }
-        } */
-        return arrayList;
-    }
 
     private boolean touchIsInCircle(float x, float y, float centreX, float centreY, float radius) {
         double dx = Math.pow(x - centreX, 2);

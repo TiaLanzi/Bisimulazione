@@ -1,8 +1,11 @@
 package com.example.bisimulazione.directedgraph;
 
 import android.content.res.Resources;
+import android.util.Log;
 
 public class Node {
+
+    private static final String TAG = "Bisimulazione";
 
     private int id;
     private int x;
@@ -11,6 +14,8 @@ public class Node {
     private boolean root;
     private boolean alreadyDrawn;
     private int color;
+    private Edge[] incomingEdges;
+    private Edge[] outgoingEdges;
 
     public Node(int id, int x, int y, boolean root, boolean toLeft, boolean toRight, boolean leftTable, int color) {
         super();
@@ -93,5 +98,27 @@ public class Node {
 
     public boolean isAlreadyDrawn() {
         return this.alreadyDrawn;
+    }
+
+    public void setIncomingEdges(Edge[] incomingEdges) {
+        this.incomingEdges = incomingEdges;
+    }
+
+    public Edge[] getIncomingEdges() {
+        for (Edge edge : this.incomingEdges) {
+            Log.i(TAG, "Edge: " + edge.getId() + ", left table? " + edge.isLeftTable());
+        }
+        return this.incomingEdges;
+    }
+
+    public void setOutgoingEdges(Edge[] outgoingEdges) {
+        this.outgoingEdges = outgoingEdges;
+    }
+
+    public Edge[] getOutgoingEdges() {
+        for (Edge edge : this.outgoingEdges) {
+            Log.i(TAG, "Edge: " + edge.getId() + ", left table? " + edge.isLeftTable());
+        }
+        return this.outgoingEdges;
     }
 }
