@@ -23,7 +23,7 @@
             android:text="@string/settings_language" />
 
         <Spinner
-            android:id="@+id/spinner"
+            android:id="@+id/settings_spinner"
             style="@style/Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

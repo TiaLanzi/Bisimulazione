@@ -127,4 +127,9 @@
     <!-- settings -->
     <string name="settings">SETTINGS</string>
     <string name="settings_language">Change language</string>
+
+    <!-- language -->
+    <string name="language_italian">Italian</string>
+    <string name="language_english">English</string>
+    <string name="language_select">Select language…</string>
 </resources>
