@@ -85,8 +85,8 @@
     <string name="table_green">verde</string>
     <string name="table_black">nero</string>
     <string name="table_blue">blu</string>
-    <string name="table_attacker">ATTACCANTE</string>
-    <string name="table_defender">DIFENSORE</string>
+    <string name="table_attacker">attaccante</string>
+    <string name="table_defender">difensore</string>
     <string name="table_attacker_is">L\'attaccante è:</string>
     <string name="table_defender_is">Il difensore è:</string>
 

@@ -115,7 +115,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         // set special colour text
         setTextColour(specialColour);
         // initialize turn of text
-        initializeTurnOf();
+        setTurnOf();
 
         // initialize nodes
         nodes = new Node[10];
@@ -265,7 +265,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void setOnTouchGraph(MotionEvent event, DirectedGraph directedGraph) {
-        refreshTurnOf();
+        //refreshTurnOf();
         if (directedGraph.getNodes() != null) {
             for (Node node : directedGraph.getNodes()) {
                 if (node != null) {
@@ -322,7 +322,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
                         //directedGraph = new DirectedGraph(this.getApplicationContext());
                         refreshNodes(node.isLeftTable(), node.getId());
-                        //refreshTurnOf();
+                        refreshTurnOf();
                     }
                 }
             }
@@ -383,24 +383,11 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     // NOT WORKING!!
     private void refreshTurnOf() {
-        getTurnOf(roomsRef.child(roomName), new CallbackTurnOf() {
-            @Override
-            public void onCallbackTurnOf(String turnOf) {
-                boolean retrievedTurnOf = false;
-                while (!retrievedTurnOf) {
-                    if (turnOf != null) {
-                        if (turnOf.equalsIgnoreCase(getString(R.string.table_attacker))) {
-                            turnoDi.setText(getString(R.string.table_defender));
-                            //roomsRef.child(roomName).child("turnOf").setValue(getString(R.string.table_defender));
-                        } else {
-                            turnoDi.setText(getString(R.string.table_attacker));
-                            //roomsRef.child(roomName).child("turnOf").setValue(getString(R.string.table_attacker));
-                        }
-                        retrievedTurnOf = true;
-                    }
-                }
-            }
-        }, true);
+        if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
+            roomsRef.child(roomName).child("turnOf").setValue(getString(R.string.table_defender));
+        } else {
+            roomsRef.child(roomName).child("turnOf").setValue(getString(R.string.table_attacker));
+        }
     }
 
     private void setAttacker() {
@@ -499,7 +486,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         coloreSpeciale.setText(specialColour);
     }
 
-    private void initializeTurnOf() {
+    private void setTurnOf() {
         getTurnOf(roomsRef.child(roomName), new CallbackTurnOf() {
             @Override
             public void onCallbackTurnOf(String turnOf) {
@@ -511,40 +498,22 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     }
                 }
             }
-        }, false);
+        });
     }
 
-    private void getTurnOf(DatabaseReference roomNameRef, CallbackTurnOf callback,
-                           boolean persistent) {
-        if (!persistent) {
-            roomNameRef.child("turnOf").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String value = snapshot.getValue().toString();
-                    callback.onCallbackTurnOf(value);
-                }
+    private void getTurnOf(DatabaseReference roomNameRef, CallbackTurnOf callback) {
+        roomNameRef.child("turnOf").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String value = snapshot.getValue().toString();
+                callback.onCallbackTurnOf(value);
+            }
 
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-                }
-            });
-        } else {
-            roomNameRef.child("turnOf").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    if (snapshot.getValue().toString() != null) {
-                        String value = snapshot.getValue().toString();
-                        callback.onCallbackTurnOf(value);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                }
-            });
-        }
+            }
+        });
     }
 
 
