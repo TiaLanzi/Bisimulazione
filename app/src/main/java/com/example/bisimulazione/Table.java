@@ -11,7 +11,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.bisimulazione.directedgraph.DirectedGraph;
 import com.example.bisimulazione.directedgraph.Edge;
@@ -28,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import interfaces.CallbackLastMoveColour;
@@ -68,11 +66,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     private Node[] nodesR;
     private Edge[] edgesR;
-
-    private ArrayList<List<Edge>> incomingEdgesLeft;
-    private ArrayList<List<Edge>> outgoingEdgesLeft;
-    private ArrayList<List<Edge>> incomingEdgesRight;
-    private ArrayList<List<Edge>> outgoingEdgesRight;
 
     private final float radius = 40f;
 
@@ -118,6 +111,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         }
         // set reference to room name
         roomNameRef = roomsRef.child(roomName);
+        // set left graph reference
+        leftGraphRef = roomNameRef.child("leftGraph");
+        // set right graph reference
+        rightGraphRef = roomNameRef.child("rightGraph");
         // set attacker
         setAttacker();
         // set defender
@@ -164,16 +161,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
 
         setIncomingEdgesLeft();
-        /*for (Node node : nodesL) {
-            Log.i(TAG, "Node: " + node.getId());
-            node.getIncomingEdges();
-        }*/
 
         setOutgoingEdgesLeft();
-        /*for (Node node : nodesL) {
-            Log.i(TAG, "Node: " + node.getId());
-            node.getOutgoingEdges();
-        }*/
 
         left = false;
         nodesR = divideNodes(nodes, left);
@@ -345,63 +334,57 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     boolean isTouched = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
                     if (isTouched) {
                         Node startNode = getSelectedNode(directedGraph.getNodes());
-                        if (validMove(startNode, node)) {
-                            // Log.i(TAG, "Circle touched: " + node.getId() + "table: " + node.isLeftTable());
-                            if (node.isLeftTable()) {
-                                switch (node.getId()) {
-                                    case 1:
-                                        leftGraphRef.child("One selected").setValue(true);
-                                        directedGraph.getNodes()[0].setColor(getResources().getColor(R.color.primaryColor));
-                                        break;
-                                    case 2:
-                                        leftGraphRef.child("Two selected").setValue(true);
-                                        directedGraph.getNodes()[1].setColor(getResources().getColor(R.color.primaryColor));
-                                        break;
-                                    case 3:
-                                        leftGraphRef.child("Three selected").setValue(true);
-                                        directedGraph.getNodes()[2].setColor(getResources().getColor(R.color.primaryColor));
-                                        break;
-                                    case 4:
-                                        leftGraphRef.child("Four selected").setValue(true);
-                                        directedGraph.getNodes()[3].setColor(getResources().getColor(R.color.primaryColor));
-                                        break;
-                                    case 5:
-                                        leftGraphRef.child("Five selected").setValue(true);
-                                        directedGraph.getNodes()[4].setColor(getResources().getColor(R.color.primaryColor));
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            } else {
-                                switch (node.getId()) {
-                                    case 1:
-                                        rightGraphRef.child("One selected").setValue(true);
-                                        break;
-                                    case 2:
-                                        rightGraphRef.child("Two selected").setValue(true);
-                                        break;
-                                    case 3:
-                                        rightGraphRef.child("Three selected").setValue(true);
-                                        break;
-                                    case 4:
-                                        rightGraphRef.child("Four selected").setValue(true);
-                                        break;
-                                    case 5:
-                                        rightGraphRef.child("Five selected").setValue(true);
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
+                        //if (validMove(startNode, node)) {
+                        // Log.i(TfOAG, "Circle touched: " + node.getId() + "table: " + node.isLeftTable());
+                        DatabaseReference graphRef;
+                        if (node.isLeftTable()) {
+                            graphRef = leftGraphRef;
+                        } else {
+                            graphRef = rightGraphRef;
                         }
-                        //directedGraph.invalidate();
-
-                        //directedGraph = new DirectedGraph(this.getApplicationContext());
+                        switch (node.getId()) {
+                            case 1:
+                                setTouchedCircle(graphRef.child("Node one"), false);
+                                directedGraph.getNodes()[0].setColor(getResources().getColor(R.color.primaryColor));
+                                break;
+                            case 2:
+                                setTouchedCircle(graphRef.child("Node two"), false);
+                                directedGraph.getNodes()[1].setColor(getResources().getColor(R.color.primaryColor));
+                                break;
+                            case 3:
+                                setTouchedCircle(graphRef.child("Node three"), false);
+                                directedGraph.getNodes()[2].setColor(getResources().getColor(R.color.primaryColor));
+                                break;
+                            case 4:
+                                setTouchedCircle(graphRef.child("Node four"), false);
+                                directedGraph.getNodes()[3].setColor(getResources().getColor(R.color.primaryColor));
+                                break;
+                            case 5:
+                                setTouchedCircle(graphRef.child("Node five"), false);
+                                directedGraph.getNodes()[4].setColor(getResources().getColor(R.color.primaryColor));
+                                break;
+                            default:
+                                break;
+                            //}
+                        }
                         refreshNodes(node.isLeftTable(), node.getId());
+                        //Log.i(TAG, "Nodo passato: " + node.getId());
                         refreshTurnOf();
                     }
+                    //directedGraph.invalidate();
+                    //directedGraph = new DirectedGraph(this.getApplicationContext());
                 }
             }
+        }
+    }
+
+    private void setTouchedCircle(DatabaseReference nodeReference, boolean refresh) {
+        if (refresh) {
+            nodeReference.child("Selected").setValue(String.valueOf(false));
+            nodeReference.child("Colour").setValue("black");
+        } else {
+            nodeReference.child("Selected").setValue(String.valueOf(true));
+            nodeReference.child("Colour").setValue("blue");
         }
     }
 
@@ -410,15 +393,15 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private boolean isStrongMove(Node startNode, Node nodeTouched) {
-        //Log.i(TAG, "Start node id " + String.valueOf(startNode.getId()));
-        //Log.i(TAG, "Node touched id " + String.valueOf(nodeTouched.getId()));
+        Log.i(TAG, "Start node id " + String.valueOf(startNode.getId()));
+        Log.i(TAG, "Node touched id " + String.valueOf(nodeTouched.getId()));
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
-            //Log.i(TAG, "Turno di attaccante: verificato");
+            Log.i(TAG, "Turno di attaccante: verificato");
             for (Edge edge : startNode.getOutgoingEdges()) {
-                //Log.i(TAG, "Entra nel ciclo --> dovrebbe restituire i nodi 2 e 3");
-                //Log.i(TAG, String.valueOf(edge.getTwo().getId()));
+                Log.i(TAG, "Entra nel ciclo");
+                Log.i(TAG, "Cicla su edge id " + String.valueOf(edge.getTwo().getId()));
                 if (edge.getTwo().getId() == nodeTouched.getId()) {
-                    //Log.i(TAG, "Entra nel metodo --> mossa forte valida");
+                    Log.i(TAG, "Entra nel metodo --> mossa forte valida");
                     String colore = colourToString(edge.getColor());
                     roomNameRef.child("lastMoveColour").setValue(colore);
                     return true;
@@ -460,21 +443,22 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         if (leftTable) {
             for (Node node : this.nodesL) {
                 if (node.getId() != id) {
+                    Log.i(TAG, "Aggiornando nodo " + node.getId());
                     switch (node.getId()) {
                         case 1:
-                            leftGraphRef.child("One selected").setValue(false);
+                            setTouchedCircle(leftGraphRef.child("Node one"), true);
                             break;
                         case 2:
-                            leftGraphRef.child("Two selected").setValue(false);
+                            setTouchedCircle(leftGraphRef.child("Node two"), true);
                             break;
                         case 3:
-                            leftGraphRef.child("Three selected").setValue(false);
+                            setTouchedCircle(leftGraphRef.child("Node three"), true);
                             break;
                         case 4:
-                            leftGraphRef.child("Four selected").setValue(false);
+                            setTouchedCircle(leftGraphRef.child("Node four"), true);
                             break;
                         case 5:
-                            leftGraphRef.child("Five selected").setValue(false);
+                            setTouchedCircle(leftGraphRef.child("Node five"), true);
                             break;
                         default:
                             break;
@@ -485,20 +469,21 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             for (Node node : this.nodesR) {
                 if (node.getId() != id) {
                     switch (node.getId()) {
+
                         case 1:
-                            rightGraphRef.child("One selected").setValue(false);
+                            setTouchedCircle(rightGraphRef.child("Node one"), true);
                             break;
                         case 2:
-                            rightGraphRef.child("Two selected").setValue(false);
+                            setTouchedCircle(rightGraphRef.child("Node two"), true);
                             break;
                         case 3:
-                            rightGraphRef.child("Three selected").setValue(false);
+                            setTouchedCircle(rightGraphRef.child("Node three"), true);
                             break;
                         case 4:
-                            rightGraphRef.child("Four selected").setValue(false);
+                            setTouchedCircle(rightGraphRef.child("Node four"), true);
                             break;
                         case 5:
-                            rightGraphRef.child("Five selected").setValue(false);
+                            setTouchedCircle(rightGraphRef.child("Node five"), true);
                             break;
                         default:
                             break;

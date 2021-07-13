@@ -116,9 +116,9 @@ public class Node {
     }
 
     public Edge[] getOutgoingEdges() {
-        for (Edge edge : this.outgoingEdges) {
+        /*for (Edge edge : this.outgoingEdges) {
             Log.i(TAG, "Edge: " + edge.getId() + ", left table? " + edge.isLeftTable());
-        }
+        }*/
         return this.outgoingEdges;
     }
 }

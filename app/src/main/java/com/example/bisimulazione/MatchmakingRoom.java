@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -83,10 +84,7 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
                 setTurnOf(roomNameRef);
                 // initialize to empty string last move colour
                 initializeLastMoveColour(roomNameRef);
-                // set right graph
-                initializeRightGraph(roomNameRef);
-                // set left graph
-                initializeLeftGraph(roomNameRef);
+                initializeGraphs(roomNameRef);
                 sendDataP1(roomNameRef, playerName);
                 startActivity(roomName, true, specialColour);
             }
@@ -101,11 +99,10 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
                 roomName = remove(roomN);
                 // Log.i(TAG, "Room name " + roomName);
                 //roomName = roomsList.get(position);
-                roomsRef = roomsRef.child(roomName);
+                roomNameRef = roomsRef.child(roomName);
                 // Log.i(TAG, "Room ref " + String.valueOf(roomsRef));
-                sendDataP2(roomsRef, playerName);
+                sendDataP2(roomNameRef, playerName);
                 // not to show when room is full
-                roomNameRef = roomsRef;
                 roomNameRef.child("show").setValue("false");
                 specialColour = "";
                 getColour(roomNameRef, new CallbackColour() {
@@ -148,12 +145,12 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
         });
     }
 
-    private void sendDataP1(DatabaseReference reference, String playerName) {
-        reference.child("Player 1/").setValue(playerName);
+    private void sendDataP1(DatabaseReference roomNameRef, String playerName) {
+        roomNameRef.child("Player 1/").setValue(playerName);
     }
 
-    private void sendDataP2(DatabaseReference reference, String playerName) {
-        reference.child("Player 2/").setValue(playerName);
+    private void sendDataP2(DatabaseReference roomNameRef, String playerName) {
+        roomNameRef.child("Player 2/").setValue(playerName);
     }
 
     private void startActivity(String roomName, boolean player1, String specialColour) {
@@ -230,28 +227,77 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
         roomNameRef.child("lastMoveColour").setValue("");
     }
 
-    private void initializeLeftGraph(DatabaseReference roomNameRef) {
-        DatabaseReference leftGraphRef = roomNameRef.child("leftGraph");
-        HashMap<String, Boolean> map = new HashMap<>();
-        map.put("One selected", true);
-        map.put("Two selected", false);
-        map.put("Three selected", false);
-        map.put("Four selected", false);
-        map.put("Five selected", false);
-
-        leftGraphRef.setValue(map);
+    private void initializeGraphs(DatabaseReference roomNameRef) {
+        initializeGraph(roomNameRef.child("leftGraph"));
+        initializeGraph(roomNameRef.child("rightGraph"));
     }
 
-    private void initializeRightGraph(DatabaseReference roomNameRef) {
-        DatabaseReference rightGraphRef = roomNameRef.child("rightGraph");
-        HashMap<String, Boolean> map = new HashMap<>();
-        map.put("One selected", true);
-        map.put("Two selected", false);
-        map.put("Three selected", false);
-        map.put("Four selected", false);
-        map.put("Five selected", false);
+    private void initializeGraph(DatabaseReference graphReference) {
+        DatabaseReference nodesReference;
+        HashMap<String, String> map = new HashMap<>();
+        int i = 0;
+        while (i < 5) {
+            if (i == 0) {
+                nodesReference = getGraphReference(graphReference, "one");
+                map = setMapGraph(true);
+            } else {
+                if (i == 1) {
+                    nodesReference = getGraphReference(graphReference, "two");
+                } else if (i == 2) {
+                    nodesReference = getGraphReference(graphReference, "three");
+                } else if (i == 3) {
+                    nodesReference = getGraphReference(graphReference, "four");
+                } else {
+                    nodesReference = getGraphReference(graphReference, "five");
+                }
+                map = setMapGraph(false);
+            }
+            if (nodesReference != null) {
+                sendDataNodes(nodesReference, map);
+            }
+            i++;
+        }
+    }
 
-        rightGraphRef.setValue(map);
+    private void sendDataNodes(DatabaseReference nodesReference, HashMap<String, String> map) {
+        nodesReference.setValue(map);
+    }
+
+    private DatabaseReference getGraphReference(DatabaseReference graphReference, String nodeNumber) {
+        HashMap<String, String> map = new HashMap<>();
+        switch (nodeNumber) {
+            case "one":
+                graphReference = graphReference.child("Node one");
+                return graphReference;
+            case "two":
+                graphReference = graphReference.child("Node two");
+                return graphReference;
+            case "three":
+                graphReference = graphReference.child("Node three");
+                return graphReference;
+            case "four":
+                graphReference = graphReference.child("Node four");
+                return graphReference;
+            case "five":
+                graphReference = graphReference.child("Node five");
+                return graphReference;
+            default:
+                break;
+        }
+        Log.d(TAG, "Reference is null");
+        return null;
+    }
+
+    private HashMap<String, String> setMapGraph(boolean root) {
+        HashMap<String, String> map = new HashMap<>();
+        if (root) {
+            map.put("Selected", String.valueOf(true));
+            map.put("Colour", "blue");
+        } else {
+            map.put("Selected", String.valueOf(false));
+            map.put("Colour", "black");
+        }
+        return map;
     }
 
     @Override
