@@ -80,7 +80,7 @@
     <string name="table_table_left">Tavolo sinistro</string>
     <string name="table_special_colour">Il colore speciale è:</string>
     <string name="table_turn">E\' il turno di:</string>
-    <string name="table_available_moves">Archi percorribili:</string>
+    <string name="table_last_move_colour">Colore dell\'ultima mossa:</string>
     <string name="table_red">rosso</string>
     <string name="table_green">verde</string>
     <string name="table_black">nero</string>

@@ -266,16 +266,16 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/table_available_moves_text"
+                android:id="@+id/table_last_move_colour_text"
                 style="@style/Body2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="@string/table_available_moves" />
+                android:text="@string/table_last_move_colour" />
 
             <TextView
-                android:id="@+id/table_available_moves"
+                android:id="@+id/table_last_move_colour"
                 style="@style/Body2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

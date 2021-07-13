@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.bisimulazione.directedgraph.DirectedGraph;
 import com.example.bisimulazione.directedgraph.Edge;
@@ -30,11 +31,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import interfaces.CallbackLastMoveColour;
 import interfaces.CallbackPlayerOne;
 import interfaces.CallbackPlayerTwo;
 import interfaces.CallbackTurnOf;
 
-public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo {
+public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour {
 
     private static final String TAG = "Bisimulazione";
 
@@ -49,6 +51,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private TextView turnoDi;
     private TextView attacker;
     private TextView defender;
+    private TextView lastMoveColour;
 
     private Button noMove;
 
@@ -78,11 +81,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table);
-        // initialize text views for special colour, turn of, attacker, defender and no move
+        // initialize text views for special colour, turn of, attacker, defender, last move colour and no move
         coloreSpeciale = findViewById(R.id.table_special_colour);
         turnoDi = findViewById(R.id.table_turn_of);
         attacker = findViewById(R.id.table_attacker_is);
         defender = findViewById(R.id.table_defender_is);
+        lastMoveColour = findViewById(R.id.table_last_move_colour);
         noMove = findViewById(R.id.table_no_move);
         // initialize firebase user
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -122,6 +126,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         setTextColour(specialColour);
         // initialize turn of text
         setTurnOf();
+        // set last move colour
+        setLastMoveColour();
 
         // initialize nodes
         nodes = new Node[10];
@@ -158,16 +164,16 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
 
         setIncomingEdgesLeft();
-        for (Node node : nodesL) {
+        /*for (Node node : nodesL) {
             Log.i(TAG, "Node: " + node.getId());
             node.getIncomingEdges();
-        }
+        }*/
 
         setOutgoingEdgesLeft();
-        for (Node node : nodesL) {
+        /*for (Node node : nodesL) {
             Log.i(TAG, "Node: " + node.getId());
             node.getOutgoingEdges();
-        }
+        }*/
 
         left = false;
         nodesR = divideNodes(nodes, left);
@@ -199,7 +205,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     private Node getSelectedNode(Node[] nodes) {
         for (Node node : nodes) {
-            if (node.getColor() == -16777216) {
+            if (node.getColor() == -15774591) {
+                Log.i(TAG, "Selected node id " + node.getId());
                 return node;
             }
         }
@@ -332,7 +339,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void setOnTouchGraph(MotionEvent event, DirectedGraph directedGraph) {
-        //refreshTurnOf();
         if (directedGraph.getNodes() != null) {
             for (Node node : directedGraph.getNodes()) {
                 if (node != null) {
@@ -393,7 +399,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         //directedGraph = new DirectedGraph(this.getApplicationContext());
                         refreshNodes(node.isLeftTable(), node.getId());
                         refreshTurnOf();
-                        getSelectedNode(directedGraph.getNodes());
                     }
                 }
             }
@@ -405,14 +410,46 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private boolean isStrongMove(Node startNode, Node nodeTouched) {
+        //Log.i(TAG, "Start node id " + String.valueOf(startNode.getId()));
+        //Log.i(TAG, "Node touched id " + String.valueOf(nodeTouched.getId()));
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
+            //Log.i(TAG, "Turno di attaccante: verificato");
             for (Edge edge : startNode.getOutgoingEdges()) {
+                //Log.i(TAG, "Entra nel ciclo --> dovrebbe restituire i nodi 2 e 3");
+                //Log.i(TAG, String.valueOf(edge.getTwo().getId()));
                 if (edge.getTwo().getId() == nodeTouched.getId()) {
+                    //Log.i(TAG, "Entra nel metodo --> mossa forte valida");
+                    String colore = colourToString(edge.getColor());
+                    roomNameRef.child("lastMoveColour").setValue(colore);
                     return true;
                 }
             }
-        }
+        } /*else {
+            Toast.makeText(this, "MOSSA NON CONSENTITA: L'attaccante può compiere solo mosse forti",
+                    Toast.LENGTH_LONG).show();
+        }*/
         return false;
+    }
+
+    private String colourToString(int colour) {
+        String colore = "";
+        switch (colour) {
+            case -237502:
+                colore = getString(R.string.table_red);
+                break;
+            case -16711895:
+                colore = getString(R.string.table_green);
+                break;
+            case -16777216:
+                colore = getString(R.string.table_black);
+                break;
+            case -15774591:
+                colore = getString(R.string.table_blue);
+                break;
+            default:
+                break;
+        }
+        return colore;
     }
 
     private boolean isWeakMove() {
@@ -593,6 +630,39 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
     }
 
+    private void setLastMoveColour() {
+        getLastMoveColour(roomsRef.child(roomName), new CallbackLastMoveColour() {
+            @Override
+            public void onCallbackLastMoveColour(String colour) {
+                boolean retrievedLastMoveColour = false;
+                while (!retrievedLastMoveColour) {
+                    if (colour != null) {
+                        lastMoveColour.setText(colour);
+                        retrievedLastMoveColour = true;
+                    }
+                }
+            }
+        });
+
+    }
+
+    private void getLastMoveColour(DatabaseReference roomNameRef, CallbackLastMoveColour callback) {
+        roomNameRef.child("lastMoveColour").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.toString() != null) {
+                    String value = snapshot.getValue().toString();
+                    callback.onCallbackLastMoveColour(value);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void setTurnOf() {
         getTurnOf(roomsRef.child(roomName), new CallbackTurnOf() {
             @Override
@@ -612,8 +682,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         roomNameRef.child("turnOf").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String value = snapshot.getValue().toString();
-                callback.onCallbackTurnOf(value);
+                if (snapshot.getValue().toString() != null) {
+                    String value = snapshot.getValue().toString();
+                    callback.onCallbackTurnOf(value);
+                }
             }
 
             @Override
@@ -634,16 +706,17 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     @Override
     public void onCallbackTurnOf(String turnOf) {
-
     }
 
     @Override
     public void onCallbackPlayerOneName(String playerName) {
-
     }
 
     @Override
     public void onCallbackPlayerTwoName(String playerName) {
+    }
 
+    @Override
+    public void onCallbackLastMoveColour(String colour) {
     }
 }

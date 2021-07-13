@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import interfaces.CallbackColor;
+import interfaces.CallbackColour;
 
-public class MatchmakingRoom extends AppCompatActivity implements CallbackColor {
+public class MatchmakingRoom extends AppCompatActivity implements CallbackColour {
 
     private static final String TAG = "Bisimulazione";
 
@@ -81,6 +81,8 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColor 
                 specialColour = setColour(roomNameRef);
                 // set turn of
                 setTurnOf(roomNameRef);
+                // initialize to empty string last move colour
+                initializeLastMoveColour(roomNameRef);
                 // set right graph
                 initializeRightGraph(roomNameRef);
                 // set left graph
@@ -106,9 +108,9 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColor 
                 roomNameRef = roomsRef;
                 roomNameRef.child("show").setValue("false");
                 specialColour = "";
-                getColour(roomNameRef, new CallbackColor() {
+                getColour(roomNameRef, new CallbackColour() {
                     @Override
-                    public void onCallbackColor(String color) {
+                    public void onCallbackColour(String color) {
                         boolean retrievedColor = false;
                         while (!retrievedColor) {
                             if (color != null) {
@@ -169,14 +171,11 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColor 
     }
 
     private int getNumber() {
+        // return randon number between 0 and 3
         return (int) (Math.random() * 4);
     }
 
-    private String setColour(DatabaseReference roomNameRef) {
-        int[] colours = {getResources().getColor(R.color.red), getResources().getColor(R.color.green), getResources().getColor(R.color.black),
-                getResources().getColor(R.color.primaryColor)};
-        // get random colour
-        int colour = colours[getNumber()];
+    private String colourToString(int colour) {
         String colore = "";
         switch (colour) {
             case -237502:
@@ -194,17 +193,26 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColor 
             default:
                 break;
         }
+        return colore;
+    }
+
+    private String setColour(DatabaseReference roomNameRef) {
+        int[] colours = {getResources().getColor(R.color.red), getResources().getColor(R.color.green), getResources().getColor(R.color.black),
+                getResources().getColor(R.color.primaryColor)};
+        // get random colour
+        int colour = colours[getNumber()];
+        String colore = colourToString(colour);
         // set special colour
         roomNameRef.child("specialColour").setValue(colore);
         return colore;
     }
 
-    private void getColour(DatabaseReference roomNameRef, CallbackColor callback) {
+    private void getColour(DatabaseReference roomNameRef, CallbackColour callback) {
         roomNameRef.child("specialColour").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String value = snapshot.getValue().toString();
-                callback.onCallbackColor(value);
+                callback.onCallbackColour(value);
             }
 
             @Override
@@ -216,6 +224,10 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColor 
 
     private void setTurnOf(DatabaseReference roomNameRef) {
         roomNameRef.child("turnOf").setValue(getString(R.string.matchmaking_room_attacker));
+    }
+
+    private void initializeLastMoveColour(DatabaseReference roomNameRef) {
+        roomNameRef.child("lastMoveColour").setValue("");
     }
 
     private void initializeLeftGraph(DatabaseReference roomNameRef) {
@@ -243,7 +255,7 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColor 
     }
 
     @Override
-    public void onCallbackColor(String color) {
+    public void onCallbackColour(String color) {
 
     }
 }

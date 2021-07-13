@@ -80,7 +80,7 @@
     <string name="table_table_left">Left table</string>
     <string name="table_special_colour">The special colour is:</string>
     <string name="table_turn">Turn of:</string>
-    <string name="table_available_moves">Available moves:</string>
+    <string name="table_last_move_colour">Colour of last move was:</string>
     <string name="table_red">red</string>
     <string name="table_green">green</string>
     <string name="table_black">black</string>
