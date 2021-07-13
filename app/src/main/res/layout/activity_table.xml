@@ -293,7 +293,7 @@
         android:layout_marginBottom="8dp">
 
         <Button
-            android:id="@+id/table_epsilon_move"
+            android:id="@+id/table_no_move"
             style="@style/BUTTON"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
