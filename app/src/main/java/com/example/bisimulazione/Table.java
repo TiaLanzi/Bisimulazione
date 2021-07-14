@@ -25,16 +25,17 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Objects;
 
 import interfaces.CallbackLastMoveColour;
+import interfaces.CallbackNodeColor;
 import interfaces.CallbackPlayerOne;
 import interfaces.CallbackPlayerTwo;
+import interfaces.CallbackSelectedNode;
 import interfaces.CallbackTurnOf;
 
-public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour {
+public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackNodeColor, CallbackSelectedNode {
 
     private static final String TAG = "Bisimulazione";
 
@@ -50,6 +51,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private TextView attacker;
     private TextView defender;
     private TextView lastMoveColour;
+    private TextView selectedNode;
 
     private Button noMove;
 
@@ -74,13 +76,14 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table);
-        // initialize text views for special colour, turn of, attacker, defender, last move colour and no move
+        // initialize text views for special colour, turn of, attacker, defender, last move colour, no move and selected node (invisible)
         coloreSpeciale = findViewById(R.id.table_special_colour);
         turnoDi = findViewById(R.id.table_turn_of);
         attacker = findViewById(R.id.table_attacker_is);
         defender = findViewById(R.id.table_defender_is);
         lastMoveColour = findViewById(R.id.table_last_move_colour);
         noMove = findViewById(R.id.table_no_move);
+        selectedNode = findViewById(R.id.table_selected_node);
         // initialize firebase user
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
@@ -125,6 +128,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         setTurnOf();
         // set last move colour
         setLastMoveColour();
+        // set selected node
+        setSelectedNode(true);
 
         // initialize nodes
         nodes = new Node[10];
@@ -190,16 +195,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 Log.i(TAG, "Button touched enabled");
             }
         });
-    }
-
-    private Node getSelectedNode(Node[] nodes) {
-        for (Node node : nodes) {
-            if (node.getColor() == -15774591) {
-                Log.i(TAG, "Selected node id " + node.getId());
-                return node;
-            }
-        }
-        return null;
     }
 
     private Edge[] divideEdges(Edge[] edges, boolean left) {
@@ -333,7 +328,11 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 if (node != null) {
                     boolean isTouched = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
                     if (isTouched) {
-                        Node startNode = getSelectedNode(directedGraph.getNodes());
+                        setSelectedNode(node.isLeftTable());
+                        Log.i(TAG, selectedNode.getText().toString().trim());
+                        int id = stringToID(selectedNode.getText().toString().trim());
+                        Node startNode = idToNode(id, directedGraph.getNodes());
+                        //Log.i(TAG, "Start node: " + startNode.getId());
                         //if (validMove(startNode, node)) {
                         // Log.i(TfOAG, "Circle touched: " + node.getId() + "table: " + node.isLeftTable());
                         DatabaseReference graphRef;
@@ -378,6 +377,37 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         }
     }
 
+    private Node idToNode(int id, Node[] nodes) {
+        Log.i(TAG, "ID " + id);
+        for (Node node : nodes) {
+            Log.i(TAG, "Node id" + node.getId());
+            if (node.getId() == id) {
+                return node;
+            }
+        }
+        Log.d(TAG, "Return null");
+        return null;
+    }
+
+    private int stringToID(String sNode) {
+        Log.i(TAG, "sNode " + sNode);
+        switch (sNode) {
+            case "Node one":
+                return 1;
+            case "Node two":
+                return 2;
+            case "Node three":
+                return 3;
+            case "Node four":
+                return 4;
+            case "Node five":
+                return 5;
+            default:
+                break;
+        }
+        return -1;
+    }
+
     private void setTouchedCircle(DatabaseReference nodeReference, boolean refresh) {
         if (refresh) {
             nodeReference.child("Selected").setValue(String.valueOf(false));
@@ -412,6 +442,242 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     Toast.LENGTH_LONG).show();
         }*/
         return false;
+    }
+
+    private void setSelectedNode(boolean leftTable) {
+        getSelectedNode(new CallbackSelectedNode() {
+            @Override
+            public void onCallbackSelectedNodeOne(String sNode) {
+                boolean retrievedSelectedNode = false;
+                while (!retrievedSelectedNode) {
+                    if (sNode != null) {
+                        if (sNode.equalsIgnoreCase("true")) {
+                                Log.i(TAG, "setta testo 1");
+                            selectedNode.setText("Node one");
+                        }
+                        retrievedSelectedNode = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackSelectedNodeTwo(String sNode) {
+                boolean retrievedSelectedNode = false;
+                while (!retrievedSelectedNode) {
+                    if (sNode != null) {
+                        if (sNode.equalsIgnoreCase("true")) {
+                            Log.i(TAG, "setta testo 2");
+                            selectedNode.setText("Node two");
+                        }
+                        retrievedSelectedNode = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackSelectedNodeThree(String sNode) {
+                boolean retrievedSelectedNode = false;
+                while (!retrievedSelectedNode) {
+                    if (sNode != null) {
+                        if (sNode.equalsIgnoreCase("true")) {
+                            Log.i(TAG, "setta testo 3");
+                            selectedNode.setText("Node three");
+                        }
+                        retrievedSelectedNode = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackSelectedNodeFour(String sNode) {
+                boolean retrievedSelectedNode = false;
+                while (!retrievedSelectedNode) {
+                    if (sNode != null) {
+                        if (sNode.equalsIgnoreCase("true")) {
+                            Log.i(TAG, "setta testo 4");
+                            selectedNode.setText("Node four");
+                        }
+                        retrievedSelectedNode = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackSelectedNodeFive(String sNode) {
+                boolean retrievedSelectedNode = false;
+                while (!retrievedSelectedNode) {
+                    if (sNode != null) {
+                        if (sNode.equalsIgnoreCase("true")) {
+                            Log.i(TAG, "setta testo 5");
+                            selectedNode.setText("Node five");
+                        }
+                        retrievedSelectedNode = true;
+                    }
+                }
+            }
+        }, leftTable);
+    }
+
+    private void getSelectedNode(CallbackSelectedNode callback, boolean leftTable) {
+        DatabaseReference reference;
+        if (leftTable) {
+            reference = leftGraphRef;
+        } else {
+            reference = rightGraphRef;
+        }
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    // Log.i(TAG, "KEY " + dataSnapshot.getKey());
+                    if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase("Node one")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
+                        // Log.i(TAG, "Selected 1 " + value);
+                        callback.onCallbackSelectedNodeOne(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node two")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
+                        // Log.i(TAG, "Selected 2 " + value);
+                        callback.onCallbackSelectedNodeTwo(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node three")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
+                        // Log.i(TAG, "Selected 3 " + value);
+                        callback.onCallbackSelectedNodeThree(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node four")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
+                        // Log.i(TAG, "Selected 4 " + value);
+                        callback.onCallbackSelectedNodeFour(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node five")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
+                        // Log.i(TAG, "Selected 5 " + value);
+                        callback.onCallbackSelectedNodeFive(value);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private String getNodeColour(boolean leftTable) {
+        final String[] NODE = {""};
+        getNodeColour(new CallbackNodeColor() {
+            @Override
+            public void onCallbackNodeOneColour(String color) {
+                boolean retrievedNodeColour = false;
+                while (!retrievedNodeColour) {
+                    if (color != null) {
+                        if (color.equalsIgnoreCase("blue")) {
+                            NODE[0] = "Node one";
+                        }
+                        // Log.i(TAG, "Node 1 colour " + colore[0]);
+                        retrievedNodeColour = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackNodeTwoColour(String color) {
+                boolean retrievedNodeColour = false;
+                while (!retrievedNodeColour) {
+                    if (color != null) {
+                        if (color.equalsIgnoreCase("blue")) {
+                            NODE[0] = "Node two";
+                        }
+                        Log.i(TAG, "Node 2 colour " + color);
+                        retrievedNodeColour = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackNodeThreeColour(String color) {
+                boolean retrievedNodeColour = false;
+                while (!retrievedNodeColour) {
+                    if (color != null) {
+                        if (color.equalsIgnoreCase("blue")) {
+                            NODE[0] = "Node three";
+                        }
+                        Log.i(TAG, "Node 3 colour " + color);
+                        retrievedNodeColour = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackNodeFourColour(String color) {
+                boolean retrievedNodeColour = false;
+                while (!retrievedNodeColour) {
+                    if (color != null) {
+                        if (color.equalsIgnoreCase("blue")) {
+                            NODE[0] = "Node four";
+                        }
+                        Log.i(TAG, "Node 4 colour " + color);
+                        retrievedNodeColour = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackNodeFiveColour(String color) {
+                boolean retrievedNodeColour = false;
+                while (!retrievedNodeColour) {
+                    if (color != null) {
+                        if (color.equalsIgnoreCase("blue")) {
+                            NODE[0] = "Node five";
+                        }
+                        Log.i(TAG, "Node 5 colour " + color);
+                        retrievedNodeColour = true;
+                    }
+                }
+            }
+        }, leftTable);
+        Log.i(TAG, "Node[0] " + NODE[0]);
+        return NODE[0];
+    }
+
+    private void getNodeColour(CallbackNodeColor callback, boolean leftTable) {
+        DatabaseReference reference;
+        if (leftTable) {
+            reference = leftGraphRef;
+        } else {
+            reference = rightGraphRef;
+        }
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase("Node one")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
+                        Log.i(TAG, "Colour 1 " + value);
+                        callback.onCallbackNodeOneColour(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node two")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
+                        Log.i(TAG, "Colour 2 " + value);
+                        callback.onCallbackNodeTwoColour(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node three")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
+                        Log.i(TAG, "Colour 3 " + value);
+                        callback.onCallbackNodeThreeColour(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node four")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
+                        Log.i(TAG, "Colour 4 " + value);
+                        callback.onCallbackNodeFourColour(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node five")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
+                        Log.i(TAG, "Colour 5 " + value);
+                        callback.onCallbackNodeFiveColour(value);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
     }
 
     private String colourToString(int colour) {
@@ -469,7 +735,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             for (Node node : this.nodesR) {
                 if (node.getId() != id) {
                     switch (node.getId()) {
-
                         case 1:
                             setTouchedCircle(rightGraphRef.child("Node one"), true);
                             break;
@@ -631,7 +896,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     }
 
-    private void getLastMoveColour(DatabaseReference roomNameRef, CallbackLastMoveColour callback) {
+    private void getLastMoveColour(DatabaseReference roomNameRef, CallbackLastMoveColour
+            callback) {
         roomNameRef.child("lastMoveColour").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -703,5 +969,55 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     @Override
     public void onCallbackLastMoveColour(String colour) {
+    }
+
+    @Override
+    public void onCallbackNodeOneColour(String color) {
+
+    }
+
+    @Override
+    public void onCallbackNodeTwoColour(String color) {
+
+    }
+
+    @Override
+    public void onCallbackNodeThreeColour(String color) {
+
+    }
+
+    @Override
+    public void onCallbackNodeFourColour(String color) {
+
+    }
+
+    @Override
+    public void onCallbackNodeFiveColour(String color) {
+
+    }
+
+    @Override
+    public void onCallbackSelectedNodeOne(String selectedNode) {
+
+    }
+
+    @Override
+    public void onCallbackSelectedNodeTwo(String selectedNode) {
+
+    }
+
+    @Override
+    public void onCallbackSelectedNodeThree(String selectedNode) {
+
+    }
+
+    @Override
+    public void onCallbackSelectedNodeFour(String selectedNode) {
+
+    }
+
+    @Override
+    public void onCallbackSelectedNodeFive(String selectedNode) {
+
     }
 }

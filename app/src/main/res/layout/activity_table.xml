@@ -286,6 +286,16 @@
         </LinearLayout>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/table_selected_node"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="2dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:visibility="visible" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
