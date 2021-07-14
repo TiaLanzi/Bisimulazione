@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.bisimulazione.directedgraph.DirectedGraph;
 import com.example.bisimulazione.directedgraph.Edge;
@@ -51,7 +52,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private TextView attacker;
     private TextView defender;
     private TextView lastMoveColour;
-    private TextView selectedNode;
+    private TextView selectedNodeLeft;
+    private TextView selectedNodeRight;
 
     private Button noMove;
 
@@ -83,7 +85,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         defender = findViewById(R.id.table_defender_is);
         lastMoveColour = findViewById(R.id.table_last_move_colour);
         noMove = findViewById(R.id.table_no_move);
-        selectedNode = findViewById(R.id.table_selected_node);
+        selectedNodeLeft = findViewById(R.id.table_left_selected_node);
+        selectedNodeRight = findViewById(R.id.table_right_selected_node);
         // initialize firebase user
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
@@ -128,8 +131,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         setTurnOf();
         // set last move colour
         setLastMoveColour();
-        // set selected node
+        // set selected node left table
         setSelectedNode(true);
+        // set selected node right table
+        setSelectedNode(false);
 
         // initialize nodes
         nodes = new Node[10];
@@ -166,7 +171,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
 
         setIncomingEdgesLeft();
-
         setOutgoingEdgesLeft();
 
         left = false;
@@ -328,69 +332,66 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 if (node != null) {
                     boolean isTouched = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
                     if (isTouched) {
-                        setSelectedNode(node.isLeftTable());
-                        Log.i(TAG, selectedNode.getText().toString().trim());
-                        int id = stringToID(selectedNode.getText().toString().trim());
-                        Node startNode = idToNode(id, directedGraph.getNodes());
-                        //Log.i(TAG, "Start node: " + startNode.getId());
-                        //if (validMove(startNode, node)) {
-                        // Log.i(TfOAG, "Circle touched: " + node.getId() + "table: " + node.isLeftTable());
-                        DatabaseReference graphRef;
+                        int id;
                         if (node.isLeftTable()) {
-                            graphRef = leftGraphRef;
+                            id = stringToID(selectedNodeLeft.getText().toString().trim());
                         } else {
-                            graphRef = rightGraphRef;
+                            id = stringToID(selectedNodeRight.getText().toString().trim());
                         }
-                        switch (node.getId()) {
-                            case 1:
-                                setTouchedCircle(graphRef.child("Node one"), false);
-                                directedGraph.getNodes()[0].setColor(getResources().getColor(R.color.primaryColor));
-                                break;
-                            case 2:
-                                setTouchedCircle(graphRef.child("Node two"), false);
-                                directedGraph.getNodes()[1].setColor(getResources().getColor(R.color.primaryColor));
-                                break;
-                            case 3:
-                                setTouchedCircle(graphRef.child("Node three"), false);
-                                directedGraph.getNodes()[2].setColor(getResources().getColor(R.color.primaryColor));
-                                break;
-                            case 4:
-                                setTouchedCircle(graphRef.child("Node four"), false);
-                                directedGraph.getNodes()[3].setColor(getResources().getColor(R.color.primaryColor));
-                                break;
-                            case 5:
-                                setTouchedCircle(graphRef.child("Node five"), false);
-                                directedGraph.getNodes()[4].setColor(getResources().getColor(R.color.primaryColor));
-                                break;
-                            default:
-                                break;
-                            //}
+                        Log.i(TAG, "ID " + id);
+                        Node startNode = null;
+                        for (Node n : directedGraph.getNodes()) {
+                            if (n.getId() == id) {
+                                startNode = n;
+                            }
                         }
-                        refreshNodes(node.isLeftTable(), node.getId());
-                        //Log.i(TAG, "Nodo passato: " + node.getId());
-                        refreshTurnOf();
+                        if (isValidMove(startNode, node)) {
+                            DatabaseReference graphRef;
+                            if (node.isLeftTable()) {
+                                graphRef = leftGraphRef;
+                            } else {
+                                graphRef = rightGraphRef;
+                            }
+                            switch (node.getId()) {
+                                case 1:
+                                    setTouchedCircle(graphRef.child("Node one"), false);
+                                    directedGraph.getNodes()[0].setColor(getResources().getColor(R.color.primaryColor));
+                                    break;
+                                case 2:
+                                    setTouchedCircle(graphRef.child("Node two"), false);
+                                    directedGraph.getNodes()[1].setColor(getResources().getColor(R.color.primaryColor));
+                                    break;
+                                case 3:
+                                    setTouchedCircle(graphRef.child("Node three"), false);
+                                    directedGraph.getNodes()[2].setColor(getResources().getColor(R.color.primaryColor));
+                                    break;
+                                case 4:
+                                    setTouchedCircle(graphRef.child("Node four"), false);
+                                    directedGraph.getNodes()[3].setColor(getResources().getColor(R.color.primaryColor));
+                                    break;
+                                case 5:
+                                    setTouchedCircle(graphRef.child("Node five"), false);
+                                    directedGraph.getNodes()[4].setColor(getResources().getColor(R.color.primaryColor));
+                                    break;
+                                default:
+                                    break;
+                            }
+                            refreshNodes(node.isLeftTable(), node.getId());
+                            refreshTurnOf();
+                            setSelectedNode(node.isLeftTable());
+                        }
                     }
-                    //directedGraph.invalidate();
-                    //directedGraph = new DirectedGraph(this.getApplicationContext());
                 }
+                //directedGraph.invalidate();
+                //directedGraph.postInvalidate();
+                //directedGraph = new DirectedGraph(this.getApplicationContext());
             }
         }
     }
 
-    private Node idToNode(int id, Node[] nodes) {
-        Log.i(TAG, "ID " + id);
-        for (Node node : nodes) {
-            Log.i(TAG, "Node id" + node.getId());
-            if (node.getId() == id) {
-                return node;
-            }
-        }
-        Log.d(TAG, "Return null");
-        return null;
-    }
 
     private int stringToID(String sNode) {
-        Log.i(TAG, "sNode " + sNode);
+        //Log.i(TAG, "sNode " + sNode);
         switch (sNode) {
             case "Node one":
                 return 1;
@@ -418,25 +419,34 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         }
     }
 
-    private boolean validMove(Node startNode, Node nodeTouched) {
-        return isStrongMove(startNode, nodeTouched) || isWeakMove();
+    private boolean isValidMove(Node startNode, Node nodeTouched) {
+        if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
+            return isStrongMove(startNode, nodeTouched);
+        } else {
+            return isWeakMove();
+        }
     }
 
     private boolean isStrongMove(Node startNode, Node nodeTouched) {
         Log.i(TAG, "Start node id " + String.valueOf(startNode.getId()));
         Log.i(TAG, "Node touched id " + String.valueOf(nodeTouched.getId()));
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
-            Log.i(TAG, "Turno di attaccante: verificato");
-            for (Edge edge : startNode.getOutgoingEdges()) {
-                Log.i(TAG, "Entra nel ciclo");
-                Log.i(TAG, "Cicla su edge id " + String.valueOf(edge.getTwo().getId()));
-                if (edge.getTwo().getId() == nodeTouched.getId()) {
-                    Log.i(TAG, "Entra nel metodo --> mossa forte valida");
-                    String colore = colourToString(edge.getColor());
-                    roomNameRef.child("lastMoveColour").setValue(colore);
-                    return true;
+            //Log.i(TAG, "Turno di attaccante: verificato");
+            if (startNode.getOutgoingEdges() != null) {
+                for (Edge edge : startNode.getOutgoingEdges()) {
+                    //Log.i(TAG, "Entra nel ciclo");
+                    Log.i(TAG, "Cicla su edge id " + String.valueOf(edge.getTwo().getId()));
+                    if (edge.getTwo().getId() == nodeTouched.getId()) {
+                        Log.i(TAG, "Entra nel metodo --> mossa forte valida");
+                        String colore = colourToString(edge.getColor());
+                        roomNameRef.child("lastMoveColour").setValue(colore);
+                        return true;
+                    }
                 }
+                Toast.makeText(this, "MOSSA NON CONSENTITA PER L'ATTACCANTE", Toast.LENGTH_LONG).show();
+                return false;
             }
+
         } /*else {
             Toast.makeText(this, "MOSSA NON CONSENTITA: L'attaccante può compiere solo mosse forti",
                     Toast.LENGTH_LONG).show();
@@ -452,8 +462,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 while (!retrievedSelectedNode) {
                     if (sNode != null) {
                         if (sNode.equalsIgnoreCase("true")) {
-                                Log.i(TAG, "setta testo 1");
-                            selectedNode.setText("Node one");
+                            // Log.i(TAG, "setta testo 1");
+                            if (leftTable) {
+                                selectedNodeLeft.setText("Node one");
+                            } else {
+                                selectedNodeRight.setText("Node one");
+                            }
                         }
                         retrievedSelectedNode = true;
                     }
@@ -466,8 +480,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 while (!retrievedSelectedNode) {
                     if (sNode != null) {
                         if (sNode.equalsIgnoreCase("true")) {
-                            Log.i(TAG, "setta testo 2");
-                            selectedNode.setText("Node two");
+                            // Log.i(TAG, "setta testo 2");
+                            if (leftTable) {
+                                selectedNodeLeft.setText("Node two");
+                            } else {
+                                selectedNodeRight.setText("Node two");
+                            }
                         }
                         retrievedSelectedNode = true;
                     }
@@ -480,8 +498,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 while (!retrievedSelectedNode) {
                     if (sNode != null) {
                         if (sNode.equalsIgnoreCase("true")) {
-                            Log.i(TAG, "setta testo 3");
-                            selectedNode.setText("Node three");
+                            // Log.i(TAG, "setta testo 3");
+                            if (leftTable) {
+                                selectedNodeLeft.setText("Node three");
+                            } else {
+                                selectedNodeRight.setText("Node three");
+                            }
                         }
                         retrievedSelectedNode = true;
                     }
@@ -494,8 +516,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 while (!retrievedSelectedNode) {
                     if (sNode != null) {
                         if (sNode.equalsIgnoreCase("true")) {
-                            Log.i(TAG, "setta testo 4");
-                            selectedNode.setText("Node four");
+                            // Log.i(TAG, "setta testo 4");
+                            if (leftTable) {
+                                selectedNodeLeft.setText("Node four");
+                            } else {
+                                selectedNodeRight.setText("Node four");
+                            }
                         }
                         retrievedSelectedNode = true;
                     }
@@ -508,8 +534,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 while (!retrievedSelectedNode) {
                     if (sNode != null) {
                         if (sNode.equalsIgnoreCase("true")) {
-                            Log.i(TAG, "setta testo 5");
-                            selectedNode.setText("Node five");
+                            // Log.i(TAG, "setta testo 5");
+                            if (leftTable) {
+                                selectedNodeLeft.setText("Node five");
+                            } else {
+                                selectedNodeRight.setText("Node five");
+                            }
                         }
                         retrievedSelectedNode = true;
                     }
@@ -698,6 +728,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             default:
                 break;
         }
+        Log.i(TAG, colore);
         return colore;
     }
 
