@@ -94,7 +94,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         // get user name if not null
         if (user != null) {
             playerName = user.getDisplayName();
-            //Log.i(TAG, "Player name " + user.getDisplayName());
         }
         // initialize database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -104,9 +103,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             boolean player1 = extras.getBoolean("player 1");
-            //Log.i(TAG, "Player 1? " + player1);
             roomName = extras.getString("roomName");
-            //Log.i(TAG, "Room name: " + roomName);
             specialColour = extras.getString("specialColour");
             if (player1) {
                 role = getString(R.string.table_attacker);
@@ -199,9 +196,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         noMove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "No move button touched");
                 setOnTouchGraph(null, null);
-                //isValidMove(null, null);
             }
         });
     }
@@ -348,7 +343,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             } else {
                                 id = stringToID(selectedNodeRight.getText().toString().trim());
                             }
-                            Log.i(TAG, "ID " + id);
                             Node startNode = null;
                             for (Node n : directedGraph.getNodes()) {
                                 if (n.getId() == id) {
@@ -356,7 +350,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 }
                             }
                             if (isValidMove(startNode, node)) {
-                                Log.i(TAG, "Mossa valida");
                                 DatabaseReference graphRef;
                                 if (node.isLeftTable()) {
                                     graphRef = leftGraphRef;
@@ -426,12 +419,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 while (!retrievedNoMove) {
                     if (value != null) {
                         if (value.equalsIgnoreCase("true")) {
-                            //Log.i(TAG, "Value of retrievedNoMove " + value);
                             noMove.setEnabled(true);
                             noMove.setClickable(true);
                             noMove.setFocusable(true);
                         } else {
-                            //Log.i(TAG, "Value of retrievedNoMove " + value);
                             noMove.setEnabled(false);
                             noMove.setClickable(false);
                             noMove.setFocusable(false);
@@ -444,7 +435,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private int stringToID(String sNode) {
-        //Log.i(TAG, "sNode " + sNode);
         switch (sNode) {
             case "Node one":
                 return 1;
@@ -474,10 +464,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     private boolean isValidMove(Node startNode, Node nodeTouched) {
         if (startNode == null && nodeTouched == null) {
-            //Log.i(TAG, "Button don't move touched --> return true");
-            // send data to disable button
             roomNameRef.child("noMoveButtonEnabled").setValue("false");
-            //Log.i(TAG, "Return true button");
             return true;
         }
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
@@ -490,16 +477,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private boolean isStrongMove(Node startNode, Node nodeTouched) {
-        //Log.i(TAG, "Start node id " + String.valueOf(startNode.getId()));
-        //Log.i(TAG, "Node touched id " + String.valueOf(nodeTouched.getId()));
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
-            //Log.i(TAG, "Turno di attaccante: verificato");
             if (startNode.getOutgoingEdges() != null) {
                 for (Edge edge : startNode.getOutgoingEdges()) {
-                    //Log.i(TAG, "Entra nel ciclo");
-                    Log.i(TAG, "Cicla su edge id " + String.valueOf(edge.getTwo().getId()));
                     if (edge.getTwo().getId() == nodeTouched.getId()) {
-                        //Log.i(TAG, "Entra nel metodo --> mossa forte valida");
                         String colore = colourToString(edge.getColor());
                         roomNameRef.child("lastMoveColour").setValue(colore);
                         roomNameRef.child("noMoveButtonEnabled").setValue("true");
@@ -518,26 +499,17 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         Node midNode = null;
         String lastMoveC = lastMoveColour.getText().toString();
         String specialC = coloreSpeciale.getText().toString();
-        Log.i(TAG, "Last move colour: " + lastMoveC);
         for (Edge edge : startNode.getOutgoingEdges()) {
-            Log.i(TAG, "Cicla su edge id " + edge.getId());
-            Log.i(TAG, "Colour to string " + colourToString(edge.getColor()));
             if (colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
-                Log.i(TAG, "Aggiorno counter perchè trovato arco di colore " + lastMoveC + "(last move colour); valore counter: " + counter);
                 counter++;
-                Log.i(TAG, "Mid node " + edge.getTwo().getId());
                 midNode = edge.getTwo();
                 for (Edge e : midNode.getOutgoingEdges()) {
-                    Log.i(TAG, "Cicla su edge id " + e.getId() + " in mid Node");
                     if (colourToString(e.getColor()).equalsIgnoreCase(specialC) && counter == 1) {
-                        Log.i(TAG, "Verificato che negli outgoing edges di mid node c'è il colore dell'arco speciale (" + specialC + ")");
                         if (e.getTwo().getId() == nodeTouched.getId()) {
-                            Log.i(TAG, "Verificato che in outgoing edges di mid node c'è il nodo toccato --> return true");
                             return true;
                         }
                     }
                 }
-                Log.i(TAG, "Gli outgoing edges di mid node non sono del colore speciale || non è presente il nodo toccato --> return false");
                 return false;
             }
         }
@@ -552,7 +524,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 while (!retrievedSelectedNode) {
                     if (sNode != null) {
                         if (sNode.equalsIgnoreCase("true")) {
-                            // Log.i(TAG, "setta testo 1");
                             if (leftTable) {
                                 selectedNodeLeft.setText("Node one");
                             } else {
@@ -570,7 +541,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 while (!retrievedSelectedNode) {
                     if (sNode != null) {
                         if (sNode.equalsIgnoreCase("true")) {
-                            // Log.i(TAG, "setta testo 2");
                             if (leftTable) {
                                 selectedNodeLeft.setText("Node two");
                             } else {
@@ -588,7 +558,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 while (!retrievedSelectedNode) {
                     if (sNode != null) {
                         if (sNode.equalsIgnoreCase("true")) {
-                            // Log.i(TAG, "setta testo 3");
                             if (leftTable) {
                                 selectedNodeLeft.setText("Node three");
                             } else {
@@ -606,7 +575,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 while (!retrievedSelectedNode) {
                     if (sNode != null) {
                         if (sNode.equalsIgnoreCase("true")) {
-                            // Log.i(TAG, "setta testo 4");
                             if (leftTable) {
                                 selectedNodeLeft.setText("Node four");
                             } else {
@@ -624,7 +592,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 while (!retrievedSelectedNode) {
                     if (sNode != null) {
                         if (sNode.equalsIgnoreCase("true")) {
-                            // Log.i(TAG, "setta testo 5");
                             if (leftTable) {
                                 selectedNodeLeft.setText("Node five");
                             } else {
@@ -649,26 +616,20 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    // Log.i(TAG, "KEY " + dataSnapshot.getKey());
                     if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase("Node one")) {
                         String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
-                        // Log.i(TAG, "Selected 1 " + value);
                         callback.onCallbackSelectedNodeOne(value);
                     } else if (dataSnapshot.getKey().equalsIgnoreCase("Node two")) {
                         String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
-                        // Log.i(TAG, "Selected 2 " + value);
                         callback.onCallbackSelectedNodeTwo(value);
                     } else if (dataSnapshot.getKey().equalsIgnoreCase("Node three")) {
                         String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
-                        // Log.i(TAG, "Selected 3 " + value);
                         callback.onCallbackSelectedNodeThree(value);
                     } else if (dataSnapshot.getKey().equalsIgnoreCase("Node four")) {
                         String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
-                        // Log.i(TAG, "Selected 4 " + value);
                         callback.onCallbackSelectedNodeFour(value);
                     } else if (dataSnapshot.getKey().equalsIgnoreCase("Node five")) {
                         String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
-                        // Log.i(TAG, "Selected 5 " + value);
                         callback.onCallbackSelectedNodeFive(value);
                     }
                 }
@@ -692,7 +653,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         if (color.equalsIgnoreCase("blue")) {
                             NODE[0] = "Node one";
                         }
-                        // Log.i(TAG, "Node 1 colour " + colore[0]);
                         retrievedNodeColour = true;
                     }
                 }
@@ -706,7 +666,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         if (color.equalsIgnoreCase("blue")) {
                             NODE[0] = "Node two";
                         }
-                        Log.i(TAG, "Node 2 colour " + color);
                         retrievedNodeColour = true;
                     }
                 }
@@ -720,7 +679,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         if (color.equalsIgnoreCase("blue")) {
                             NODE[0] = "Node three";
                         }
-                        Log.i(TAG, "Node 3 colour " + color);
                         retrievedNodeColour = true;
                     }
                 }
@@ -734,7 +692,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         if (color.equalsIgnoreCase("blue")) {
                             NODE[0] = "Node four";
                         }
-                        Log.i(TAG, "Node 4 colour " + color);
                         retrievedNodeColour = true;
                     }
                 }
@@ -748,13 +705,11 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         if (color.equalsIgnoreCase("blue")) {
                             NODE[0] = "Node five";
                         }
-                        Log.i(TAG, "Node 5 colour " + color);
                         retrievedNodeColour = true;
                     }
                 }
             }
         }, leftTable);
-        Log.i(TAG, "Node[0] " + NODE[0]);
         return NODE[0];
     }
 
@@ -771,23 +726,18 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase("Node one")) {
                         String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
-                        Log.i(TAG, "Colour 1 " + value);
                         callback.onCallbackNodeOneColour(value);
                     } else if (dataSnapshot.getKey().equalsIgnoreCase("Node two")) {
                         String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
-                        Log.i(TAG, "Colour 2 " + value);
                         callback.onCallbackNodeTwoColour(value);
                     } else if (dataSnapshot.getKey().equalsIgnoreCase("Node three")) {
                         String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
-                        Log.i(TAG, "Colour 3 " + value);
                         callback.onCallbackNodeThreeColour(value);
                     } else if (dataSnapshot.getKey().equalsIgnoreCase("Node four")) {
                         String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
-                        Log.i(TAG, "Colour 4 " + value);
                         callback.onCallbackNodeFourColour(value);
                     } else if (dataSnapshot.getKey().equalsIgnoreCase("Node five")) {
                         String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
-                        Log.i(TAG, "Colour 5 " + value);
                         callback.onCallbackNodeFiveColour(value);
                     }
                 }
@@ -818,7 +768,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             default:
                 break;
         }
-        Log.i(TAG, colore);
         return colore;
     }
 
@@ -826,7 +775,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         if (leftTable) {
             for (Node node : this.nodesL) {
                 if (node.getId() != id) {
-                    // Log.i(TAG, "Aggiornando nodo " + node.getId());
                     switch (node.getId()) {
                         case 1:
                             setTouchedCircle(leftGraphRef.child("Node one"), true);
@@ -876,7 +824,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void refreshTurnOf() {
-        Log.i(TAG, "Entra nel metodo refreshTurnOf");
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
             roomsRef.child(roomName).child("turnOf").setValue(getString(R.string.table_defender));
         } else {

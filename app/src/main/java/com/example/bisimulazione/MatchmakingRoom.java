@@ -96,12 +96,9 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // join an existing room and add yourself as player two
                 String roomN = roomsList.get(position);
-                // Log.i(TAG, "Room name complete " + roomN);
                 roomName = remove(roomN);
-                // Log.i(TAG, "Room name " + roomName);
                 //roomName = roomsList.get(position);
                 roomNameRef = roomsRef.child(roomName);
-                // Log.i(TAG, "Room ref " + String.valueOf(roomsRef));
                 sendDataP2(roomNameRef, playerName);
                 // not to show when room is full
                 roomNameRef.child("show").setValue("false");
@@ -114,7 +111,6 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
                             if (color != null) {
                                 specialColour = color;
                                 retrievedColor = true;
-                                //Log.i(TAG, "2 - " + specialColour);
                                 startActivity(roomName, false, specialColour);
                                 finish();
                             }
