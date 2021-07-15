@@ -419,9 +419,11 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 while (!retrievedNoMove) {
                     if (value != null) {
                         if (value.equalsIgnoreCase("true")) {
-                            noMove.setEnabled(true);
-                            noMove.setClickable(true);
-                            noMove.setFocusable(true);
+                            if (lastMoveColour.getText().toString().equalsIgnoreCase(coloreSpeciale.getText().toString())) {
+                                noMove.setEnabled(true);
+                                noMove.setClickable(true);
+                                noMove.setFocusable(true);
+                            }
                         } else {
                             noMove.setEnabled(false);
                             noMove.setClickable(false);
@@ -495,21 +497,64 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private boolean isWeakMove(Node startNode, Node nodeTouched) {
-        int counter = 0;
-        Node midNode = null;
-        String lastMoveC = lastMoveColour.getText().toString();
+        Node firstNode = null;
         String specialC = coloreSpeciale.getText().toString();
+        // se colore speciale è uguale al colore dell'ultima mossa
+        if (coloreSpeciale.getText().toString().equalsIgnoreCase(lastMoveColour.getText().toString())) {
+            // cicla sugli archi
+            for (Edge edge : startNode.getOutgoingEdges()) {
+                // se il colore dell'arco è diverso dal colore speciale ritorna false
+                if (!colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
+                    return false;
+                } else {
+                    // se il colore dell'arco è del colore speciale salva il nodo raggiunto
+                    firstNode = edge.getTwo();
+                    // cicla sugli archi uscenti del nodo salvato
+                    for (Edge e : firsNode.getOutgoingEdges()) {
+                        // se il colore dell'arco è diverso dal colore speciale ritorna false
+                        if (!colourToString(e.getColor()).equalsIgnoreCase(specialC)) {
+                            return false;
+                        } else {
+                            // se gli id combaciano ritorna true
+                            if (e.getTwo().getId() == nodeTouched.getId()) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        String lastMoveC = lastMoveColour.getText().toString();
+        // cicla sugli archi uscenti del nodo di partenza
         for (Edge edge : startNode.getOutgoingEdges()) {
+            // legge un arco del colore dell'ultima mossa --> non può più leggerne di questo colore
             if (colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
-                counter++;
-                midNode = edge.getTwo();
-                for (Edge e : midNode.getOutgoingEdges()) {
-                    if (colourToString(e.getColor()).equalsIgnoreCase(specialC) && counter == 1) {
+                // salva il nodo raggiunto
+                firstNode = edge.getTwo();
+                // cicla sugli archi uscenti del nodo salvato
+                for (Edge e : firstNode.getOutgoingEdges()) {
+                    // se legge un arco che non è del colore speciale ritorna false
+                    if (!colourToString(e.getColor()).equalsIgnoreCase(specialC)) {
+                        return false;
+                    } // legge un arco del colore speciale --> devo verificare che il nodo raggiunto sia uguale al nodo toccato
+                    else {
+                        // gli ids coincidono --> return true
                         if (e.getTwo().getId() == nodeTouched.getId()) {
                             return true;
                         }
                     }
                 }
+                // i nodi raggiunti dagli archi uscenti del primo nodo (che è diverso dallo startNode)
+                return false;
+            } else if (colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
+                firstNode = edge.getTwo();
+                for (Edge e : firstNode.getOutgoingEdges()) {
+                    if (colourToString(e.getColor()).equalsIgnoreCase(specialC)) {
+
+                    }
+                }
+            } else {
+                // il primo arco letto non è ne del colore speciale nè del colore dell'ultima mossa
                 return false;
             }
         }
