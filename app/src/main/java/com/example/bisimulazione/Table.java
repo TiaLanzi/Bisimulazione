@@ -159,11 +159,14 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         // get edges of left graph
         edgesL = divideEdges(edges, left);
         // initialize directed graph left
-        directedGraphLeft = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_left_table_directed_graph);
+        directedGraphLeft = findViewById(R.id.table_left_table_directed_graph);
         // set nodes for left graph
         directedGraphLeft.setNodes(nodesL);
         // set edges for left graph
         directedGraphLeft.setEdges(edgesL);
+
+        setIncomingEdgesLeft();
+        setOutgoingEdgesLeft();
 
         touchable = true;
 
@@ -178,17 +181,17 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             }
         });
 
-        setIncomingEdgesLeft();
-        setOutgoingEdgesLeft();
-
         left = false;
         nodesR = divideNodes(nodes, left);
         edgesR = divideEdges(edges, left);
 
-        directedGraphRight = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_right_table_directed_graph);
+        directedGraphRight = findViewById(R.id.table_right_table_directed_graph);
 
         directedGraphRight.setNodes(nodesR);
         directedGraphRight.setEdges(edgesR);
+
+        //setIncomingEdgesLeft();
+        setOutgoingEdgesRight();
 
         rightGraphRef = roomNameRef.child("rightGraph");
         directedGraphRight.setOnTouchListener(new View.OnTouchListener() {
@@ -308,6 +311,24 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
         Edge[] edgesFifthLeftO = {edgesL[6]};
         nodesL[4].setOutgoingEdges(edgesFifthLeftO);
+    }
+
+    private void setOutgoingEdgesRight() {
+        // set outgoing edges
+        Edge[] edgesRootRightO = {edgesR[0], edgesR[1]};
+        nodesR[0].setOutgoingEdges(edgesRootRightO);
+
+        Edge[] edgesSecondRightO = {edgesR[4]};
+        nodesR[1].setOutgoingEdges(edgesSecondRightO);
+
+        Edge[] edgesThirdRightO = {edgesR[2], edgesR[6]};
+        nodesR[2].setOutgoingEdges(edgesThirdRightO);
+
+        Edge[] edgesSFourthRightO = {};
+        nodesR[3].setOutgoingEdges(edgesSFourthRightO);
+
+        Edge[] edgesFifthRightO = {edgesR[3], edgesR[5]};
+        nodesR[4].setOutgoingEdges(edgesFifthRightO);
     }
 
     private void setNodes() {
@@ -476,7 +497,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         String sNodeRight = selectedNodeRight.getText().toString();
         boolean leftAvailable = false;
         boolean rightAvailable = false;
-        Node startNode = null;
+        Node startNode;
         int counter = 0;
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
             startNode = stringToNode(sNodeLeft, true);
