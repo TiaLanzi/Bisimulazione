@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import interfaces.CallbackColour;
 
@@ -87,6 +88,7 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
                 initializeGraphs(roomNameRef);
                 sendDataP1(roomNameRef, playerName);
                 sendDataNoMoveButton(roomNameRef);
+                sendDataGameInProgress(roomNameRef);
                 startActivity(roomName, true, specialColour);
             }
         });
@@ -121,6 +123,11 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
         });
         // show new rooms created
         getRoomsList();
+    }
+
+    private void sendDataGameInProgress(DatabaseReference roomNameRef) {
+        // game is on
+        roomNameRef.child("gameInProgress").setValue("true");
     }
 
     private void getRoomsList() {
@@ -165,7 +172,7 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
     }
 
     private int getNumber() {
-        // return randon number between 0 and 3
+        // return random number between 0 and 3
         return (int) (Math.random() * 4);
     }
 
@@ -205,7 +212,7 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
         roomNameRef.child("specialColour").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String value = snapshot.getValue().toString();
+                String value = Objects.requireNonNull(snapshot.getValue()).toString();
                 callback.onCallbackColour(value);
             }
 
@@ -231,7 +238,7 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
 
     private void initializeGraph(DatabaseReference graphReference) {
         DatabaseReference nodesReference;
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map;
         int i = 0;
         while (i < 5) {
             if (i == 0) {
@@ -265,7 +272,6 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
     }
 
     private DatabaseReference getGraphReference(DatabaseReference graphReference, String nodeNumber) {
-        HashMap<String, String> map = new HashMap<>();
         switch (nodeNumber) {
             case "one":
                 graphReference = graphReference.child("Node one");

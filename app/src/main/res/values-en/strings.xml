@@ -90,6 +90,7 @@
     <string name="table_attacker_is">The attacker is:</string>
     <string name="table_defender_is">The defender is:</string>
     <string name="table_no_move">DON\'T MOVE</string>
+    <string name="table_possible_moves">There are still available moves.</string>
 
     <!-- matchmaking room -->
     <string name="matchmaking_room_create_room_text">CREATE ROOM</string>
@@ -132,4 +133,9 @@
     <string name="language_italian">Italian</string>
     <string name="language_english">English</string>
     <string name="language_select">Select language…</string>
+
+    <!-- alert win -->
+    <string name="alert_end_game">GAME ENDED</string>
+    <string name="alert_win_congrats">CONGRATS FOR THE WIN</string>
+    <string name="alert_continue">CONTINUE</string>
 </resources>

@@ -2,8 +2,10 @@ package com.example.bisimulazione;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Objects;
 
+import interfaces.CallbackGameInProgress;
 import interfaces.CallbackLastMoveColour;
 import interfaces.CallbackNoMove;
 import interfaces.CallbackNodeColor;
@@ -37,7 +40,7 @@ import interfaces.CallbackPlayerTwo;
 import interfaces.CallbackSelectedNode;
 import interfaces.CallbackTurnOf;
 
-public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackNodeColor, CallbackSelectedNode, CallbackNoMove {
+public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackNodeColor, CallbackSelectedNode, CallbackNoMove, CallbackGameInProgress {
 
     private static final String TAG = "Bisimulazione";
 
@@ -62,6 +65,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private DatabaseReference roomNameRef;
     private DatabaseReference leftGraphRef;
     private DatabaseReference rightGraphRef;
+
+    private com.example.bisimulazione.directedgraph.DirectedGraph directedGraphLeft;
+    private com.example.bisimulazione.directedgraph.DirectedGraph directedGraphRight;
 
     private Node[] nodes;
     private Edge[] edges;
@@ -135,6 +141,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         setSelectedNode(false);
         // enable / disable no move button
         setNoMove();
+        // end game
+        setEndGame();
 
         // initialize nodes
         nodes = new Node[10];
@@ -151,7 +159,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         // get edges of left graph
         edgesL = divideEdges(edges, left);
         // initialize directed graph left
-        com.example.bisimulazione.directedgraph.DirectedGraph directedGraphLeft = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_left_table_directed_graph);
+        directedGraphLeft = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_left_table_directed_graph);
         // set nodes for left graph
         directedGraphLeft.setNodes(nodesL);
         // set edges for left graph
@@ -177,7 +185,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         nodesR = divideNodes(nodes, left);
         edgesR = divideEdges(edges, left);
 
-        com.example.bisimulazione.directedgraph.DirectedGraph directedGraphRight = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_right_table_directed_graph);
+        directedGraphRight = (com.example.bisimulazione.directedgraph.DirectedGraph) findViewById(R.id.table_right_table_directed_graph);
 
         directedGraphRight.setNodes(nodesR);
         directedGraphRight.setEdges(edgesR);
@@ -197,6 +205,47 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             @Override
             public void onClick(View v) {
                 setOnTouchGraph(null, null);
+            }
+        });
+    }
+
+    private void setEndGame() {
+        getGameInProgress(new CallbackGameInProgress() {
+            @Override
+            public void onCallbackGameInProgress(String value) {
+                boolean retrievedGameInProgress = false;
+                while (!retrievedGameInProgress) {
+                    if (value != null) {
+                        if (value.equalsIgnoreCase("false")) {
+                            new AlertDialog.Builder(getApplicationContext()).setTitle(getString(R.string.alert_end_game))
+                                    .setMessage(getString(R.string.alert_win_congrats) + " " + playerName)
+                                    .setPositiveButton(R.string.alert_continue, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            finish();
+                                        }
+                                    });
+                        }
+                    }
+                    retrievedGameInProgress = true;
+                }
+            }
+        });
+    }
+
+    private void getGameInProgress(CallbackGameInProgress callback) {
+        roomNameRef.child("gameInProgress").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    String value = snapshot.getValue().toString();
+                    callback.onCallbackGameInProgress(value);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
             }
         });
     }
@@ -383,6 +432,15 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 refreshNodes(node.isLeftTable(), node.getId());
                                 refreshTurnOf();
                                 setSelectedNode(node.isLeftTable());
+                            } else {
+                                if (possibleMoves()) {
+                                    // there are possible move yet
+                                    Toast.makeText(this, getString(R.string.table_possible_moves), Toast.LENGTH_LONG).show();
+                                } else {
+                                    // there are no possible moves --> end game
+                                    roomNameRef.child("gameInProgress").setValue("false");
+                                    finish();
+                                }
                             }
                         }
                     }
@@ -392,6 +450,62 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 }
             }
         }
+    }
+
+    private Node stringToNode(String string, boolean left) {
+        Node returnNode = null;
+        int id = stringToID(string);
+        if (left) {
+            for (Node node : directedGraphLeft.getNodes()) {
+                if (node.getId() == id) {
+                    returnNode = node;
+                }
+            }
+        } else {
+            for (Node node : directedGraphRight.getNodes()) {
+                if (node.getId() == id) {
+                    returnNode = node;
+                }
+            }
+        }
+        return returnNode;
+    }
+
+    private boolean possibleMoves() {
+        String sNodeLeft = selectedNodeLeft.getText().toString();
+        String sNodeRight = selectedNodeRight.getText().toString();
+        boolean leftAvailable = false;
+        boolean rightAvailable = false;
+        Node startNode = null;
+        int counter = 0;
+        if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
+            startNode = stringToNode(sNodeLeft, true);
+            if (startNode != null) {
+                for (Edge edge : startNode.getOutgoingEdges()) {
+                    // se trova almeno un arco vuol dire che ci sono ancora mosse possibili
+                    if (edge != null) {
+                        counter++;
+                    }
+                }
+                if (counter != 0) {
+                    leftAvailable = true;
+                }
+            }
+        } else {
+            startNode = stringToNode(sNodeRight, false);
+            if (startNode != null) {
+                for (Edge edge : startNode.getOutgoingEdges()) {
+                    // se trova almeno un arco uscente dallo start node del colore dell'ultima mossa --> ci sono ancora mosse possibili
+                    if (colourToString(edge.getColor()).equalsIgnoreCase(lastMoveColour.getText().toString())) {
+                        counter++;
+                    }
+                }
+                if (counter != 0) {
+                    rightAvailable = true;
+                }
+            }
+        }
+        return leftAvailable && rightAvailable;
     }
 
     private void getNoMove(CallbackNoMove callback) {
@@ -510,7 +624,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     // se il colore dell'arco è del colore speciale salva il nodo raggiunto
                     firstNode = edge.getTwo();
                     // cicla sugli archi uscenti del nodo salvato
-                    for (Edge e : firsNode.getOutgoingEdges()) {
+                    for (Edge e : firstNode.getOutgoingEdges()) {
                         // se il colore dell'arco è diverso dal colore speciale ritorna false
                         if (!colourToString(e.getColor()).equalsIgnoreCase(specialC)) {
                             return false;
@@ -1114,6 +1228,11 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     @Override
     public void onCallbackNoMove(String value) {
+
+    }
+
+    @Override
+    public void onCallbackGameInProgress(String value) {
 
     }
 }
