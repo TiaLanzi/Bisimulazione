@@ -51,11 +51,6 @@
     <string name="bug_report_send_button_text">SEND</string>
     <string name="bug_report">BUG REPORT</string>
 
-    <!-- faq -->
-    <string name="faq_question_one">First question?</string>
-    <string name="faq_toggle_question">Open / Close</string>
-    <string name="faq_answer_one">Answer number one…</string>
-
     <!-- navigation -->
     <string name="navigation_navigation">Navigation</string>
     <string name="navigation_home">Home</string>
@@ -124,6 +119,20 @@
 
     <!-- FAQ -->
     <string name="faq">FAQ</string>
+    <string name="faq_toggle_question">Open / Close</string>
+    <string name="faq_question_one">What is <b>bisimulation</b>?</string>
+    <string name="faq_answer_one">In theoretical computer science a <b>bisimulation</b> is a binary relation
+        between state transition systems, associating systems that behave in the same way in that one system
+        simulates the other and vice versa.</string>
+    <string name="faq_question_two">When two systems can be considered <b>bisimilar</b>?</string>
+    <string name="faq_answer_two">Two system are <b>bisimilar</b> if they, assuming we view them as a
+        playing <i>game</i> according to some rules, match each other\'s moves. In this sense, each of the
+        systems cannot be distinguished from the other by an observer.</string>
+    <string name="faq_question_three">Where are my <b>data</b> stored?</string>
+    <string name="faq_answer_three">Data are stored in <b>Firebase</b>, a service offered by <i>Google</i>,
+        where data are <b><i>encrypted</i></b>.</string>
+    <string name="faq_question_four">How many <b>game tables</b> are available at the moment?</string>
+    <string name="faq_answer_four">At the moment only one game table is available. Soon other tables will be ready.</string>
 
     <!-- settings -->
     <string name="settings">SETTINGS</string>

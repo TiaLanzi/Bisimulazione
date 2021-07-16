@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!--app name-->
     <string name="app_name">Bisimulazione</string>
@@ -50,11 +50,6 @@
     <string name="bug_report_send_message">Il messaggio verrà inviato a prova@mail.it\nGrazie per la segnalazione!</string>
     <string name="bug_report_send_button_text">INVIA</string>
     <string name="bug_report">SEGNALA UN PROBLEMA</string>
-
-    <!-- faq -->
-    <string name="faq_question_one">Domanda numero 1?</string>
-    <string name="faq_toggle_question">Apri / Chiudi</string>
-    <string name="faq_answer_one">Risposta numero 1…</string>
 
     <!-- navigation -->
     <string name="navigation_navigation">Navigazione</string>
@@ -124,6 +119,22 @@
 
     <!-- FAQ -->
     <string name="faq">FAQ</string>
+    <string name="faq_toggle_question">Apri / Chiudi</string>
+    <string name="faq_question_one">Cosa si intende per <b>bisimulazione</b>?</string>
+    <string name="faq_answer_one">Nel campo dell\'informatica teorica la <b>bisimulazione</b> è una relazione
+        binaria tra sistemi a transizione di stati, che associa due sistemi quando si comportano allo stesso modo,
+        quando cioè un sistema simula l\'altro e viceversa.</string>
+    <string name="faq_question_two">Quando due sistemi possono essere considerati <b>bisimilari</b>?</string>
+    <string name="faq_answer_two">Due sistemi sono <b>bisimilari</b> se le transizioni di uno possono
+        essere ordinatamente mimate dall\'altro, ed è in questo senso che si dice che un osservatore
+        non è in grado di distinguerli.</string>
+    <string name="faq_question_three">Dove vengono salvati i miei <b>dati</b>?</string>
+    <string name="faq_answer_three">I dati sono conservati all\'interno di <b>Firebase</b>, un servizio
+        offerto da <i>Google</i>, dove i dati sono <b><i>criptati</i></b>.</string>
+    <string name="faq_question_four" tools:ignore="Typos">Quanti <b>tavoli da gioco</b> sono disponibili
+        al momento?</string>
+    <string name="faq_answer_four" tools:ignore="Typos">Al momento è disponibile un solo tavolo da gioco.
+        Presto saranno disponibili altri.</string>
 
     <!-- settings -->
     <string name="settings">IMPOSTAZIONI</string>
