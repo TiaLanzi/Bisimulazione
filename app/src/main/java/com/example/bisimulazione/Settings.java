@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import java.util.Locale;
+import java.util.Objects;
 
 public class Settings extends AppCompatActivity {
 
@@ -22,13 +23,13 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        getSupportActionBar().setTitle(getString(R.string.settings));
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.settings));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final String[] LANGUAGES = {getString(R.string.language_select), getString(R.string.language_italian), getString(R.string.language_english)};
         Spinner spinner = findViewById(R.id.settings_spinner);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, LANGUAGES);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, LANGUAGES);
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

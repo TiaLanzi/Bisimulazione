@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -70,56 +68,47 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
 
         roomsRef = database.getReference().child("rooms");
 
-        createRoom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // create room and add yourself as first player
-                createRoom.setText(getString(R.string.matchmaking_room_creating_room_text));
-                createRoom.setEnabled(false);
-                roomNameRef = roomsRef.child(roomName);
-                // set show
-                roomNameRef.child("show").setValue("true");
-                // set colour
-                specialColour = setColour(roomNameRef);
-                // set turn of
-                setTurnOf(roomNameRef);
-                // initialize to empty string last move colour
-                initializeLastMoveColour(roomNameRef);
-                initializeGraphs(roomNameRef);
-                sendDataP1(roomNameRef, playerName);
-                sendDataNoMoveButton(roomNameRef);
-                sendDataGameInProgress(roomNameRef);
-                startActivity(roomName, true, specialColour);
-            }
+        createRoom.setOnClickListener(v -> {
+            // create room and add yourself as first player
+            createRoom.setText(getString(R.string.matchmaking_room_creating_room_text));
+            createRoom.setEnabled(false);
+            roomNameRef = roomsRef.child(roomName);
+            // set show
+            roomNameRef.child("show").setValue("true");
+            // set colour
+            specialColour = setColour(roomNameRef);
+            // set turn of
+            setTurnOf(roomNameRef);
+            // initialize to empty string last move colour
+            initializeLastMoveColour(roomNameRef);
+            initializeGraphs(roomNameRef);
+            sendDataP1(roomNameRef, playerName);
+            sendDataNoMoveButton(roomNameRef);
+            sendDataGameInProgress(roomNameRef);
+            startActivity(roomName, true, specialColour);
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // join an existing room and add yourself as player two
-                String roomN = roomsList.get(position);
-                roomName = remove(roomN);
-                //roomName = roomsList.get(position);
-                roomNameRef = roomsRef.child(roomName);
-                sendDataP2(roomNameRef, playerName);
-                // not to show when room is full
-                roomNameRef.child("show").setValue("false");
-                specialColour = "";
-                getColour(roomNameRef, new CallbackColour() {
-                    @Override
-                    public void onCallbackColour(String color) {
-                        boolean retrievedColor = false;
-                        while (!retrievedColor) {
-                            if (color != null) {
-                                specialColour = color;
-                                retrievedColor = true;
-                                startActivity(roomName, false, specialColour);
-                                finish();
-                            }
-                        }
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            // join an existing room and add yourself as player two
+            String roomN = roomsList.get(position);
+            roomName = remove(roomN);
+            //roomName = roomsList.get(position);
+            roomNameRef = roomsRef.child(roomName);
+            sendDataP2(roomNameRef, playerName);
+            // not to show when room is full
+            roomNameRef.child("show").setValue("false");
+            specialColour = "";
+            getColour(roomNameRef, color -> {
+                boolean retrievedColor = false;
+                while (!retrievedColor) {
+                    if (color != null) {
+                        specialColour = color;
+                        retrievedColor = true;
+                        startActivity(roomName, false, specialColour);
+                        finish();
                     }
-                });
-            }
+                }
+            });
         });
         // show new rooms created
         getRoomsList();

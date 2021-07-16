@@ -7,9 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import java.util.Objects;
 
 public class BugReport extends AppCompatActivity {
 
@@ -21,20 +22,17 @@ public class BugReport extends AppCompatActivity {
         setContentView(R.layout.activity_bug_report);
 
         // set header with title
-        getSupportActionBar().setTitle(getString(R.string.bug_report));
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.bug_report));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         inputText = findViewById(R.id.bug_report_body_mail);
 
         Button send = findViewById(R.id.bug_report_send_button);
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Editable body = inputText.getText();
-                if (body.length() != 0) {
-                    sendEmail(body);
-                    inputText.setText("");
-                }
+        send.setOnClickListener(v -> {
+            Editable body = inputText.getText();
+            if (body.length() != 0) {
+                sendEmail(body);
+                inputText.setText("");
             }
         });
     }

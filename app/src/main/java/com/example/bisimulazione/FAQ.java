@@ -37,17 +37,15 @@ public class FAQ extends AppCompatActivity {
 
             final int index = i;
 
-            header.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    if (VISIBILITIES[index]) {
-                        answer.setVisibility(View.GONE);
-                        toggle.setText(R.string.fa_caret_down_solid);
-                    } else {
-                        answer.setVisibility(View.VISIBLE);
-                        toggle.setText(R.string.fa_caret_up_solid);
-                    }
-                    VISIBILITIES[index] = !VISIBILITIES[index];
+            header.setOnClickListener(v -> {
+                if (VISIBILITIES[index]) {
+                    answer.setVisibility(View.GONE);
+                    toggle.setText(R.string.fa_caret_down_solid);
+                } else {
+                    answer.setVisibility(View.VISIBLE);
+                    toggle.setText(R.string.fa_caret_up_solid);
                 }
+                VISIBILITIES[index] = !VISIBILITIES[index];
             });
         }
     }

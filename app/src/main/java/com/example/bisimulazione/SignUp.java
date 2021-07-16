@@ -8,15 +8,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.bisimulazione.models.User;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -29,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class SignUp extends AppCompatActivity {
 
@@ -75,71 +73,61 @@ public class SignUp extends AppCompatActivity {
         editor.apply();
 
         // listener for button sign up
-        signUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // check if all fields are correct
-                if (isValidName(firstName) & isValidName(lastName) & isValidName(username) & isValidPwd(password, confirmPassword)) { // & isValidEmail(email) & isValidPwd(password, confirmPassword)) {
-                    // get text written in edittext
-                    String nome = fromEditTextToString(firstName).trim();
-                    String cognome = fromEditTextToString(lastName).trim();
-                    String nomeUtente = fromEditTextToString(username).trim();
-                    String mail = fromEditTextToString(email).trim();
-                    String pwd = fromEditTextToString(password);
-                    final User utente = new User(nome, cognome, nomeUtente, mail, pwd);
-                    // check if lastName + firstName already exist
-                    reference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                            userFullName = utente.getLastName() + " " + utente.getFirstName();
-                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                if (dataSnapshot != null) {
-                                    String userSearch = dataSnapshot.child("lastName").getValue().toString() + " " + dataSnapshot.child("firstName").getValue().toString();
-                                    if (userSearch.equalsIgnoreCase(userFullName)) {
-                                        int count = sharedPreferences.getInt("Counter", 0);
-                                        String counter = String.valueOf(sharedPreferences.getInt("Counter", 0));
-                                        userFullName = userFullName + " " + counter;
-                                        count++;
-                                        editor.putInt("Counter", count);
-                                        editor.apply();
-                                    }
-                                } else {
-                                    Log.i(TAG, "Data snapshot is null");
+        signUp.setOnClickListener(v -> {
+            // check if all fields are correct
+            if (isValidName(firstName) & isValidName(lastName) & isValidName(username) & isValidPwd(password, confirmPassword)) { // & isValidEmail(email) & isValidPwd(password, confirmPassword)) {
+                // get text written in edittext
+                String nome = fromEditTextToString(firstName).trim();
+                String cognome = fromEditTextToString(lastName).trim();
+                String nomeUtente = fromEditTextToString(username).trim();
+                String mail = fromEditTextToString(email).trim();
+                String pwd = fromEditTextToString(password);
+                final User utente = new User(nome, cognome, nomeUtente, mail, pwd);
+                // check if lastName + firstName already exist
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        userFullName = utente.getLastName() + " " + utente.getFirstName();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            if (dataSnapshot != null) {
+                                String userSearch = Objects.requireNonNull(dataSnapshot.child("lastName").getValue()).toString() + " " + Objects.requireNonNull(dataSnapshot.child("firstName").getValue()).toString();
+                                if (userSearch.equalsIgnoreCase(userFullName)) {
+                                    int count = sharedPreferences.getInt("Counter", 0);
+                                    String counter = String.valueOf(sharedPreferences.getInt("Counter", 0));
+                                    userFullName = userFullName + " " + counter;
+                                    count++;
+                                    editor.putInt("Counter", count);
+                                    editor.apply();
                                 }
+                            } else {
+                                Log.i(TAG, "Data snapshot is null");
                             }
                         }
+                    }
 
-                        @Override
-                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-                        }
-                    });
-                    auth.createUserWithEmailAndPassword(mail, pwd).
-                            addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
-                                        FirebaseUser user = auth.getCurrentUser();
-                                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(utente.getLastName() + ", " + utente.getFirstName()).build();
-                                        user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull @NotNull Task<Void> task) {
-                                                task.isSuccessful();
-                                            }
-                                        });
-                                        Toast.makeText(getApplicationContext(), getString(R.string.sign_up_successful), Toast.LENGTH_SHORT).show();
-                                        sendData(utente, userFullName);
-                                        passData(utente);
-                                    } else {
-                                        // If sign in fails, display a message to the user.
-                                        //Toast.makeText(getApplicationContext(), getString(R.string.sign_up_failed) + task.getException(), Toast.LENGTH_SHORT).show();
-                                        Toast.makeText(SignUp.this, getString(R.string.sign_up_failed),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                }
+                    }
+                });
+                auth.createUserWithEmailAndPassword(mail, pwd).
+                        addOnCompleteListener(SignUp.this, task -> {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                FirebaseUser user = auth.getCurrentUser();
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(utente.getLastName() + ", " + utente.getFirstName()).build();
+                                assert user != null;
+                                user.updateProfile(profileUpdates).addOnCompleteListener(Task::isSuccessful);
+                                Toast.makeText(getApplicationContext(), getString(R.string.sign_up_successful), Toast.LENGTH_SHORT).show();
+                                sendData(utente, userFullName);
+                                passData(utente);
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                //Toast.makeText(getApplicationContext(), getString(R.string.sign_up_failed) + task.getException(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignUp.this, getString(R.string.sign_up_failed),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
         });
     }

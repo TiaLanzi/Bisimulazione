@@ -25,13 +25,11 @@ import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Set;
+import java.util.Objects;
 
 import info.androidhive.fontawesome.FontDrawable;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    private static final String TAG = "Bisimulazione";
 
     private AppBarConfiguration appBarConfiguration;
 
@@ -66,26 +64,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                getSupportActionBar().setTitle(getString(R.string.menu_home));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.menu_home));
                 navigateTo(new Home());
                 break;
             case R.id.navigation_bug_report:
-                getSupportActionBar().setTitle(getString(R.string.menu_bug_report));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.menu_bug_report));
                 Intent intentBugReport = new Intent(this, BugReport.class);
                 startActivity(intentBugReport);
                 break;
             case R.id.navigation_faq:
-                getSupportActionBar().setTitle(getString(R.string.menu_faq));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.menu_faq));
                 Intent intentFaq = new Intent(this, FAQ.class);
                 startActivity(intentFaq);
                 break;
             case R.id.navigation_game:
-                getSupportActionBar().setTitle(getString(R.string.menu_play_game));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.menu_play_game));
                 Intent intentGame = new Intent(this, MatchmakingRoom.class);
                 startActivity(intentGame);
                 break;
             case R.id.navigation_settings:
-                getSupportActionBar().setTitle(getString(R.string.menu_settings));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.menu_settings));
                 Intent intentSettings = new Intent(this, Settings.class);
                 startActivity(intentSettings);
                 break;
@@ -93,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawers();
         return false;
     }

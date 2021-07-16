@@ -60,13 +60,10 @@ public class Home extends Fragment {
             }
         }
 
-        playGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendData(playersRef, playerName);
-                Intent intent = new Intent(getActivity(), MatchmakingRoom.class);
-                startActivity(intent);
-            }
+        playGame.setOnClickListener(v -> {
+            sendData(playersRef, playerName);
+            Intent intent = new Intent(getActivity(), MatchmakingRoom.class);
+            startActivity(intent);
         });
     }
 
