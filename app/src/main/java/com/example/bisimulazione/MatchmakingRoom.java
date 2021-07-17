@@ -125,7 +125,11 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
             public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
                 roomsList.clear();
                 for (DataSnapshot data : snapshot.getChildren()) {
-                    roomsList.add(getString(R.string.matchmaking_room_property) + " " + data.getKey());
+                    if (data.child("show").getValue() != null) {
+                        if (Objects.requireNonNull(data.child("show").getValue()).toString().equalsIgnoreCase("true")) {
+                            roomsList.add(getString(R.string.matchmaking_room_property) + " " + data.getKey());
+                        }
+                    }
                     adapter = new ArrayAdapter<>(MatchmakingRoom.this, android.R.layout.simple_list_item_1, roomsList);
                     listView.setAdapter(adapter);
                 }
