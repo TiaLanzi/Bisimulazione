@@ -45,7 +45,9 @@ public class Home extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button playGame = view.findViewById(R.id.main_play_button);
+        Button playGame = view.findViewById(R.id.home_play_button);
+        Button bugReport = view.findViewById(R.id.home_bug_report_button);
+        //Button availablePlayers = view.findViewById(R.id.home_settings_button);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -64,6 +66,14 @@ public class Home extends Fragment {
             sendData(playersRef, playerName);
             Intent intent = new Intent(getActivity(), MatchmakingRoom.class);
             startActivity(intent);
+        });
+
+        bugReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), BugReport.class);
+                startActivity(intent);
+            }
         });
     }
 

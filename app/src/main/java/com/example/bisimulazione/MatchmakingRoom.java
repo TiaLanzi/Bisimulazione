@@ -126,7 +126,7 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
                 roomsList.clear();
                 for (DataSnapshot data : snapshot.getChildren()) {
                     if (data.child("show").getValue() != null) {
-                        if (Objects.requireNonNull(data.child("show").getValue()).toString().equalsIgnoreCase("true")) {
+                        if (data.child("show").getValue().toString().equalsIgnoreCase("true")) {
                             roomsList.add(getString(R.string.matchmaking_room_property) + " " + data.getKey());
                         }
                     }

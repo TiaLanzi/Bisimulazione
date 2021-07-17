@@ -66,9 +66,10 @@
     <string name="navigation_header_bisimulation_game_title">Bisimulazione</string>
     <string name="navigation_header_mail_subtitle">Benvenuto prova@mail.it!</string>
 
-    <!-- main activity -->
-    <string name="main_play_now">GIOCA ORA!</string>
-    <string name="main_options">OPZIONI</string>
+    <!-- home -->
+    <string name="home_play_now">GIOCA ORA!</string>
+    <string name="home_options">OPZIONI</string>
+    <string name="home_bug_report">SEGNALA UN PROBLEMA</string>
 
     <!-- table -->
     <string name="table_table_right">Tavolo destro</string>
