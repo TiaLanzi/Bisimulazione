@@ -40,7 +40,7 @@ import interfaces.CallbackPlayerTwo;
 import interfaces.CallbackSelectedNode;
 import interfaces.CallbackTurnOf;
 
-public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackNodeColor, CallbackSelectedNode, CallbackNoMove, CallbackGameInProgress {
+public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackSelectedNode, CallbackNoMove, CallbackGameInProgress {
 
     private static final String TAG = "Bisimulazione";
 
@@ -142,7 +142,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         // enable / disable no move button
         setNoMove();
         // end game
-        setEndGame();
+        //setEndGame();
 
         // initialize nodes
         nodes = new Node[10];
@@ -165,12 +165,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         // set edges for left graph
         directedGraphLeft.setEdges(edgesL);
 
-        setIncomingEdgesLeft();
         setOutgoingEdgesLeft();
 
         touchable = true;
 
         leftGraphRef = roomNameRef.child("leftGraph");
+        directedGraphLeft.setReference(leftGraphRef);
         directedGraphLeft.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -193,6 +193,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         setOutgoingEdgesRight();
 
         rightGraphRef = roomNameRef.child("rightGraph");
+        directedGraphRight.setReference(rightGraphRef);
         directedGraphRight.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -276,24 +277,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return appoggio;
     }
 
-    private void setIncomingEdgesLeft() {
-        // set incoming edges
-        Edge[] edgesRootLeft = {edgesL[2], edgesL[3]};
-        nodesL[0].setIncomingEdges(edgesRootLeft);
-
-        Edge[] edgesSecondLeft = {edgesL[0]};
-        nodesL[1].setIncomingEdges(edgesSecondLeft);
-
-        Edge[] edgesThirdLeft = {edgesL[1]};
-        nodesL[2].setIncomingEdges(edgesThirdLeft);
-
-        Edge[] edgesFourthLeft = {edgesL[5], edgesL[6]};
-        nodesL[3].setIncomingEdges(edgesFourthLeft);
-
-        Edge[] edgesFifthLeft = {edgesL[4]};
-        nodesL[4].setIncomingEdges(edgesFifthLeft);
-    }
-
     private void setOutgoingEdgesLeft() {
         // set outgoing edges
         Edge[] edgesRootLeftO = {edgesL[0], edgesL[1]};
@@ -313,7 +296,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void setOutgoingEdgesRight() {
-        // set outgoing edges
         Edge[] edgesRootRightO = {edgesR[0], edgesR[1]};
         nodesR[0].setOutgoingEdges(edgesRootRightO);
 
@@ -827,114 +809,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
     }
 
-    private String getNodeColour(boolean leftTable) {
-        final String[] NODE = {""};
-        getNodeColour(new CallbackNodeColor() {
-            @Override
-            public void onCallbackNodeOneColour(String color) {
-                boolean retrievedNodeColour = false;
-                while (!retrievedNodeColour) {
-                    if (color != null) {
-                        if (color.equalsIgnoreCase("blue")) {
-                            NODE[0] = "Node one";
-                        }
-                        retrievedNodeColour = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCallbackNodeTwoColour(String color) {
-                boolean retrievedNodeColour = false;
-                while (!retrievedNodeColour) {
-                    if (color != null) {
-                        if (color.equalsIgnoreCase("blue")) {
-                            NODE[0] = "Node two";
-                        }
-                        retrievedNodeColour = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCallbackNodeThreeColour(String color) {
-                boolean retrievedNodeColour = false;
-                while (!retrievedNodeColour) {
-                    if (color != null) {
-                        if (color.equalsIgnoreCase("blue")) {
-                            NODE[0] = "Node three";
-                        }
-                        retrievedNodeColour = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCallbackNodeFourColour(String color) {
-                boolean retrievedNodeColour = false;
-                while (!retrievedNodeColour) {
-                    if (color != null) {
-                        if (color.equalsIgnoreCase("blue")) {
-                            NODE[0] = "Node four";
-                        }
-                        retrievedNodeColour = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCallbackNodeFiveColour(String color) {
-                boolean retrievedNodeColour = false;
-                while (!retrievedNodeColour) {
-                    if (color != null) {
-                        if (color.equalsIgnoreCase("blue")) {
-                            NODE[0] = "Node five";
-                        }
-                        retrievedNodeColour = true;
-                    }
-                }
-            }
-        }, leftTable);
-        return NODE[0];
-    }
-
-    private void getNodeColour(CallbackNodeColor callback, boolean leftTable) {
-        DatabaseReference reference;
-        if (leftTable) {
-            reference = leftGraphRef;
-        } else {
-            reference = rightGraphRef;
-        }
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase("Node one")) {
-                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
-                        callback.onCallbackNodeOneColour(value);
-                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node two")) {
-                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
-                        callback.onCallbackNodeTwoColour(value);
-                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node three")) {
-                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
-                        callback.onCallbackNodeThreeColour(value);
-                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node four")) {
-                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
-                        callback.onCallbackNodeFourColour(value);
-                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node five")) {
-                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
-                        callback.onCallbackNodeFiveColour(value);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-    }
-
     private String colourToString(int colour) {
         String colore = "";
         switch (colour) {
@@ -1200,31 +1074,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     @Override
     public void onCallbackLastMoveColour(String colour) {
-    }
-
-    @Override
-    public void onCallbackNodeOneColour(String color) {
-
-    }
-
-    @Override
-    public void onCallbackNodeTwoColour(String color) {
-
-    }
-
-    @Override
-    public void onCallbackNodeThreeColour(String color) {
-
-    }
-
-    @Override
-    public void onCallbackNodeFourColour(String color) {
-
-    }
-
-    @Override
-    public void onCallbackNodeFiveColour(String color) {
-
     }
 
     @Override

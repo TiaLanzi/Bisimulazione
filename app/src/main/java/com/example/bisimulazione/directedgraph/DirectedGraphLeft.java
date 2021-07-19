@@ -28,6 +28,7 @@ public class DirectedGraphLeft extends DirectedGraph implements CallbackNodeColo
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawGraph(canvas);
+        canvas.save();
     }
 
     @Override
@@ -38,16 +39,67 @@ public class DirectedGraphLeft extends DirectedGraph implements CallbackNodeColo
 
     @Override
     protected void drawNodes(Canvas canvas) {
-        // draw nodes if not exist
-        if (this.getNodes() != null) {
-            for (Node node : this.getNodes()) {
-                Paint paintNode = paintNode(node.getColor());
-                if (!node.isAlreadyDrawn()) {
-                    canvas.drawCircle(node.getX(), node.getY(), radius, paintNode);
-                    node.setAlreadyDrawn(true);
+        getNodeColour(new CallbackNodeColor() {
+            @Override
+            public void onCallbackNodeOneColour(String color) {
+                boolean retrievedNodeColour = false;
+                while (!retrievedNodeColour) {
+                    if (color != null) {
+                        Log.i(TAG, "Left table " + getNodes()[0].isLeftTable());
+                        canvas.drawCircle(getNodes()[0].getX(), getNodes()[0].getY(), radius, paintNode(stringToIntColour(color)));
+                        retrievedNodeColour = true;
+                    }
                 }
             }
-        }
+
+            @Override
+            public void onCallbackNodeTwoColour(String color) {
+                boolean retrievedNodeColour = false;
+                while (!retrievedNodeColour) {
+                    if (color != null) {
+                        Log.i(TAG, "Left table " + getNodes()[0].isLeftTable());
+                        canvas.drawCircle(getNodes()[1].getX(), getNodes()[1].getY(), radius, paintNode(stringToIntColour(color)));
+                        retrievedNodeColour = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackNodeThreeColour(String color) {
+                boolean retrievedNodeColour = false;
+                while (!retrievedNodeColour) {
+                    if (color != null) {
+                        Log.i(TAG, "Left table " + getNodes()[0].isLeftTable());
+                        canvas.drawCircle(getNodes()[2].getX(), getNodes()[2].getY(), radius, paintNode(stringToIntColour(color)));
+                        retrievedNodeColour = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackNodeFourColour(String color) {
+                boolean retrievedNodeColour = false;
+                while (!retrievedNodeColour) {
+                    if (color != null) {
+                        Log.i(TAG, "Left table " + getNodes()[0].isLeftTable());
+                        canvas.drawCircle(getNodes()[3].getX(), getNodes()[3].getY(), radius, paintNode(stringToIntColour(color)));
+                        retrievedNodeColour = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackNodeFiveColour(String color) {
+                boolean retrievedNodeColour = false;
+                while (!retrievedNodeColour) {
+                    if (color != null) {
+                        Log.i(TAG, "Left table " + getNodes()[0].isLeftTable());
+                        canvas.drawCircle(getNodes()[4].getX(), getNodes()[4].getY(), radius, paintNode(stringToIntColour(color)));
+                        retrievedNodeColour = true;
+                    }
+                }
+            }
+        });
     }
 
     @Override

@@ -4,17 +4,30 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
+import interfaces.CallbackNodeColor;
 
 @SuppressLint("ViewConstructor")
 public abstract class DirectedGraph extends View {
 
     protected static final String TAG = "Bisimulazione";
+
+    private DatabaseReference reference;
 
     private Edge[] edges;
     private Node[] nodes;
@@ -32,6 +45,14 @@ public abstract class DirectedGraph extends View {
 
     public DirectedGraph(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public void setReference(DatabaseReference reference) {
+        this.reference = reference;
+    }
+
+    protected DatabaseReference getReference() {
+        return this.reference;
     }
 
     public void setEdges(Edge[] edges) {
@@ -92,5 +113,52 @@ public abstract class DirectedGraph extends View {
     @Override
     public boolean performClick() {
         return super.performClick();
+    }
+
+    protected void getNodeColour(CallbackNodeColor callback) {
+        DatabaseReference reference = this.getReference();
+        Log.i(TAG, "Reference " + reference.toString());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase("Node one")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
+                        callback.onCallbackNodeOneColour(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node two")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
+                        callback.onCallbackNodeTwoColour(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node three")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
+                        callback.onCallbackNodeThreeColour(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node four")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
+                        callback.onCallbackNodeFourColour(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node five")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString();
+                        callback.onCallbackNodeFiveColour(value);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    protected int stringToIntColour(String colour) {
+        int colore = -1;
+        switch (colour) {
+            case "black":
+                return -16777216;
+            case "blue":
+                return -15774591;
+            default:
+                break;
+        }
+        Log.i(TAG, "Colore è -1 (" + (colore) + ")");
+        return colore;
     }
 }
