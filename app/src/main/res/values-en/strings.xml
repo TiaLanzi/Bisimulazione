@@ -155,6 +155,7 @@
     <string name="navigation_header_user_mail">android@studio.it</string>
 
     <!-- my account -->
+    <string name="my_account">My account</string>
     <string name="my_account_unknown">Unknown</string>
     <string name="my_account_personal_info">PERSONAL INFO</string>
     <string name="my_account_first_name">First name</string>
