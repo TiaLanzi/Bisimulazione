@@ -66,8 +66,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private DatabaseReference leftGraphRef;
     private DatabaseReference rightGraphRef;
 
-    private com.example.bisimulazione.directedgraph.DirectedGraph directedGraphLeft;
-    private com.example.bisimulazione.directedgraph.DirectedGraph directedGraphRight;
+    private com.example.bisimulazione.directedgraph.DirectedGraphLeft directedGraphLeft;
+    private com.example.bisimulazione.directedgraph.DirectedGraphRight directedGraphRight;
 
     private Node[] nodes;
     private Edge[] edges;
@@ -190,7 +190,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         directedGraphRight.setNodes(nodesR);
         directedGraphRight.setEdges(edgesR);
 
-        //setIncomingEdgesLeft();
         setOutgoingEdgesRight();
 
         rightGraphRef = roomNameRef.child("rightGraph");
@@ -601,8 +600,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     private boolean isValidMove(Node startNode, Node nodeTouched) {
         if (startNode == null && nodeTouched == null) {
-            roomNameRef.child("noMoveButtonEnabled").setValue("false");
-            return true;
+            if (lastMoveColour.getText().toString().equalsIgnoreCase(coloreSpeciale.getText().toString())) {
+                roomNameRef.child("noMoveButtonEnabled").setValue("false");
+                return true;
+            } else {
+                return false;
+            }
         }
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
             Log.i(TAG, "Strong move");
@@ -632,13 +635,13 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private boolean isWeakMove(Node startNode, Node nodeTouched) {
-        Node firstNode = null;
+        Node firstNode;
         String specialC = coloreSpeciale.getText().toString();
         // se colore speciale è uguale al colore dell'ultima mossa
         if (coloreSpeciale.getText().toString().equalsIgnoreCase(lastMoveColour.getText().toString())) {
-            // cicla sugli archi
+            // cicla sugli archi uscenti dell'arco di partenza
             for (Edge edge : startNode.getOutgoingEdges()) {
-                // se il colore dell'arco è diverso dal colore speciale ritorna false
+                // se il colore dell'arco in questione è diverso dal colore speciale ritorna false
                 if (!colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
                     return false;
                 } else {
@@ -681,11 +684,13 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 }
                 // i nodi raggiunti dagli archi uscenti del primo nodo (che è diverso dallo startNode)
                 return false;
-            } else if (colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
+            }
+            // se invece legge subito un arco del colore speciale --> deve leggerne almeno uno del colore dell'ultima mossa
+            else if (colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
                 firstNode = edge.getTwo();
                 for (Edge e : firstNode.getOutgoingEdges()) {
-                    if (colourToString(e.getColor()).equalsIgnoreCase(specialC)) {
-
+                    if (!colourToString(e.getColor()).equalsIgnoreCase(specialC)) {
+                        // continua a ciclare --> come farlo?
                     }
                 }
             } else {
