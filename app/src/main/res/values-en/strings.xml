@@ -153,4 +153,14 @@
     <string name="navigation_header_content_description">TODO</string>
     <string name="navigation_header_user_name">Full name</string>
     <string name="navigation_header_user_mail">android@studio.it</string>
+
+    <!-- my account -->
+    <string name="my_account_unknown">Unknown</string>
+    <string name="my_account_personal_info">PERSONAL INFO</string>
+    <string name="my_account_first_name">First name</string>
+    <string name="my_account_last_name">Last name</string>
+    <string name="my_account_email">Email address</string>
+    <string name="my_account_stats">STATS</string>
+    <string name="my_account_win_count">Win count:</string>
+    <string name="my_account_lose_count">Lose count:</string>
 </resources>

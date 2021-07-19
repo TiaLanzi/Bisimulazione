@@ -155,4 +155,14 @@
     <string name="navigation_header_content_description">TODO</string>
     <string name="navigation_header_user_name">Nome completo</string>
     <string name="navigation_header_user_mail">android@studio.it</string>
+
+    <!-- my account -->
+    <string name="my_account_unknown">Sconosciuto</string>
+    <string name="my_account_personal_info">INFORMAZIONI PERSONALI</string>
+    <string name="my_account_first_name">Nome</string>
+    <string name="my_account_last_name">Cognome</string>
+    <string name="my_account_email">Indrizzo mail</string>
+    <string name="my_account_stats">STATISTICHE</string>
+    <string name="my_account_win_count">Numero di vittorie:</string>
+    <string name="my_account_lose_count">Numero di sconfitte:</string>
 </resources>

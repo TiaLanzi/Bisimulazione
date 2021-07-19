@@ -4,6 +4,7 @@
     <color name="green">#00FF29</color>
     <color name="red">#FC6042</color>
     <color name="black">#000000</color>
+    <color name="text">#333333</color>
     <color name="white">#FFFFFF</color>
     <color name="grey">#F2F2F2</color>
     <color name="link">#47A7FF</color>
