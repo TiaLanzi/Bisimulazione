@@ -34,7 +34,6 @@ import java.util.Objects;
 import interfaces.CallbackGameInProgress;
 import interfaces.CallbackLastMoveColour;
 import interfaces.CallbackNoMove;
-import interfaces.CallbackNodeColor;
 import interfaces.CallbackPlayerOne;
 import interfaces.CallbackPlayerTwo;
 import interfaces.CallbackSelectedNode;
@@ -77,6 +76,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     private Node[] nodesR;
     private Edge[] edgesR;
+
+    private int[][] controlMatrix;
 
     private final float radius = 40f;
 
@@ -125,6 +126,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         leftGraphRef = roomNameRef.child("leftGraph");
         // set right graph reference
         rightGraphRef = roomNameRef.child("rightGraph");
+        // initialize control matrix
+        controlMatrix = new int[5][5];
         // set attacker
         setAttacker();
         // set defender
@@ -213,25 +216,22 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void setEndGame() {
-        getGameInProgress(new CallbackGameInProgress() {
-            @Override
-            public void onCallbackGameInProgress(String value) {
-                boolean retrievedGameInProgress = false;
-                while (!retrievedGameInProgress) {
-                    if (value != null) {
-                        if (value.equalsIgnoreCase("false")) {
-                            new AlertDialog.Builder(getApplicationContext()).setTitle(getString(R.string.alert_end_game))
-                                    .setMessage(getString(R.string.alert_win_congrats) + " " + playerName)
-                                    .setPositiveButton(R.string.alert_continue, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            finish();
-                                        }
-                                    });
-                        }
+        getGameInProgress(value -> {
+            boolean retrievedGameInProgress = false;
+            while (!retrievedGameInProgress) {
+                if (value != null) {
+                    if (value.equalsIgnoreCase("false")) {
+                        new AlertDialog.Builder(getApplicationContext()).setTitle(getString(R.string.alert_end_game))
+                                .setMessage(getString(R.string.alert_win_congrats) + " " + playerName)
+                                .setPositiveButton(R.string.alert_continue, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                });
                     }
-                    retrievedGameInProgress = true;
                 }
+                retrievedGameInProgress = true;
             }
         });
     }
@@ -401,6 +401,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 }
                             }
                             if (isValidMove(startNode, node)) {
+                                Node nodeLeftSelected = stringToNode(selectedNodeLeft.getText().toString().trim(), true);
+                                Node nodeRightSelected = stringToNode(selectedNodeRight.getText().toString().trim(), false);
+                                controlMatrix(nodeLeftSelected, nodeRightSelected, node);
                                 DatabaseReference graphRef;
                                 if (node.isLeftTable()) {
                                     graphRef = leftGraphRef;
@@ -446,10 +449,35 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             }
                         }
                     }
-                    //directedGraph.invalidate();
-                    //directedGraph.postInvalidate();
-                    //directedGraph = new DirectedGraph(this.getApplicationContext());
                 }
+            }
+        }
+    }
+
+    private void controlMatrix(Node nodeLeftSelected, Node nodeRightSelected, Node nodeTouched) {
+        System.out.println("Before...");
+        for (int i = 0; i < controlMatrix.length; i++) {
+            for (int j = 0; j < controlMatrix[i].length; j++) {
+                System.out.print(controlMatrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+        if (nodeTouched.isLeftTable()) {
+            controlMatrix[(nodeTouched.getId() - 1)][(nodeRightSelected.getId() - 1)] = 1;
+        } else {
+            controlMatrix[(nodeLeftSelected.getId() - 1)][(nodeTouched.getId() - 1)] = 1;
+        }
+        System.out.println("After...");
+        for (int i = 0; i < controlMatrix.length; i++) {
+            for (int j = 0; j < controlMatrix[i].length; j++) {
+                System.out.print(controlMatrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+        if (controlMatrix[(nodeLeftSelected.getId() - 1)][(nodeRightSelected.getId() - 1)] == 1) {
+            // configuration already visited after defender move --> end game
+            if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
+                roomNameRef.child("gameInProgress").setValue("false");
             }
         }
     }
