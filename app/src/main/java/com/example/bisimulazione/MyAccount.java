@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -23,8 +22,6 @@ import java.util.Objects;
 import interfaces.CallbackGameCount;
 
 public class MyAccount extends AppCompatActivity implements CallbackGameCount {
-
-    private final String TAG = "Bisimulazione";
 
     private FirebaseUser user;
 

@@ -117,7 +117,6 @@ public abstract class DirectedGraph extends View {
 
     protected void getNodeColour(CallbackNodeColor callback) {
         DatabaseReference reference = this.getReference();
-        Log.i(TAG, "Reference " + reference.toString());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {

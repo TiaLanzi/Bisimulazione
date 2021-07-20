@@ -49,6 +49,9 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_matchmaking_room);
 
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.matchmaking_room));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         FirebaseAuth auth = FirebaseAuth.getInstance();

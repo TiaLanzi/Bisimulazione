@@ -89,6 +89,7 @@
     <string name="table_possible_moves">There are still available moves.</string>
 
     <!-- matchmaking room -->
+    <string name="matchmaking_room">Matchmaking room</string>
     <string name="matchmaking_room_create_room_text">CREATE ROOM</string>
     <string name="matchmaking_room_player_unknown_text">Unknown</string>
     <string name="matchmaking_room_creating_room_text">CREATING ROOM…</string>
@@ -171,4 +172,7 @@
     <string name="first_card_win">Win count:</string>
     <string name="first_card_zero">0</string>
     <string name="first_card_lose">Lose count:</string>
+
+    <!-- active players -->
+    <string name="active_players">Active players</string>
 </resources>

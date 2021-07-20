@@ -88,6 +88,7 @@
     <string name="table_possible_moves">Ci sono ancora mosse disponibili.</string>
 
     <!-- matchmaking room -->
+    <string name="matchmaking_room">Stanza pre-game</string>
     <string name="matchmaking_room_create_room_text">CREA STANZA</string>
     <string name="matchmaking_room_player_unknown_text">Sconosciuto</string>
     <string name="matchmaking_room_creating_room_text">CREANDO LA STANZA…</string>
@@ -173,4 +174,7 @@
     <string name="first_card_win">Numero di vittorie:</string>
     <string name="first_card_zero">0</string>
     <string name="first_card_lose">Numero di sconfitte:</string>
+
+    <!-- active players -->
+    <string name="active_players">Giocatori attivi</string>
 </resources>

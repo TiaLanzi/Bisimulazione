@@ -13,23 +13,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MyAccount"></activity>
-        <activity
-            android:name=".Settings"
-            android:exported="true" />
+        <activity android:name=".ActivePlayers" />
+        <activity android:name=".MyAccount" />
+        <activity android:name=".Settings" />
         <activity android:name=".MatchmakingRoom" />
-        <activity
-            android:name=".Table"
-            android:exported="true" />
-        <activity
-            android:name=".FAQ"
-            android:exported="true" />
-        <activity
-            android:name=".BugReport"
-            android:exported="true" />
-        <activity
-            android:name=".SignUp"
-            android:exported="true" />
+        <activity android:name=".Table" />
+        <activity android:name=".FAQ" />
+        <activity android:name=".BugReport" />
+        <activity android:name=".SignUp" />
         <activity
             android:name=".Login"
             android:exported="true" />
