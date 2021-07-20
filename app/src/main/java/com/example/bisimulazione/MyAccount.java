@@ -84,7 +84,6 @@ public class MyAccount extends AppCompatActivity implements CallbackGameCount {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Log.i(TAG, "Key " + dataSnapshot.getKey());
                     String fullName = Objects.requireNonNull(user.getDisplayName()).replace(",", "");
                     if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase(fullName)) {
                         String win = Objects.requireNonNull(dataSnapshot.child("winCount").getValue()).toString();

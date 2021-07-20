@@ -23,6 +23,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -75,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.navigation_game:
                 Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.menu_play_game));
+                sendData();
                 Intent intentGame = new Intent(this, MatchmakingRoom.class);
                 startActivity(intentGame);
                 break;
@@ -96,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             default:
                 break;
         }
-
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawers();
         return false;
@@ -138,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         }
-
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         FragmentManager fragmentManager = getSupportFragmentManager();
         for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
@@ -147,5 +149,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.replace(R.id.nav_host_fragment_container, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    private void sendData() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        if (user != null) {
+            FirebaseDatabase.getInstance().getReference().child("players").child(Objects.requireNonNull(user.getDisplayName())).setValue(user.getDisplayName());
+        }
     }
 }
