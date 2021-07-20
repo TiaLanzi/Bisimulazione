@@ -164,4 +164,11 @@
     <string name="my_account_stats">STATS</string>
     <string name="my_account_win_count">Win count:</string>
     <string name="my_account_lose_count">Lose count:</string>
+
+    <!-- first card -->
+    <string name="first_card_personal_stats">PERSONAL STATS</string>
+    <string name="first_card_more_about">MORE ABOUT</string>
+    <string name="first_card_win">Win count:</string>
+    <string name="first_card_zero">0</string>
+    <string name="first_card_lose">Lose count:</string>
 </resources>

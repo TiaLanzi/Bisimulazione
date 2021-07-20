@@ -51,14 +51,14 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="vertical">
-
+                    <!--
                     <com.example.bisimulazione.directedgraph.DirectedGraphLeft
                         android:id="@+id/table_left_table_directed_graph"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true" /> -->
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
@@ -101,14 +101,14 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="vertical">
-
+                    <!--
                     <com.example.bisimulazione.directedgraph.DirectedGraphRight
                         android:id="@+id/table_right_table_directed_graph"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true" /> -->
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>

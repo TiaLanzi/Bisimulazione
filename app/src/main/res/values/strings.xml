@@ -166,4 +166,11 @@
     <string name="my_account_stats">STATISTICHE</string>
     <string name="my_account_win_count">Numero di vittorie:</string>
     <string name="my_account_lose_count">Numero di sconfitte:</string>
+
+    <!-- first card -->
+    <string name="first_card_personal_stats">STATISTICHE PERSONALI</string>
+    <string name="first_card_more_about">SCOPRI DI PIU</string>
+    <string name="first_card_win">Numero di vittorie:</string>
+    <string name="first_card_zero">0</string>
+    <string name="first_card_lose">Numero di sconfitte:</string>
 </resources>

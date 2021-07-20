@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,9 @@ public class MyAccount extends AppCompatActivity implements CallbackGameCount {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_account);
+
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.my_account));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         TextView firstName = findViewById(R.id.my_account_first_name);
         TextView lastName = findViewById(R.id.my_account_last_name);
@@ -106,5 +110,13 @@ public class MyAccount extends AppCompatActivity implements CallbackGameCount {
     @Override
     public void onCallbackLoseCount(String value) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+        }
+        return true;
     }
 }

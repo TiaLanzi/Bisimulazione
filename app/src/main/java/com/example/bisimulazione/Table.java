@@ -12,10 +12,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bisimulazione.directedgraph.DirectedGraph;
+import com.example.bisimulazione.directedgraph.DirectedGraphLeft;
+import com.example.bisimulazione.directedgraph.DirectedGraphRight;
 import com.example.bisimulazione.directedgraph.Edge;
 import com.example.bisimulazione.directedgraph.Node;
 import com.google.firebase.auth.FirebaseAuth;
@@ -162,7 +165,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         // get edges of left graph
         edgesL = divideEdges(edges, left);
         // initialize directed graph left
-        directedGraphLeft = findViewById(R.id.table_left_table_directed_graph);
+        //directedGraphLeft = findViewById(R.id.table_left_table_directed_graph);
+        directedGraphLeft = new DirectedGraphLeft(this);
         // set nodes for left graph
         directedGraphLeft.setNodes(nodesL);
         // set edges for left graph
@@ -174,6 +178,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
         leftGraphRef = roomNameRef.child("leftGraph");
         directedGraphLeft.setReference(leftGraphRef);
+
+        LinearLayout layoutDirectedGraphLeft = findViewById(R.id.table_left_directed_graph_layout);
+        layoutDirectedGraphLeft.addView(directedGraphLeft);
+
         directedGraphLeft.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -188,7 +196,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         nodesR = divideNodes(nodes, left);
         edgesR = divideEdges(edges, left);
 
-        directedGraphRight = findViewById(R.id.table_right_table_directed_graph);
+        //directedGraphRight = findViewById(R.id.table_right_table_directed_graph);
+        directedGraphRight = new DirectedGraphRight(this);
 
         directedGraphRight.setNodes(nodesR);
         directedGraphRight.setEdges(edgesR);
@@ -197,6 +206,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
         rightGraphRef = roomNameRef.child("rightGraph");
         directedGraphRight.setReference(rightGraphRef);
+
+        LinearLayout layoutDirectedGraphRight = findViewById(R.id.table_right_directed_graph_layout);
+        layoutDirectedGraphRight.addView(directedGraphRight);
+
         directedGraphRight.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
