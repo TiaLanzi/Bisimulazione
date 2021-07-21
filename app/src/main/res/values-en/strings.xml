@@ -69,6 +69,13 @@
     <!-- home -->
     <string name="home_play_now">PLAY NOW!</string>
     <string name="home_active_players">ACTIVE PLAYERS</string>
+    <string name="home_todo">TODO</string>
+
+    <!-- home share -->
+    <string name="home_share">Share</string>
+    <string name="home_share_message">Let your friends know that you are playing bisimulation game!</string>
+    <string name="home_share_with_your_friends">Share with your friends!</string>
+    <string name="home_close">Close</string>
 
     <!-- table -->
     <string name="table_table_right">Right table</string>
@@ -174,5 +181,4 @@
 
     <!-- active players -->
     <string name="active_players">Active players</string>
-    <string name="home_todo">TODO</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.bisimulazione;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -65,6 +68,8 @@ public class Home extends Fragment implements CallbackGameCount {
         Button activePlayers = view.findViewById(R.id.home_active_players_button);
         Button moreAbout = firstCard.findViewById(R.id.home_first_card_more_about);
 
+        FloatingActionButton floatingActionButton = view.findViewById(R.id.home_floating_action_button);
+
         win = firstCard.findViewById(R.id.home_first_card_win_count);
         lose = firstCard.findViewById(R.id.home_first_card_lose_count);
 
@@ -98,6 +103,33 @@ public class Home extends Fragment implements CallbackGameCount {
             Intent intent = new Intent(getActivity(), MyAccount.class);
             startActivity(intent);
         });
+
+        floatingActionButton.setOnClickListener(v -> showDialog());
+    }
+
+    private void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+        View v = getLayoutInflater().inflate(R.layout.share_dialog, null, false);
+        builder.setView(v);
+        builder.setNegativeButton(getString(R.string.home_share), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intentShare = new Intent(Intent.ACTION_SEND);
+                intentShare.setType("text/plain");
+                intentShare.putExtra(Intent.EXTRA_TEXT, getString(R.string.home_share_message));
+                startActivity(Intent.createChooser(intentShare, getString(R.string.home_share_with_your_friends)));
+            }
+        });
+
+        builder.setPositiveButton(getString(R.string.home_close), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void sendData(DatabaseReference playersRef, String playerName) {

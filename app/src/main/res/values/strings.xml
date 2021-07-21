@@ -69,6 +69,13 @@
     <!-- home -->
     <string name="home_play_now">GIOCA ORA!</string>
     <string name="home_active_players">GIOCATORI ATTIVI</string>
+    <string name="home_todo">TODO</string>
+
+    <!-- home share -->
+    <string name="home_share">Condividi</string>
+    <string name="home_share_message">Fai sapere ai tuoi amici che stai giocando al gioco della bisimulazione!</string>
+    <string name="home_share_with_your_friends">Condividi con i tuoi amici!</string>
+    <string name="home_close">Chiudi</string>
 
     <!-- table -->
     <string name="table_table_right">Tavolo destro</string>
@@ -176,5 +183,4 @@
 
     <!-- active players -->
     <string name="active_players">Giocatori attivi</string>
-    <string name="home_todo">TODO</string>
 </resources>
