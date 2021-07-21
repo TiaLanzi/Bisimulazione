@@ -16,10 +16,11 @@
 
         <TextView
             android:id="@+id/my_account_personal_info"
-            style="@style/Caption"
+            style="@style/Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/my_account_personal_info" />
+            android:text="@string/my_account_personal_info"
+            android:textColor="@color/total_black" />
 
         <LinearLayout
             android:id="@+id/my_account_first_name_layout"
@@ -37,7 +38,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="@string/my_account_first_name"
-                android:textColor="@color/text" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/my_account_first_name"
@@ -50,8 +51,16 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="@string/my_account_unknown"
-                android:textColor="@color/text" />
+                android:textColor="@color/black" />
         </LinearLayout>
+
+        <View
+            android:id="@+id/settings_horizontal_separator_one"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="2dp"
+            android:background="@color/black" />
 
         <LinearLayout
             android:id="@+id/my_account_last_name_layout"
@@ -69,7 +78,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="@string/my_account_last_name"
-                android:textColor="@color/text" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/my_account_last_name"
@@ -82,8 +91,16 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="@string/my_account_unknown"
-                android:textColor="@color/text" />
+                android:textColor="@color/black" />
         </LinearLayout>
+
+        <View
+            android:id="@+id/settings_horizontal_separator_two"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="2dp"
+            android:background="@color/black" />
 
         <LinearLayout
             android:id="@+id/my_account_email_layout"
@@ -101,7 +118,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="@string/my_account_email"
-                android:textColor="@color/text" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/my_account_email"
@@ -114,7 +131,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="@string/my_account_unknown"
-                android:textColor="@color/text" />
+                android:textColor="@color/black" />
         </LinearLayout>
     </LinearLayout>
 
@@ -128,10 +145,11 @@
 
         <TextView
             android:id="@+id/my_account_stats"
-            style="@style/Caption"
+            style="@style/Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/my_account_stats" />
+            android:text="@string/my_account_stats"
+            android:textColor="@color/total_black" />
 
         <LinearLayout
             android:id="@+id/my_account_win_count_layout"
@@ -149,7 +167,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="@string/my_account_win_count"
-                android:textColor="@color/text" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/my_account_win_count"
@@ -162,8 +180,16 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="@string/my_account_unknown"
-                android:textColor="@color/text" />
+                android:textColor="@color/black" />
         </LinearLayout>
+
+        <View
+            android:id="@+id/settings_horizontal_separator_three"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="2dp"
+            android:background="@color/black" />
 
         <LinearLayout
             android:id="@+id/my_account_lose_count_layout"
@@ -181,7 +207,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="@string/my_account_lose_count"
-                android:textColor="@color/text" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/my_account_lose_count"
@@ -194,7 +220,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="@string/my_account_unknown"
-                android:textColor="@color/text" />
+                android:textColor="@color/black" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

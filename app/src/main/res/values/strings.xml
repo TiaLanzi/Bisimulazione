@@ -68,8 +68,7 @@
 
     <!-- home -->
     <string name="home_play_now">GIOCA ORA!</string>
-    <string name="home_options">OPZIONI</string>
-    <string name="home_bug_report">SEGNALA UN PROBLEMA</string>
+    <string name="home_active_players">GIOCATORI ATTIVI</string>
 
     <!-- table -->
     <string name="table_table_right">Tavolo destro</string>

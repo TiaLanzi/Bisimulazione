@@ -62,8 +62,7 @@ public class Home extends Fragment implements CallbackGameCount {
         MaterialCardView firstCard = view.findViewById(R.id.first_card);
 
         Button playGame = view.findViewById(R.id.home_play_button);
-        Button bugReport = view.findViewById(R.id.home_bug_report_button);
-        //Button availablePlayers = view.findViewById(R.id.home_settings_button);
+        Button activePlayers = view.findViewById(R.id.home_active_players_button);
         Button moreAbout = firstCard.findViewById(R.id.home_first_card_more_about);
 
         win = firstCard.findViewById(R.id.home_first_card_win_count);
@@ -90,8 +89,8 @@ public class Home extends Fragment implements CallbackGameCount {
             startActivity(intent);
         });
 
-        bugReport.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), BugReport.class);
+        activePlayers.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ActivePlayers.class);
             startActivity(intent);
         });
 

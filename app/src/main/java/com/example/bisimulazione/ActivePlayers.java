@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -14,13 +15,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import interfaces.CallbackPlayersList;
+public class ActivePlayers extends AppCompatActivity {
 
-public class ActivePlayers extends AppCompatActivity implements CallbackPlayersList {
-
+    private ListView listView;
     private List<String> playersList;
     private ArrayAdapter<String> adapter;
 
@@ -31,16 +32,25 @@ public class ActivePlayers extends AppCompatActivity implements CallbackPlayersL
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.active_players));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        listView = findViewById(R.id.active_players_list_view);
+
+        playersList = new ArrayList<>();
+
+        getPlayersList();
     }
 
-    private void getPlayersList(CallbackPlayersList callback) {
+    private void getPlayersList() {
         FirebaseDatabase.getInstance().getReference().child("players").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                playersList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     if (dataSnapshot != null) {
-
+                        playersList.add(Objects.requireNonNull(dataSnapshot.getValue()).toString());
                     }
+                    adapter = new ArrayAdapter<>(ActivePlayers.this, android.R.layout.simple_list_item_1, playersList);
+                    listView.setAdapter(adapter);
                 }
             }
 
@@ -57,10 +67,5 @@ public class ActivePlayers extends AppCompatActivity implements CallbackPlayersL
             this.finish();
         }
         return true;
-    }
-
-    @Override
-    public void onCallbackPlayersList(String value) {
-
     }
 }
