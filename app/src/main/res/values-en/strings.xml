@@ -174,4 +174,5 @@
 
     <!-- active players -->
     <string name="active_players">Active players</string>
+    <string name="home_todo">TODO</string>
 </resources>

@@ -176,4 +176,5 @@
 
     <!-- active players -->
     <string name="active_players">Giocatori attivi</string>
+    <string name="home_todo">TODO</string>
 </resources>
