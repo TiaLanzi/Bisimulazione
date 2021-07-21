@@ -307,9 +307,14 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
+            removeData();
             this.finish();
         }
         return true;
+    }
+
+    private void removeData() {
+        FirebaseDatabase.getInstance().getReference().child("players").child(playerName).removeValue();
     }
 
     @Override
