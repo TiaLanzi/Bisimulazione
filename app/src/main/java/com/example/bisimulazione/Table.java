@@ -447,9 +447,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     default:
                                         break;
                                 }
-                                refreshNodes(node.isLeftTable(), node.getId());
+                                refreshNodes(directedGraph, node.isLeftTable(), node.getId());
                                 refreshTurnOf();
                                 setSelectedNode(node.isLeftTable());
+                                directedGraph.invalidate();
                             } else {
                                 if (possibleMoves()) {
                                     // there are possible move yet
@@ -457,7 +458,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 } else {
                                     // there are no possible moves --> end game
                                     roomNameRef.child("gameInProgress").setValue("false");
-                                    finish();
+                                    //finish();
                                 }
                             }
                         }
@@ -871,7 +872,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return colore;
     }
 
-    private void refreshNodes(boolean leftTable, int id) {
+    private void refreshNodes(DirectedGraph directedGraph, boolean leftTable, int id) {
         if (leftTable) {
             for (Node node : this.nodesL) {
                 if (node.getId() != id) {
@@ -921,6 +922,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 }
             }
         }
+        //directedGraph.refresh();
     }
 
     private void refreshTurnOf() {

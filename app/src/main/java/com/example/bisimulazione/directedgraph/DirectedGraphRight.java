@@ -39,7 +39,7 @@ public class DirectedGraphRight extends DirectedGraph implements CallbackNodeCol
         drawNodes(canvas);
     }
 
-    @Override
+    /*@Override
     protected void drawNodes(Canvas canvas) {
         Log.i(TAG, "Right " + canvas.toString());
         getNodeColour(new CallbackNodeColor() {
@@ -68,6 +68,23 @@ public class DirectedGraphRight extends DirectedGraph implements CallbackNodeCol
                 canvas.drawCircle(getNodes()[4].getX(), getNodes()[4].getY(), radius, paintNode(stringToIntColour(color)));
             }
         });
+    } */
+
+    @Override
+    protected void drawNodes(Canvas canvas) {
+        if (this.getNodes() != null) {
+            for (Node node : this.getNodes()) {
+                if (node != null) {
+                    if (!node.isAlreadyDrawn()) {
+                        canvas.drawCircle(node.getX(), node.getY(), radius, paintNode(node.getColor()));
+                        node.setAlreadyDrawn(true);
+                    }
+                }
+            }
+            for (Node node : this.getNodes()) {
+                node.setAlreadyDrawn(false);
+            }
+        }
     }
 
     @Override
@@ -189,6 +206,11 @@ public class DirectedGraphRight extends DirectedGraph implements CallbackNodeCol
             }
         }
     }
+    /*
+    @Override
+    public void refresh() {
+        drawNodes(new Canvas());
+    } */
 
     @Override
     public boolean performClick() {

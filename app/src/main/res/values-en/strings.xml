@@ -179,6 +179,12 @@
     <string name="first_card_zero">0</string>
     <string name="first_card_lose">Lose count:</string>
 
+    <!-- second card -->
+    <string name="second_card_active_players">ACTIVE PLAYERS</string>
+    <string name="second_card_active_players_count">Active players:</string>
+    <string name="second_card_zero">0</string>
+    <string name="second_card_rooms_count">Rooms:</string>
+
     <!-- active players -->
     <string name="active_players">Active players</string>
 </resources>

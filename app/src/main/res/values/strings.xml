@@ -181,6 +181,12 @@
     <string name="first_card_zero">0</string>
     <string name="first_card_lose">Numero di sconfitte:</string>
 
+    <!-- second card -->
+    <string name="second_card_active_players">GIOCATORI ATTIVI</string>
+    <string name="second_card_active_players_count">Giocatori attivi:</string>
+    <string name="second_card_zero">0</string>
+    <string name="second_card_rooms_count">Stanze:</string>
+
     <!-- active players -->
     <string name="active_players">Giocatori attivi</string>
 </resources>

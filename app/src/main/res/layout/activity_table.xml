@@ -51,6 +51,8 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="vertical">
+
+
                     <!--
                     <com.example.bisimulazione.directedgraph.DirectedGraphLeft
                         android:id="@+id/table_left_table_directed_graph"

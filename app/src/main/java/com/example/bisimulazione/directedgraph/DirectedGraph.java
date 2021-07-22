@@ -157,7 +157,8 @@ public abstract class DirectedGraph extends View {
             default:
                 break;
         }
-        Log.i(TAG, "Colore è -1 (" + (colore) + ")");
         return colore;
     }
+
+    //public abstract void refresh();
 }
