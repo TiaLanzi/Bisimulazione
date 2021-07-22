@@ -103,14 +103,10 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
             roomNameRef.child("show").setValue("false");
             specialColour = "";
             getColour(roomNameRef, color -> {
-                boolean retrievedColor = false;
-                while (!retrievedColor) {
-                    if (color != null) {
-                        specialColour = color;
-                        retrievedColor = true;
-                        startActivity(roomName, false, specialColour);
-                        finish();
-                    }
+                if (color != null) {
+                    specialColour = color;
+                    startActivity(roomName, false, specialColour);
+                    finish();
                 }
             });
         });

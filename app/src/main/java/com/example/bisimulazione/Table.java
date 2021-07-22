@@ -131,24 +131,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         rightGraphRef = roomNameRef.child("rightGraph");
         // initialize control matrix
         controlMatrix = new int[5][5];
-        // set attacker
-        setAttacker();
-        // set defender
-        setDefender();
-        // set special colour text
-        setTextColour(specialColour);
-        // initialize turn of text
-        setTurnOf();
-        // set last move colour
-        setLastMoveColour();
-        // set selected node left table
-        setSelectedNode(true);
-        // set selected node right table
-        setSelectedNode(false);
-        // enable / disable no move button
-        setNoMove();
+        // set info box
+        setInfoBox();
         // end game
-        //setEndGame();
+        setEndGame();
 
         // initialize nodes
         nodes = new Node[10];
@@ -228,42 +214,23 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
     }
 
-    private void setEndGame() {
-        getGameInProgress(value -> {
-            boolean retrievedGameInProgress = false;
-            while (!retrievedGameInProgress) {
-                if (value != null) {
-                    if (value.equalsIgnoreCase("false")) {
-                        new AlertDialog.Builder(getApplicationContext()).setTitle(getString(R.string.alert_end_game))
-                                .setMessage(getString(R.string.alert_win_congrats) + " " + playerName)
-                                .setPositiveButton(R.string.alert_continue, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
-                                    }
-                                });
-                    }
-                }
-                retrievedGameInProgress = true;
-            }
-        });
-    }
-
-    private void getGameInProgress(CallbackGameInProgress callback) {
-        roomNameRef.child("gameInProgress").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (snapshot.getValue() != null) {
-                    String value = snapshot.getValue().toString();
-                    callback.onCallbackGameInProgress(value);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
+    private void setInfoBox() {
+        // set attacker
+        setAttacker();
+        // set defender
+        setDefender();
+        // set special colour text
+        setTextColour(specialColour);
+        // set turn of text
+        setTurnOf();
+        // set last move colour
+        setLastMoveColour();
+        // set selected node left table
+        setSelectedNode(true);
+        // set selected node right table
+        setSelectedNode(false);
+        // enable / disable no move button
+        setNoMove();
     }
 
     private Edge[] divideEdges(Edge[] edges, boolean left) {
@@ -288,41 +255,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             }
         }
         return appoggio;
-    }
-
-    private void setOutgoingEdgesLeft() {
-        // set outgoing edges
-        Edge[] edgesRootLeftO = {edgesL[0], edgesL[1]};
-        nodesL[0].setOutgoingEdges(edgesRootLeftO);
-
-        Edge[] edgesSecondLeftO = {edgesL[2], edgesL[5]};
-        nodesL[1].setOutgoingEdges(edgesSecondLeftO);
-
-        Edge[] edgesThirdLeftO = {edgesL[3], edgesL[4]};
-        nodesL[2].setOutgoingEdges(edgesThirdLeftO);
-
-        Edge[] edgesSFourthLeftO = {};
-        nodesL[3].setOutgoingEdges(edgesSFourthLeftO);
-
-        Edge[] edgesFifthLeftO = {edgesL[6]};
-        nodesL[4].setOutgoingEdges(edgesFifthLeftO);
-    }
-
-    private void setOutgoingEdgesRight() {
-        Edge[] edgesRootRightO = {edgesR[0], edgesR[1]};
-        nodesR[0].setOutgoingEdges(edgesRootRightO);
-
-        Edge[] edgesSecondRightO = {edgesR[4]};
-        nodesR[1].setOutgoingEdges(edgesSecondRightO);
-
-        Edge[] edgesThirdRightO = {edgesR[2], edgesR[6]};
-        nodesR[2].setOutgoingEdges(edgesThirdRightO);
-
-        Edge[] edgesSFourthRightO = {};
-        nodesR[3].setOutgoingEdges(edgesSFourthRightO);
-
-        Edge[] edgesFifthRightO = {edgesR[3], edgesR[5]};
-        nodesR[4].setOutgoingEdges(edgesFifthRightO);
     }
 
     private void setNodes() {
@@ -388,6 +320,41 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         edges[12] = seiR;
         Edge setteR = new Edge(7, nodes[7], nodes[9], getResources().getColor(R.color.black), false, true, true);
         edges[13] = setteR;
+    }
+
+    private void setOutgoingEdgesLeft() {
+        // set outgoing edges
+        Edge[] edgesRootLeftO = {edgesL[0], edgesL[1]};
+        nodesL[0].setOutgoingEdges(edgesRootLeftO);
+
+        Edge[] edgesSecondLeftO = {edgesL[2], edgesL[5]};
+        nodesL[1].setOutgoingEdges(edgesSecondLeftO);
+
+        Edge[] edgesThirdLeftO = {edgesL[3], edgesL[4]};
+        nodesL[2].setOutgoingEdges(edgesThirdLeftO);
+
+        Edge[] edgesSFourthLeftO = {};
+        nodesL[3].setOutgoingEdges(edgesSFourthLeftO);
+
+        Edge[] edgesFifthLeftO = {edgesL[6]};
+        nodesL[4].setOutgoingEdges(edgesFifthLeftO);
+    }
+
+    private void setOutgoingEdgesRight() {
+        Edge[] edgesRootRightO = {edgesR[0], edgesR[1]};
+        nodesR[0].setOutgoingEdges(edgesRootRightO);
+
+        Edge[] edgesSecondRightO = {edgesR[4]};
+        nodesR[1].setOutgoingEdges(edgesSecondRightO);
+
+        Edge[] edgesThirdRightO = {edgesR[2], edgesR[6]};
+        nodesR[2].setOutgoingEdges(edgesThirdRightO);
+
+        Edge[] edgesSFourthRightO = {};
+        nodesR[3].setOutgoingEdges(edgesSFourthRightO);
+
+        Edge[] edgesFifthRightO = {edgesR[3], edgesR[5]};
+        nodesR[4].setOutgoingEdges(edgesFifthRightO);
     }
 
     private void setOnTouchGraph(MotionEvent event, DirectedGraph directedGraph) {
@@ -458,7 +425,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 } else {
                                     // there are no possible moves --> end game
                                     roomNameRef.child("gameInProgress").setValue("false");
-                                    //finish();
                                 }
                             }
                         }
@@ -550,76 +516,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             }
         }
         return leftAvailable && rightAvailable;
-    }
-
-    private void getNoMove(CallbackNoMove callback) {
-        roomNameRef.child("noMoveButtonEnabled").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (snapshot.getValue().toString() != null) {
-                    String value = snapshot.getValue().toString();
-                    callback.onCallbackNoMove(value);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void setNoMove() {
-        getNoMove(new CallbackNoMove() {
-            @Override
-            public void onCallbackNoMove(String value) {
-                boolean retrievedNoMove = false;
-                while (!retrievedNoMove) {
-                    if (value != null) {
-                        if (value.equalsIgnoreCase("true")) {
-                            if (lastMoveColour.getText().toString().equalsIgnoreCase(coloreSpeciale.getText().toString())) {
-                                noMove.setEnabled(true);
-                                noMove.setClickable(true);
-                                noMove.setFocusable(true);
-                            }
-                        } else {
-                            noMove.setEnabled(false);
-                            noMove.setClickable(false);
-                            noMove.setFocusable(false);
-                        }
-                        retrievedNoMove = true;
-                    }
-                }
-            }
-        });
-    }
-
-    private int stringToID(String sNode) {
-        switch (sNode) {
-            case "Node one":
-                return 1;
-            case "Node two":
-                return 2;
-            case "Node three":
-                return 3;
-            case "Node four":
-                return 4;
-            case "Node five":
-                return 5;
-            default:
-                break;
-        }
-        return -1;
-    }
-
-    private void setTouchedCircle(DatabaseReference nodeReference, boolean refresh) {
-        if (refresh) {
-            nodeReference.child("Selected").setValue(String.valueOf(false));
-            nodeReference.child("Colour").setValue("black");
-        } else {
-            nodeReference.child("Selected").setValue(String.valueOf(true));
-            nodeReference.child("Colour").setValue("blue");
-        }
     }
 
     private boolean isValidMove(Node startNode, Node nodeTouched) {
@@ -725,130 +621,32 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return true;
     }
 
-    private void setSelectedNode(boolean leftTable) {
-        getSelectedNode(new CallbackSelectedNode() {
-            @Override
-            public void onCallbackSelectedNodeOne(String sNode) {
-                boolean retrievedSelectedNode = false;
-                while (!retrievedSelectedNode) {
-                    if (sNode != null) {
-                        if (sNode.equalsIgnoreCase("true")) {
-                            if (leftTable) {
-                                selectedNodeLeft.setText("Node one");
-                            } else {
-                                selectedNodeRight.setText("Node one");
-                            }
-                        }
-                        retrievedSelectedNode = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCallbackSelectedNodeTwo(String sNode) {
-                boolean retrievedSelectedNode = false;
-                while (!retrievedSelectedNode) {
-                    if (sNode != null) {
-                        if (sNode.equalsIgnoreCase("true")) {
-                            if (leftTable) {
-                                selectedNodeLeft.setText("Node two");
-                            } else {
-                                selectedNodeRight.setText("Node two");
-                            }
-                        }
-                        retrievedSelectedNode = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCallbackSelectedNodeThree(String sNode) {
-                boolean retrievedSelectedNode = false;
-                while (!retrievedSelectedNode) {
-                    if (sNode != null) {
-                        if (sNode.equalsIgnoreCase("true")) {
-                            if (leftTable) {
-                                selectedNodeLeft.setText("Node three");
-                            } else {
-                                selectedNodeRight.setText("Node three");
-                            }
-                        }
-                        retrievedSelectedNode = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCallbackSelectedNodeFour(String sNode) {
-                boolean retrievedSelectedNode = false;
-                while (!retrievedSelectedNode) {
-                    if (sNode != null) {
-                        if (sNode.equalsIgnoreCase("true")) {
-                            if (leftTable) {
-                                selectedNodeLeft.setText("Node four");
-                            } else {
-                                selectedNodeRight.setText("Node four");
-                            }
-                        }
-                        retrievedSelectedNode = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCallbackSelectedNodeFive(String sNode) {
-                boolean retrievedSelectedNode = false;
-                while (!retrievedSelectedNode) {
-                    if (sNode != null) {
-                        if (sNode.equalsIgnoreCase("true")) {
-                            if (leftTable) {
-                                selectedNodeLeft.setText("Node five");
-                            } else {
-                                selectedNodeRight.setText("Node five");
-                            }
-                        }
-                        retrievedSelectedNode = true;
-                    }
-                }
-            }
-        }, leftTable);
+    private int stringToID(String sNode) {
+        switch (sNode) {
+            case "Node one":
+                return 1;
+            case "Node two":
+                return 2;
+            case "Node three":
+                return 3;
+            case "Node four":
+                return 4;
+            case "Node five":
+                return 5;
+            default:
+                break;
+        }
+        return -1;
     }
 
-    private void getSelectedNode(CallbackSelectedNode callback, boolean leftTable) {
-        DatabaseReference reference;
-        if (leftTable) {
-            reference = leftGraphRef;
+    private void setTouchedCircle(DatabaseReference nodeReference, boolean refresh) {
+        if (refresh) {
+            nodeReference.child("Selected").setValue(String.valueOf(false));
+            nodeReference.child("Colour").setValue("black");
         } else {
-            reference = rightGraphRef;
+            nodeReference.child("Selected").setValue(String.valueOf(true));
+            nodeReference.child("Colour").setValue("blue");
         }
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase("Node one")) {
-                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
-                        callback.onCallbackSelectedNodeOne(value);
-                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node two")) {
-                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
-                        callback.onCallbackSelectedNodeTwo(value);
-                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node three")) {
-                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
-                        callback.onCallbackSelectedNodeThree(value);
-                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node four")) {
-                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
-                        callback.onCallbackSelectedNodeFour(value);
-                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node five")) {
-                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
-                        callback.onCallbackSelectedNodeFive(value);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
     }
 
     private String colourToString(int colour) {
@@ -933,16 +731,31 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         }
     }
 
+    private void sendData(boolean player1) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("playerName", playerName);
+        map.put("role", role);
+        if (player1) {
+            roomsRef.child(roomName + "/" + "Player 1/").setValue(map);
+        } else {
+            roomsRef.child(roomName + "/" + "Player 2/").setValue(map);
+        }
+    }
+
+    private boolean touchIsInCircle(float x, float y, float centreX, float centreY,
+                                    float radius) {
+        double dx = Math.pow(x - centreX, 2);
+        double dy = Math.pow(y - centreY, 2);
+
+        return (dx + dy) < Math.pow(radius, 2);
+    }
+
     private void setAttacker() {
         getPlayerOneName(new CallbackPlayerOne() {
             @Override
             public void onCallbackPlayerOneName(String playerName) {
-                boolean retrievedPlayerName = false;
-                while (!retrievedPlayerName) {
-                    if (playerName != null) {
-                        attacker.setText(playerName);
-                        retrievedPlayerName = true;
-                    }
+                if (playerName != null) {
+                    attacker.setText(playerName);
                 }
             }
         });
@@ -969,12 +782,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         getPlayerTwoName(new CallbackPlayerTwo() {
             @Override
             public void onCallbackPlayerTwoName(String playerName) {
-                boolean retrievedPlayerName = false;
-                while (!retrievedPlayerName) {
-                    if (playerName != null) {
-                        defender.setText(playerName);
-                        retrievedPlayerName = true;
-                    }
+                if (playerName != null) {
+                    defender.setText(playerName);
                 }
             }
         });
@@ -997,17 +806,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
     }
 
-    private void sendData(boolean player1) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("playerName", playerName);
-        map.put("role", role);
-        if (player1) {
-            roomsRef.child(roomName + "/" + "Player 1/").setValue(map);
-        } else {
-            roomsRef.child(roomName + "/" + "Player 2/").setValue(map);
-        }
-    }
-
     private void setTextColour(String sColour) {
         switch (sColour) {
             case "red":
@@ -1028,50 +826,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         coloreSpeciale.setText(specialColour);
     }
 
-    private void setLastMoveColour() {
-        getLastMoveColour(roomsRef.child(roomName), new CallbackLastMoveColour() {
-            @Override
-            public void onCallbackLastMoveColour(String colour) {
-                boolean retrievedLastMoveColour = false;
-                while (!retrievedLastMoveColour) {
-                    if (colour != null) {
-                        lastMoveColour.setText(colour);
-                        retrievedLastMoveColour = true;
-                    }
-                }
-            }
-        });
-
-    }
-
-    private void getLastMoveColour(DatabaseReference roomNameRef, CallbackLastMoveColour
-            callback) {
-        roomNameRef.child("lastMoveColour").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (snapshot.toString() != null) {
-                    String value = snapshot.getValue().toString();
-                    callback.onCallbackLastMoveColour(value);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-    }
-
     private void setTurnOf() {
         getTurnOf(roomsRef.child(roomName), new CallbackTurnOf() {
             @Override
             public void onCallbackTurnOf(String turnOf) {
-                boolean retrievedTurnOf = false;
-                while (!retrievedTurnOf) {
-                    if (turnOf != null) {
-                        turnoDi.setText(turnOf);
-                        retrievedTurnOf = true;
-                    }
+                if (turnOf != null) {
+                    turnoDi.setText(turnOf);
                 }
             }
         });
@@ -1094,13 +854,216 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
     }
 
+    private void setLastMoveColour() {
+        getLastMoveColour(roomsRef.child(roomName), new CallbackLastMoveColour() {
+            @Override
+            public void onCallbackLastMoveColour(String colour) {
+                if (colour != null) {
+                    lastMoveColour.setText(colour);
+                }
+            }
+        });
+    }
 
-    private boolean touchIsInCircle(float x, float y, float centreX, float centreY,
-                                    float radius) {
-        double dx = Math.pow(x - centreX, 2);
-        double dy = Math.pow(y - centreY, 2);
+    private void getLastMoveColour(DatabaseReference roomNameRef, CallbackLastMoveColour
+            callback) {
+        roomNameRef.child("lastMoveColour").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.toString() != null) {
+                    String value = snapshot.getValue().toString();
+                    callback.onCallbackLastMoveColour(value);
+                }
+            }
 
-        return (dx + dy) < Math.pow(radius, 2);
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void setSelectedNode(boolean leftTable) {
+        getSelectedNode(new CallbackSelectedNode() {
+            @Override
+            public void onCallbackSelectedNodeOne(String sNode) {
+                if (sNode != null) {
+                    if (sNode.equalsIgnoreCase("true")) {
+                        if (leftTable) {
+                            selectedNodeLeft.setText("Node one");
+                        } else {
+                            selectedNodeRight.setText("Node one");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackSelectedNodeTwo(String sNode) {
+                if (sNode != null) {
+                    if (sNode.equalsIgnoreCase("true")) {
+                        if (leftTable) {
+                            selectedNodeLeft.setText("Node two");
+                        } else {
+                            selectedNodeRight.setText("Node two");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackSelectedNodeThree(String sNode) {
+                if (sNode != null) {
+                    if (sNode.equalsIgnoreCase("true")) {
+                        if (leftTable) {
+                            selectedNodeLeft.setText("Node three");
+                        } else {
+                            selectedNodeRight.setText("Node three");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackSelectedNodeFour(String sNode) {
+                if (sNode != null) {
+                    if (sNode.equalsIgnoreCase("true")) {
+                        if (leftTable) {
+                            selectedNodeLeft.setText("Node four");
+                        } else {
+                            selectedNodeRight.setText("Node four");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCallbackSelectedNodeFive(String sNode) {
+                if (sNode != null) {
+                    if (sNode.equalsIgnoreCase("true")) {
+                        if (leftTable) {
+                            selectedNodeLeft.setText("Node five");
+                        } else {
+                            selectedNodeRight.setText("Node five");
+                        }
+                    }
+                }
+            }
+        }, leftTable);
+    }
+
+    private void getSelectedNode(CallbackSelectedNode callback, boolean leftTable) {
+        DatabaseReference reference;
+        if (leftTable) {
+            reference = leftGraphRef;
+        } else {
+            reference = rightGraphRef;
+        }
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase("Node one")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
+                        callback.onCallbackSelectedNodeOne(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node two")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
+                        callback.onCallbackSelectedNodeTwo(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node three")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
+                        callback.onCallbackSelectedNodeThree(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node four")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
+                        callback.onCallbackSelectedNodeFour(value);
+                    } else if (dataSnapshot.getKey().equalsIgnoreCase("Node five")) {
+                        String value = Objects.requireNonNull(dataSnapshot.child("Selected").getValue()).toString();
+                        callback.onCallbackSelectedNodeFive(value);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void setNoMove() {
+        getNoMove(new CallbackNoMove() {
+            @Override
+            public void onCallbackNoMove(String value) {
+                if (value != null) {
+                    if (value.equalsIgnoreCase("true")) {
+                        if (lastMoveColour.getText().toString().equalsIgnoreCase(coloreSpeciale.getText().toString())) {
+                            noMove.setEnabled(true);
+                            noMove.setClickable(true);
+                            noMove.setFocusable(true);
+                            Log.i(TAG, "Enabled button");
+                        }
+                    } else {
+                        noMove.setEnabled(false);
+                        noMove.setClickable(false);
+                        noMove.setFocusable(false);
+                        Log.i(TAG, "Disabled button");
+                    }
+                }
+            }
+        });
+    }
+
+    private void getNoMove(CallbackNoMove callback) {
+        roomNameRef.child("noMoveButtonEnabled").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.getValue().toString() != null) {
+                    String value = snapshot.getValue().toString();
+                    callback.onCallbackNoMove(value);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void setEndGame() {
+        getGameInProgress(new CallbackGameInProgress() {
+            @Override
+            public void onCallbackGameInProgress(String value) {
+                if (value != null) {
+                    if (value.equalsIgnoreCase("false")) {
+                        new AlertDialog.Builder(getApplicationContext()).setTitle(getString(R.string.alert_end_game))
+                                .setMessage(getString(R.string.alert_win_congrats) + " " + playerName)
+                                .setPositiveButton(R.string.alert_continue, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                });
+                    }
+                }
+            }
+        });
+    }
+
+    private void getGameInProgress(CallbackGameInProgress callback) {
+        roomNameRef.child("gameInProgress").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    String value = snapshot.getValue().toString();
+                    callback.onCallbackGameInProgress(value);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
