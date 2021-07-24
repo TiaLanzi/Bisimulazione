@@ -417,10 +417,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void setOnTouchGraph(MotionEvent event, DirectedGraph directedGraph) {
-        DatabaseReference graphRef = null;
-        boolean left = false;
-        Node nodeTouched = null;
-        Node sNode = null;
+        DatabaseReference graphRef;
+        boolean left;
+        Node nodeTouched;
+        Node sNode;
         if (false) {
             // no move button
         } else {
@@ -435,9 +435,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 left = node.isLeftTable();
                                 // get id of node touched
                                 int idNodeTouched = node.getId();
-                                Log.i(TAG, "Id node touched " + idNodeTouched + ", is left table? " + node.isLeftTable());
-                                // set color of node touched to blue
-                                //node.setColor(R.color.primaryColor);
                                 // get id of previous selected node (left or right)
                                 String selectedNode;
                                 if (node.isLeftTable()) {
@@ -445,19 +442,16 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 } else {
                                     selectedNode = selectedNodeRight.getText().toString().trim();
                                 }
-                                Log.i(TAG, "Previous selected node " + selectedNode + ", is left table?" + node.isLeftTable());
                                 sNode = stringToNode(selectedNode, node.isLeftTable());
-                                // set color of previous selected node
-                                //sNode.setColor(getResources().getColor(R.color.black));
+                                // set reference to proper graph
                                 if (left) {
                                     graphRef = leftGraphRef;
                                 } else {
                                     graphRef = rightGraphRef;
                                 }
                                 refreshNodes(graphRef, sNode, nodeTouched);
-                                changeColour(directedGraph, graphRef);
+                                refreshTurnOf();
                             }
-                            //directedGraph.invalidate();
                         }
                     }
                 }
@@ -465,56 +459,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         }
     }
 
-    private void changeColour(DirectedGraph directedGraph, DatabaseReference graphRef) {
-        graphRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Log.i(TAG, "Key " + dataSnapshot.getKey());
-                    if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase("Node one")) {
-                        if (Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString().equalsIgnoreCase("black")) {
-                            directedGraph.getNodes()[0].setColor(getResources().getColor(R.color.black));
-                        } else {
-                            directedGraph.getNodes()[0].setColor(getResources().getColor(R.color.primaryColor));
-                        }
-                    } else if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase("Node two")) {
-                        if (Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString().equalsIgnoreCase("black")) {
-                            directedGraph.getNodes()[1].setColor(getResources().getColor(R.color.black));
-                        } else {
-                            directedGraph.getNodes()[1].setColor(getResources().getColor(R.color.primaryColor));
-                        }
-                    } else if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase("Node three")) {
-                        if (Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString().equalsIgnoreCase("black")) {
-                            directedGraph.getNodes()[2].setColor(getResources().getColor(R.color.black));
-                        } else {
-                            directedGraph.getNodes()[2].setColor(getResources().getColor(R.color.primaryColor));
-                        }
-                    } else if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase("Node four")) {
-                        if (Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString().equalsIgnoreCase("black")) {
-                            directedGraph.getNodes()[3].setColor(getResources().getColor(R.color.black));
-                        } else {
-                            directedGraph.getNodes()[3].setColor(getResources().getColor(R.color.primaryColor));
-                        }
-                    } else if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase("Node five")) {
-                        if (Objects.requireNonNull(dataSnapshot.child("Colour").getValue()).toString().equalsIgnoreCase("black")) {
-                            directedGraph.getNodes()[4].setColor(getResources().getColor(R.color.black));
-                        } else {
-                            directedGraph.getNodes()[4].setColor(getResources().getColor(R.color.primaryColor));
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-        directedGraph.invalidate();
-    }
-
     private void refreshNodes(DatabaseReference graphRef, Node selectedNode, Node nodeTouched) {
-        Log.i(TAG, graphRef.toString());
+        // set selected node to colour --> black and selected --> false
         switch (selectedNode.getId()) {
             case 1:
                 graphRef.child("Node one").child("Colour").setValue("black");
@@ -539,6 +485,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             default:
                 break;
         }
+        // set selected node to colour --> blue and selected --> true
         switch (nodeTouched.getId()) {
             case 1:
                 graphRef.child("Node one").child("Colour").setValue("blue");
@@ -846,16 +793,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return -1;
     }
 
-    private void setTouchedCircle(DatabaseReference nodeReference, boolean refresh) {
-        if (refresh) {
-            nodeReference.child("Selected").setValue(String.valueOf(false));
-            nodeReference.child("Colour").setValue("black");
-        } else {
-            nodeReference.child("Selected").setValue(String.valueOf(true));
-            nodeReference.child("Colour").setValue("blue");
-        }
-    }
-
     private String colourToString(int colour) {
         String colore = "";
         switch (colour) {
@@ -875,59 +812,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 break;
         }
         return colore;
-    }
-
-    private void refreshNodes(DirectedGraph directedGraph, boolean leftTable, int id) {
-        if (leftTable) {
-            for (Node node : this.nodesL) {
-                if (node.getId() != id) {
-                    switch (node.getId()) {
-                        case 1:
-                            setTouchedCircle(leftGraphRef.child("Node one"), true);
-                            break;
-                        case 2:
-                            setTouchedCircle(leftGraphRef.child("Node two"), true);
-                            break;
-                        case 3:
-                            setTouchedCircle(leftGraphRef.child("Node three"), true);
-                            break;
-                        case 4:
-                            setTouchedCircle(leftGraphRef.child("Node four"), true);
-                            break;
-                        case 5:
-                            setTouchedCircle(leftGraphRef.child("Node five"), true);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-        } else {
-            for (Node node : this.nodesR) {
-                if (node.getId() != id) {
-                    switch (node.getId()) {
-                        case 1:
-                            setTouchedCircle(rightGraphRef.child("Node one"), true);
-                            break;
-                        case 2:
-                            setTouchedCircle(rightGraphRef.child("Node two"), true);
-                            break;
-                        case 3:
-                            setTouchedCircle(rightGraphRef.child("Node three"), true);
-                            break;
-                        case 4:
-                            setTouchedCircle(rightGraphRef.child("Node four"), true);
-                            break;
-                        case 5:
-                            setTouchedCircle(rightGraphRef.child("Node five"), true);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-        }
-        directedGraph.invalidate();
     }
 
     private void refreshTurnOf() {
