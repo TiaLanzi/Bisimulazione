@@ -432,25 +432,25 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             boolean touchInCircle = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
                             if (touchInCircle) {
                                 nodeTouched = node;
-                                left = node.isLeftTable();
-                                // get id of node touched
-                                int idNodeTouched = node.getId();
-                                // get id of previous selected node (left or right)
                                 String selectedNode;
                                 if (node.isLeftTable()) {
                                     selectedNode = selectedNodeLeft.getText().toString().trim();
                                 } else {
                                     selectedNode = selectedNodeRight.getText().toString().trim();
                                 }
+                                // get selected node
                                 sNode = stringToNode(selectedNode, node.isLeftTable());
-                                // set reference to proper graph
-                                if (left) {
-                                    graphRef = leftGraphRef;
-                                } else {
-                                    graphRef = rightGraphRef;
+                                if (isValidMove(sNode, nodeTouched)) {
+                                    // set reference to proper graph
+                                    left = node.isLeftTable();
+                                    if (left) {
+                                        graphRef = leftGraphRef;
+                                    } else {
+                                        graphRef = rightGraphRef;
+                                    }
+                                    refreshNodes(graphRef, sNode, nodeTouched);
+                                    refreshTurnOf();
                                 }
-                                refreshNodes(graphRef, sNode, nodeTouched);
-                                refreshTurnOf();
                             }
                         }
                     }
@@ -681,29 +681,38 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 return false;
             }
         }
+        // if turn of attacker --> strong move else --> weak move
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
             Log.i(TAG, "Strong move");
             return isStrongMove(startNode, nodeTouched);
         } else {
             Log.i(TAG, "Weak move");
-            return isWeakMove(startNode, nodeTouched);
+            return true;
+            //return isWeakMove(startNode, nodeTouched);
         }
     }
 
     private boolean isStrongMove(Node startNode, Node nodeTouched) {
-        if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
-            if (startNode.getOutgoingEdges() != null) {
-                for (Edge edge : startNode.getOutgoingEdges()) {
+        // check if nodes are not null
+        if (startNode.getOutgoingEdges() != null) {
+            // loop on outgoing edges of start node
+            for (Edge edge : startNode.getOutgoingEdges()) {
+                // check if edge is not null
+                if (edge != null) {
+                    // check if second node of edge has the same id of the node touched
                     if (edge.getTwo().getId() == nodeTouched.getId()) {
                         String colore = colourToString(edge.getColor());
+                        // set colour of the move
                         roomNameRef.child("lastMoveColour").setValue(colore);
-                        roomNameRef.child("noMoveButtonEnabled").setValue("true");
+                        // enable no move button
+                        roomNameRef.child("noMoveButtonEnable").setValue(String.valueOf(true));
                         return true;
                     }
                 }
-                Toast.makeText(this, "MOSSA NON CONSENTITA PER L'ATTACCANTE", Toast.LENGTH_LONG).show();
-                return false;
             }
+            // no second node edges has the same id of the node touched --> invalid move --> return false
+            Toast.makeText(this, getResources().getString(R.string.table_invalid_move_attacker), Toast.LENGTH_LONG).show();
+            return false;
         }
         return false;
     }

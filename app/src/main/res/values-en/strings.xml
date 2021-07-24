@@ -93,6 +93,7 @@
     <string name="table_defender_is">The defender is:</string>
     <string name="table_no_move">DON\'T MOVE</string>
     <string name="table_possible_moves">There are still available moves.</string>
+    <string name="table_invalid_move_attacker">INVALID MOVE FOR THE ATTACKER.</string>
 
     <!-- matchmaking room -->
     <string name="matchmaking_room">Matchmaking room</string>
