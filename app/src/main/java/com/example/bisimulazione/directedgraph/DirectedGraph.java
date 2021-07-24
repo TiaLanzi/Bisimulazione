@@ -159,6 +159,4 @@ public abstract class DirectedGraph extends View {
         }
         return colore;
     }
-
-    //public abstract void refresh();
 }

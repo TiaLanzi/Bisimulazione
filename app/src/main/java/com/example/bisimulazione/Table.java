@@ -140,6 +140,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         selectedNodeLeft.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                Log.i(TAG, "Left Before " + s.toString());
                 refreshDirectedGraph(directedGraphLeft, s.toString().trim(), true);
             }
 
@@ -150,6 +151,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
             @Override
             public void afterTextChanged(Editable s) {
+                Log.i(TAG, "Left After " + s.toString());
                 refreshDirectedGraph(directedGraphLeft, s.toString().trim(), false);
             }
         });
@@ -218,6 +220,25 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         LinearLayout layoutDirectedGraphRight = findViewById(R.id.table_right_directed_graph_layout);
         layoutDirectedGraphRight.addView(directedGraphRight);
 
+        selectedNodeRight.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                Log.i(TAG, "Right Before " + s.toString());
+                refreshDirectedGraph(directedGraphRight, s.toString(), true);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.i(TAG, "Right after " + s.toString());
+                refreshDirectedGraph(directedGraphRight, s.toString(), false);
+            }
+        });
+
         directedGraphRight.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -236,19 +257,20 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
     }
 
-    private void refreshDirectedGraph(DirectedGraphLeft directedGraphLeft, String selectedNode, boolean bool) {
-        if (directedGraphLeft.getNodes() != null) {
-            for (Node node : directedGraphLeft.getNodes()) {
+    private void refreshDirectedGraph(DirectedGraph directedGraph, String selectedNode, boolean bool) {
+        if (directedGraph.getNodes() != null) {
+            for (Node node : directedGraph.getNodes()) {
+                Log.i(TAG, "Selected node id" + stringToID(selectedNode));
                 if (node.getId() == stringToID(selectedNode)) {
                     if (bool) {
-                        node.setColor(getResources().getColor(R.color.red));
+                        node.setColor(getResources().getColor(R.color.black));
                     } else {
-                        node.setColor(getResources().getColor(R.color.green));
+                        node.setColor(getResources().getColor(R.color.primaryColor));
                     }
                 }
             }
         }
-        directedGraphLeft.invalidate();
+        directedGraph.invalidate();
     }
 
     private void setInfoBox() {
