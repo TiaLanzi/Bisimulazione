@@ -687,8 +687,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             return isStrongMove(startNode, nodeTouched);
         } else {
             Log.i(TAG, "Weak move");
-            return true;
-            //return isWeakMove(startNode, nodeTouched);
+            return isWeakMove(startNode, nodeTouched);
         }
     }
 

@@ -73,38 +73,6 @@ public class DirectedGraphLeft extends DirectedGraph implements CallbackNodeColo
         drawNodes(canvas);
     }
 
-    /*@Override
-    protected void drawNodes(Canvas canvas) {
-        Log.i(TAG, "Left " + canvas.toString());
-        getNodeColour(new CallbackNodeColor() {
-            @Override
-            public void onCallbackNodeOneColour(String color) {
-                canvas.drawCircle(getNodes()[0].getX(), getNodes()[0].getY(), radius, paintNode(stringToIntColour(color)));
-            }
-
-            @Override
-            public void onCallbackNodeTwoColour(String color) {
-                canvas.drawCircle(getNodes()[1].getX(), getNodes()[1].getY(), radius, paintNode(stringToIntColour(color)));
-            }
-
-            @Override
-            public void onCallbackNodeThreeColour(String color) {
-                canvas.drawCircle(getNodes()[2].getX(), getNodes()[2].getY(), radius, paintNode(stringToIntColour(color)));
-            }
-
-            @Override
-            public void onCallbackNodeFourColour(String color) {
-                canvas.drawCircle(getNodes()[3].getX(), getNodes()[3].getY(), radius, paintNode(stringToIntColour(color)));
-            }
-
-            @Override
-            public void onCallbackNodeFiveColour(String color) {
-                canvas.drawCircle(getNodes()[4].getX(), getNodes()[4].getY(), radius, paintNode(stringToIntColour(color)));
-
-            }
-        });
-    } */
-
     @Override
     protected void drawNodes(Canvas canvas) {
         if (this.getNodes() != null) {
@@ -235,17 +203,11 @@ public class DirectedGraphLeft extends DirectedGraph implements CallbackNodeColo
                             default:
                                 break;
                         }
-                        Log.i(TAG, "Draw path (LEFT)");
                     }
                 }
             }
         }
     }
-    /*
-    @Override
-    public void refresh() {
-        drawNodes(new Canvas());
-    } */
 
     @Override
     public boolean performClick() {
