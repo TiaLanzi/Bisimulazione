@@ -744,7 +744,19 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         String specialC = coloreSpeciale.getText().toString().trim();
         String lastMoveC = lastMoveColour.getText().toString().trim();
         if (specialC.equalsIgnoreCase(lastMoveC)) {
-            // gestire questo caso
+            if (startNode.getOutgoingEdges() != null) {
+                for (Edge e : startNode.getOutgoingEdges()) {
+                    if (!colourToString(e.getColor()).equalsIgnoreCase(specialC)) {
+                        return false;
+                    } else {
+                        if (e.getTwo().getId() == nodeTouched.getId()) {
+                            return true;
+                        } else {
+                            isWeakMove(e.getTwo(), nodeTouched);
+                        }
+                    }
+                }
+            }
         } else {
             // check if nodes are not null
             if (startNode.getOutgoingEdges() != null) {
