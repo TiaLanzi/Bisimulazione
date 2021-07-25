@@ -62,6 +62,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private TextView lastMoveColour;
     private TextView selectedNodeLeft;
     private TextView selectedNodeRight;
+    private TextView lmc;
 
     private Button noMove;
 
@@ -100,6 +101,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         noMove = findViewById(R.id.table_no_move);
         selectedNodeLeft = findViewById(R.id.table_left_selected_node);
         selectedNodeRight = findViewById(R.id.table_right_selected_node);
+        lmc = findViewById(R.id.table_found_last_move_colour);
         // initialize firebase user
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
@@ -737,12 +739,17 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 return false;
                             } else {
                                 if (edge.getTwo().getId() == nodeTouched.getId()) {
-                                    return true;
+                                    if (lastMoveC.equalsIgnoreCase(specialC)) {
+                                        return lmc.getText().toString().trim().equalsIgnoreCase("true");
+                                    } else {
+                                        return true;
+                                    }
                                 } else {
                                     isWeakMove(edge.getTwo(), nodeTouched);
                                 }
                             }
                         } else {
+                            lmc.setText(String.valueOf(true));
                             isWeakMove(edge.getTwo(), nodeTouched);
                         }
                     }
@@ -751,6 +758,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         }
         return false;
     }
+
 
     private int stringToID(String sNode) {
         switch (sNode) {
