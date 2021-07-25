@@ -1,6 +1,7 @@
 package com.example.bisimulazione;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -53,6 +54,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private String specialColour;
 
     private boolean touchable;
+    private boolean value;
 
     private TextView coloreSpeciale;
     private TextView turnoDi;
@@ -426,22 +428,66 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             }
                             // get selected node
                             sNode = stringToNode(selectedNode, node.isLeftTable());
-                            if (isValidMove(sNode, nodeTouched)) {
-                                // set reference to proper graph
-                                left = node.isLeftTable();
-                                if (left) {
-                                    graphRef = leftGraphRef;
-                                } else {
-                                    graphRef = rightGraphRef;
+                            // case no move
+                            if (sNode.getId() == nodeTouched.getId()) {
+                                if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_defender))) {
+                                    if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(lastMoveColour.getText().toString().trim())) {
+                                        if (displayAlertDialog()) {
+                                            // set reference to proper graph
+                                            left = node.isLeftTable();
+                                            if (left) {
+                                                graphRef = leftGraphRef;
+                                            } else {
+                                                graphRef = rightGraphRef;
+                                            }
+                                            refreshNodes(graphRef, sNode, nodeTouched);
+                                            refreshTurnOf();
+                                        }
+                                    }
                                 }
-                                refreshNodes(graphRef, sNode, nodeTouched);
-                                refreshTurnOf();
+                            } else {
+                                if (isValidMove(sNode, nodeTouched)) {
+                                    // set reference to proper graph
+                                    left = node.isLeftTable();
+                                    if (left) {
+                                        graphRef = leftGraphRef;
+                                    } else {
+                                        graphRef = rightGraphRef;
+                                    }
+                                    refreshNodes(graphRef, sNode, nodeTouched);
+                                    refreshTurnOf();
+                                }
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    private boolean displayAlertDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        View v = getLayoutInflater().inflate(R.layout.no_move_dialog, null, false);
+        builder.setView(v);
+        builder.setNegativeButton(getString(R.string.no_move_no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                value = false;
+                dialog.dismiss();
+            }
+        });
+
+        builder.setPositiveButton(getString(R.string.no_move_yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                value = true;
+                dialog.dismiss();
+            }
+        });
+        android.app.AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        return value;
     }
 
     private void refreshNodes(DatabaseReference graphRef, Node selectedNode, Node nodeTouched) {
@@ -697,8 +743,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private boolean isWeakMove(Node startNode, Node nodeTouched) {
         String specialC = coloreSpeciale.getText().toString().trim();
         String lastMoveC = lastMoveColour.getText().toString().trim();
-        // check if start node and node touched are not null
-        if (startNode != null && nodeTouched != null) {
+        if (specialC.equalsIgnoreCase(lastMoveC)) {
+            // gestire questo caso
+        } else {
             // check if nodes are not null
             if (startNode.getOutgoingEdges() != null) {
                 // loop on outgoing edges of start node
@@ -722,7 +769,13 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 }
                             }
                         } else {
-                            lmc.setText(String.valueOf(true));
+                            if (lmc.getText().toString().trim().equalsIgnoreCase("")) {
+                                Log.i(TAG, " da niente a true");
+                                lmc.setText(String.valueOf(true));
+                            } else if (lmc.getText().toString().trim().equalsIgnoreCase("true")) {
+                                // found more than one
+                                lmc.setText("null");
+                            }
                             isWeakMove(edge.getTwo(), nodeTouched);
                         }
                     }

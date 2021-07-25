@@ -91,7 +91,6 @@
     <string name="table_defender">difensore</string>
     <string name="table_attacker_is">L\'attaccante è:</string>
     <string name="table_defender_is">Il difensore è:</string>
-    <string name="table_no_move">RESTA FERMO</string>
     <string name="table_possible_moves">Ci sono ancora mosse disponibili.</string>
     <string name="table_invalid_move_attacker">MOSSA NON CONSENTITA PER L\'ATTACCANTE</string>
     <string name="table_invalid_move_defender">MOSSA NON CONSENTITA PER IL DIFENSORE</string>
@@ -192,4 +191,9 @@
 
     <!-- active players -->
     <string name="active_players">Giocatori attivi</string>
+
+    <!-- no move -->
+    <string name="no_move_dialog">Sei sicuro di voler rimanere fermo?</string>
+    <string name="no_move_no">NO</string>
+    <string name="no_move_yes">SI</string>
 </resources>
