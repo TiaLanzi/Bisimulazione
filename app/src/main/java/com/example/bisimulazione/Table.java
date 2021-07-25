@@ -38,13 +38,12 @@ import java.util.Objects;
 
 import interfaces.CallbackGameInProgress;
 import interfaces.CallbackLastMoveColour;
-import interfaces.CallbackNoMove;
 import interfaces.CallbackPlayerOne;
 import interfaces.CallbackPlayerTwo;
 import interfaces.CallbackSelectedNode;
 import interfaces.CallbackTurnOf;
 
-public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackSelectedNode, CallbackNoMove, CallbackGameInProgress {
+public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackSelectedNode, CallbackGameInProgress {
 
     private static final String TAG = "Bisimulazione";
 
@@ -63,8 +62,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private TextView selectedNodeLeft;
     private TextView selectedNodeRight;
     private TextView lmc;
-
-    private Button noMove;
 
     private DatabaseReference roomsRef;
     private DatabaseReference roomNameRef;
@@ -98,7 +95,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         attacker = findViewById(R.id.table_attacker_is);
         defender = findViewById(R.id.table_defender_is);
         lastMoveColour = findViewById(R.id.table_last_move_colour);
-        noMove = findViewById(R.id.table_no_move);
         selectedNodeLeft = findViewById(R.id.table_left_selected_node);
         selectedNodeRight = findViewById(R.id.table_right_selected_node);
         lmc = findViewById(R.id.table_found_last_move_colour);
@@ -250,13 +246,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 return touchable;
             }
         });
-
-        noMove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setOnTouchGraph(null, null);
-            }
-        });
     }
 
     private void refreshDirectedGraph(DirectedGraph directedGraph, String selectedNode, boolean bool) {
@@ -290,8 +279,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         setSelectedNode(true);
         // set selected node right table
         setSelectedNode(false);
-        // enable / disable no move button
-        setNoMove();
     }
 
     private Edge[] divideEdges(Edge[] edges, boolean left) {
@@ -423,36 +410,32 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         boolean left;
         Node nodeTouched;
         Node sNode;
-        if (false) {
-            // no move button
-        } else {
-            if (directedGraph != null) {
-                if (directedGraph.getNodes() != null) {
-                    for (Node node : directedGraph.getNodes()) {
-                        if (node != null) {
-                            // control whether the touch is in the circle or not
-                            boolean touchInCircle = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
-                            if (touchInCircle) {
-                                nodeTouched = node;
-                                String selectedNode;
-                                if (node.isLeftTable()) {
-                                    selectedNode = selectedNodeLeft.getText().toString().trim();
+        if (directedGraph != null) {
+            if (directedGraph.getNodes() != null) {
+                for (Node node : directedGraph.getNodes()) {
+                    if (node != null) {
+                        // control whether the touch is in the circle or not
+                        boolean touchInCircle = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
+                        if (touchInCircle) {
+                            nodeTouched = node;
+                            String selectedNode;
+                            if (node.isLeftTable()) {
+                                selectedNode = selectedNodeLeft.getText().toString().trim();
+                            } else {
+                                selectedNode = selectedNodeRight.getText().toString().trim();
+                            }
+                            // get selected node
+                            sNode = stringToNode(selectedNode, node.isLeftTable());
+                            if (isValidMove(sNode, nodeTouched)) {
+                                // set reference to proper graph
+                                left = node.isLeftTable();
+                                if (left) {
+                                    graphRef = leftGraphRef;
                                 } else {
-                                    selectedNode = selectedNodeRight.getText().toString().trim();
+                                    graphRef = rightGraphRef;
                                 }
-                                // get selected node
-                                sNode = stringToNode(selectedNode, node.isLeftTable());
-                                if (isValidMove(sNode, nodeTouched)) {
-                                    // set reference to proper graph
-                                    left = node.isLeftTable();
-                                    if (left) {
-                                        graphRef = leftGraphRef;
-                                    } else {
-                                        graphRef = rightGraphRef;
-                                    }
-                                    refreshNodes(graphRef, sNode, nodeTouched);
-                                    refreshTurnOf();
-                                }
+                                refreshNodes(graphRef, sNode, nodeTouched);
+                                refreshTurnOf();
                             }
                         }
                     }
@@ -675,14 +658,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private boolean isValidMove(Node startNode, Node nodeTouched) {
-        if (startNode == null && nodeTouched == null) {
-            if (lastMoveColour.getText().toString().equalsIgnoreCase(coloreSpeciale.getText().toString())) {
-                roomNameRef.child("noMoveButtonEnabled").setValue("false");
-                return true;
-            } else {
-                return false;
-            }
-        }
         // if turn of attacker --> strong move else --> weak move
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
             Log.i(TAG, "Strong move");
@@ -707,8 +682,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             String colore = colourToString(edge.getColor());
                             // set colour of the move
                             roomNameRef.child("lastMoveColour").setValue(colore);
-                            // enable no move button
-                            roomNameRef.child("noMoveButtonEnable").setValue(String.valueOf(true));
                             return true;
                         }
                     }
@@ -1065,46 +1038,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
     }
 
-    private void setNoMove() {
-        getNoMove(new CallbackNoMove() {
-            @Override
-            public void onCallbackNoMove(String value) {
-                if (value != null) {
-                    if (value.equalsIgnoreCase("true")) {
-                        if (lastMoveColour.getText().toString().equalsIgnoreCase(coloreSpeciale.getText().toString())) {
-                            noMove.setEnabled(true);
-                            noMove.setClickable(true);
-                            noMove.setFocusable(true);
-                            Log.i(TAG, "Enabled button");
-                        }
-                    } else {
-                        noMove.setEnabled(false);
-                        noMove.setClickable(false);
-                        noMove.setFocusable(false);
-                        Log.i(TAG, "Disabled button");
-                    }
-                }
-            }
-        });
-    }
-
-    private void getNoMove(CallbackNoMove callback) {
-        roomNameRef.child("noMoveButtonEnabled").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (snapshot.getValue().toString() != null) {
-                    String value = snapshot.getValue().toString();
-                    callback.onCallbackNoMove(value);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-    }
-
     private void setEndGame() {
         getGameInProgress(new CallbackGameInProgress() {
             @Override
@@ -1180,11 +1113,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     @Override
     public void onCallbackSelectedNodeFive(String selectedNode) {
-
-    }
-
-    @Override
-    public void onCallbackNoMove(String value) {
 
     }
 

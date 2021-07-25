@@ -87,7 +87,6 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
             initializeLastMoveColour(roomNameRef);
             initializeGraphs(roomNameRef);
             sendDataP1(roomNameRef, playerName);
-            sendDataNoMoveButton(roomNameRef);
             sendDataGameInProgress(roomNameRef);
             startActivity(roomName, true, specialColour);
         });
@@ -254,10 +253,6 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
             }
             i++;
         }
-    }
-
-    private void sendDataNoMoveButton(DatabaseReference roomNameRef) {
-        roomNameRef.child("noMoveButtonEnabled").setValue("false");
     }
 
     private void sendDataNodes(DatabaseReference nodesReference, HashMap<String, String> map) {
