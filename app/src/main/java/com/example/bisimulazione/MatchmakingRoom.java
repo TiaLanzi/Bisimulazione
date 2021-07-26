@@ -2,6 +2,7 @@ package com.example.bisimulazione;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -86,6 +87,7 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
             // initialize to empty string last move colour
             initializeLastMoveColour(roomNameRef);
             initializeGraphs(roomNameRef);
+            initializeEnabledGraphs(roomNameRef);
             sendDataP1(roomNameRef, playerName);
             sendDataGameInProgress(roomNameRef);
             startActivity(roomName, true, specialColour);
@@ -226,6 +228,11 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
     private void initializeGraphs(DatabaseReference roomNameRef) {
         initializeGraph(roomNameRef.child("leftGraph"));
         initializeGraph(roomNameRef.child("rightGraph"));
+    }
+
+    private void initializeEnabledGraphs(DatabaseReference roomNameRef) {
+        roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
+        roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
     }
 
     private void initializeGraph(DatabaseReference graphReference) {

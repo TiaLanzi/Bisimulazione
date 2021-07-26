@@ -1,7 +1,6 @@
 package com.example.bisimulazione;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,7 +8,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +35,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Objects;
 
+import interfaces.CallbackEnabledLeftGraph;
+import interfaces.CallbackEnabledRightGraph;
 import interfaces.CallbackGameInProgress;
 import interfaces.CallbackLastMoveColour;
 import interfaces.CallbackPlayerOne;
@@ -44,7 +44,7 @@ import interfaces.CallbackPlayerTwo;
 import interfaces.CallbackSelectedNode;
 import interfaces.CallbackTurnOf;
 
-public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackSelectedNode, CallbackGameInProgress {
+public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackSelectedNode, CallbackGameInProgress, CallbackEnabledLeftGraph, CallbackEnabledRightGraph {
 
     private static final String TAG = "Bisimulazione";
 
@@ -134,9 +134,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         // initialize control matrix
         controlMatrix = new int[5][5];
 
-        Node sNodeLeft;
-        Node nodeTouchedLeft;
-
         selectedNodeLeft.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -157,6 +154,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
         // set info box
         setInfoBox();
+        // enable / disable graphs
+        enableGraphs();
         // end game
         setEndGame();
 
@@ -430,21 +429,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             sNode = stringToNode(selectedNode, node.isLeftTable());
                             // case no move
                             if (sNode.getId() == nodeTouched.getId()) {
-                                if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_defender))) {
-                                    if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(lastMoveColour.getText().toString().trim())) {
-                                        if (displayAlertDialog()) {
-                                            // set reference to proper graph
-                                            left = node.isLeftTable();
-                                            if (left) {
-                                                graphRef = leftGraphRef;
-                                            } else {
-                                                graphRef = rightGraphRef;
-                                            }
-                                            refreshNodes(graphRef, sNode, nodeTouched);
-                                            refreshTurnOf();
-                                        }
-                                    }
-                                }
+                                noMove(node.isLeftTable(), sNode, nodeTouched);
                             } else {
                                 if (isValidMove(sNode, nodeTouched)) {
                                     // set reference to proper graph
@@ -456,10 +441,35 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     }
                                     refreshNodes(graphRef, sNode, nodeTouched);
                                     refreshTurnOf();
+                                } else {
+                                    if (possibleMoves()) {
+
+                                    } else {
+                                        // end game
+                                        roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
+                                    }
                                 }
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private void noMove(boolean left, Node sNode, Node nodeTouched) {
+        DatabaseReference graphRef;
+        if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_defender))) {
+            if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(lastMoveColour.getText().toString().trim())) {
+                if (displayAlertDialog()) {
+                    // set reference to proper graph
+                    if (left) {
+                        graphRef = leftGraphRef;
+                    } else {
+                        graphRef = rightGraphRef;
+                    }
+                    refreshNodes(graphRef, sNode, nodeTouched);
+                    refreshTurnOf();
                 }
             }
         }
@@ -728,6 +738,11 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             String colore = colourToString(edge.getColor());
                             // set colour of the move
                             roomNameRef.child("lastMoveColour").setValue(colore);
+                            if (nodeTouched.isLeftTable()) {
+                                roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(false));
+                            } else {
+                                roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(false));
+                            }
                             return true;
                         }
                     }
@@ -750,6 +765,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         return false;
                     } else {
                         if (e.getTwo().getId() == nodeTouched.getId()) {
+                            roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
+                            roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
                             return true;
                         } else {
                             isWeakMove(e.getTwo(), nodeTouched);
@@ -772,8 +789,18 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             } else {
                                 if (edge.getTwo().getId() == nodeTouched.getId()) {
                                     if (lastMoveC.equalsIgnoreCase(specialC)) {
-                                        return lmc.getText().toString().trim().equalsIgnoreCase("true");
+                                        if (lmc.getText().toString().trim().equalsIgnoreCase("true")) {
+                                            roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
+                                            roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
+                                        }
+                                        if (lmc.getText().toString().trim().equalsIgnoreCase(String.valueOf(true))) {
+                                            roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
+                                            roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
+                                        }
+                                        return lmc.getText().toString().trim().equalsIgnoreCase(String.valueOf(true));
                                     } else {
+                                        roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
+                                        roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
                                         return true;
                                     }
                                 } else {
@@ -1140,6 +1167,93 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
     }
 
+    private void enableGraphs() {
+        enableLeftGraph();
+        enableRightGraph();
+    }
+
+    private void enableLeftGraph() {
+        getEnabledLeftGraph(new CallbackEnabledLeftGraph() {
+            @Override
+            public void onCallbackEnabledLeftGraph(String value) {
+                if (directedGraphLeft != null) {
+                    if (value != null) {
+                        if (value.equalsIgnoreCase(String.valueOf(true))) {
+                            // enable touch of left graph
+                            directedGraphLeft.setEnabled(true);
+                            directedGraphLeft.setClickable(true);
+                            directedGraphLeft.setFocusable(true);
+                        } else {
+                            // disable touch of left graph
+                            directedGraphLeft.setEnabled(false);
+                            directedGraphLeft.setClickable(false);
+                            directedGraphLeft.setFocusable(false);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void getEnabledLeftGraph(CallbackEnabledLeftGraph callback) {
+        DatabaseReference reference = roomNameRef.child("leftGraph").child("enabled");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    String value = snapshot.getValue().toString();
+                    callback.onCallbackEnabledLeftGraph(value);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void enableRightGraph() {
+        getEnabledRightGraph(new CallbackEnabledRightGraph() {
+            @Override
+            public void onCallbackEnabledRightGraph(String value) {
+                if (directedGraphRight != null) {
+                    if (value != null) {
+                        if (value.equalsIgnoreCase(String.valueOf(true))) {
+                            // enable touch of left graph
+                            directedGraphRight.setEnabled(true);
+                            directedGraphRight.setClickable(true);
+                            directedGraphRight.setFocusable(true);
+                        } else {
+                            // disable touch of left graph
+                            directedGraphRight.setEnabled(false);
+                            directedGraphRight.setClickable(false);
+                            directedGraphRight.setFocusable(false);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void getEnabledRightGraph(CallbackEnabledRightGraph callback) {
+        DatabaseReference reference = roomNameRef.child("rightGraph").child("enabled");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    String value = snapshot.getValue().toString();
+                    callback.onCallbackEnabledRightGraph(value);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
     @Override
     public void onCallbackTurnOf(String turnOf) {
     }
@@ -1183,6 +1297,16 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     @Override
     public void onCallbackGameInProgress(String value) {
+
+    }
+
+    @Override
+    public void onCallbackEnabledLeftGraph(String value) {
+
+    }
+
+    @Override
+    public void onCallbackEnabledRightGraph(String value) {
 
     }
 }
