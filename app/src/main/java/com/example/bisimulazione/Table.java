@@ -684,7 +684,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         }
     }
 
-    private boolean possibleMovesAttacker(Node startNode, Node nodeTouched) {
+    private boolean possibleMovesAttacker(Node startNode) {
         int counterLeft = 0;
         int counterRight = 0;
         String selectedNode;
@@ -712,53 +712,17 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return counterLeft != 0 || counterRight != 0;
     }
 
-    private boolean possibleMovesDefender(Node startNode, Node nodeTouched) {
-    }
-
-    /*
-    String sNodeLeft = selectedNodeLeft.getText().toString();
-    String sNodeRight = selectedNodeRight.getText().toString();
-    boolean leftAvailable = false;
-    boolean rightAvailable = false;
-    Node startNode;
-    int counter = 0;
-        if(turnoDi.getText().
-
-    toString().
-
-    equalsIgnoreCase(getString(R.string.table_attacker)))
-
-    {
-        startNode = stringToNode(sNodeLeft, true);
-        if (startNode != null) {
+    private boolean possibleMovesDefender(Node startNode) {
+        for (int i = 0; i < startNode.getOutgoingEdges().length; i++) {
             for (Edge edge : startNode.getOutgoingEdges()) {
-                // se trova almeno un arco vuol dire che ci sono ancora mosse possibili
-                if (edge != null) {
-                    counter++;
+                if (isWeakMove(startNode.getOutgoingEdges()[i].getTwo(), edge.getTwo())) {
+                    return true;
                 }
             }
-            if (counter != 0) {
-                leftAvailable = true;
-            }
         }
-    } else
-
-    {
-        startNode = stringToNode(sNodeRight, false);
-        if (startNode != null) {
-            for (Edge edge : startNode.getOutgoingEdges()) {
-                // se trova almeno un arco uscente dallo start node del colore dell'ultima mossa --> ci sono ancora mosse possibili
-                if (colourToString(edge.getColor()).equalsIgnoreCase(lastMoveColour.getText().toString())) {
-                    counter++;
-                }
-            }
-            if (counter != 0) {
-                rightAvailable = true;
-            }
-        }
+        return false;
     }
-        return leftAvailable &&rightAvailable;
-}*/
+
     private boolean isValidMove(Node startNode, Node nodeTouched) {
         // if turn of attacker --> strong move else --> weak move
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
