@@ -324,22 +324,4 @@
             android:focusable="false"
             android:visibility="visible" />
     </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="8dp">
-
-        <Button
-            android:id="@+id/table_no_move"
-            style="@style/BUTTON"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/corner_radius_button"
-            android:text="@string/table_no_move"
-            android:textColor="@color/white" />
-    </RelativeLayout>
 </LinearLayout>
