@@ -442,7 +442,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     refreshNodes(graphRef, sNode, nodeTouched);
                                     refreshTurnOf();
                                 } else {
-                                    if (possibleMoves()) {
+                                    if (possibleMoves(sNode, nodeTouched)) {
 
                                     } else {
                                         // end game
@@ -676,43 +676,89 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return returnNode;
     }
 
-    private boolean possibleMoves() {
-        String sNodeLeft = selectedNodeLeft.getText().toString();
-        String sNodeRight = selectedNodeRight.getText().toString();
-        boolean leftAvailable = false;
-        boolean rightAvailable = false;
-        Node startNode;
-        int counter = 0;
-        if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
-            startNode = stringToNode(sNodeLeft, true);
-            if (startNode != null) {
-                for (Edge edge : startNode.getOutgoingEdges()) {
-                    // se trova almeno un arco vuol dire che ci sono ancora mosse possibili
-                    if (edge != null) {
-                        counter++;
-                    }
-                }
-                if (counter != 0) {
-                    leftAvailable = true;
-                }
-            }
+    private boolean possibleMoves(Node startNode, Node nodeTouched) {
+        if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_attacker))) {
+            return possibleMovesAttacker(startNode, nodeTouched);
         } else {
-            startNode = stringToNode(sNodeRight, false);
-            if (startNode != null) {
-                for (Edge edge : startNode.getOutgoingEdges()) {
-                    // se trova almeno un arco uscente dallo start node del colore dell'ultima mossa --> ci sono ancora mosse possibili
-                    if (colourToString(edge.getColor()).equalsIgnoreCase(lastMoveColour.getText().toString())) {
-                        counter++;
-                    }
-                }
-                if (counter != 0) {
-                    rightAvailable = true;
-                }
-            }
+            return possibleMovesDefender(startNode, nodeTouched);
         }
-        return leftAvailable && rightAvailable;
     }
 
+    private boolean possibleMovesAttacker(Node startNode, Node nodeTouched) {
+        int counterLeft = 0;
+        int counterRight = 0;
+        String selectedNode;
+        Node startNodeLeft;
+        Node startNodeRight;
+        if (startNode.isLeftTable()) {
+            startNodeLeft = startNode;
+            selectedNode = selectedNodeRight.getText().toString().trim();
+            startNodeRight = stringToNode(selectedNode, false);
+        } else {
+            startNodeRight = startNode;
+            selectedNode = selectedNodeLeft.getText().toString().trim();
+            startNodeLeft = stringToNode(selectedNode, true);
+        }
+        for (Edge edge : startNodeLeft.getOutgoingEdges()) {
+            if (edge != null) {
+                counterLeft++;
+            }
+        }
+        for (Edge edge : startNodeRight.getOutgoingEdges()) {
+            if (edge != null) {
+                counterRight++;
+            }
+        }
+        return counterLeft != 0 || counterRight != 0;
+    }
+
+    private boolean possibleMovesDefender(Node startNode, Node nodeTouched) {
+    }
+
+    /*
+    String sNodeLeft = selectedNodeLeft.getText().toString();
+    String sNodeRight = selectedNodeRight.getText().toString();
+    boolean leftAvailable = false;
+    boolean rightAvailable = false;
+    Node startNode;
+    int counter = 0;
+        if(turnoDi.getText().
+
+    toString().
+
+    equalsIgnoreCase(getString(R.string.table_attacker)))
+
+    {
+        startNode = stringToNode(sNodeLeft, true);
+        if (startNode != null) {
+            for (Edge edge : startNode.getOutgoingEdges()) {
+                // se trova almeno un arco vuol dire che ci sono ancora mosse possibili
+                if (edge != null) {
+                    counter++;
+                }
+            }
+            if (counter != 0) {
+                leftAvailable = true;
+            }
+        }
+    } else
+
+    {
+        startNode = stringToNode(sNodeRight, false);
+        if (startNode != null) {
+            for (Edge edge : startNode.getOutgoingEdges()) {
+                // se trova almeno un arco uscente dallo start node del colore dell'ultima mossa --> ci sono ancora mosse possibili
+                if (colourToString(edge.getColor()).equalsIgnoreCase(lastMoveColour.getText().toString())) {
+                    counter++;
+                }
+            }
+            if (counter != 0) {
+                rightAvailable = true;
+            }
+        }
+    }
+        return leftAvailable &&rightAvailable;
+}*/
     private boolean isValidMove(Node startNode, Node nodeTouched) {
         // if turn of attacker --> strong move else --> weak move
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
