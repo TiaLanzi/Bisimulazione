@@ -443,7 +443,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     refreshTurnOf();
                                 } else {
                                     if (possibleMoves(sNode, nodeTouched)) {
-
+                                        Toast.makeText(this, getResources().getString(R.string.table_possible_moves), Toast.LENGTH_LONG).show();
                                     } else {
                                         // end game
                                         roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
@@ -461,7 +461,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         DatabaseReference graphRef;
         if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_defender))) {
             if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(lastMoveColour.getText().toString().trim())) {
-                if (displayAlertDialog()) {
+                if (displayAlertDialogNoMove()) {
                     // set reference to proper graph
                     if (left) {
                         graphRef = leftGraphRef;
@@ -475,7 +475,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         }
     }
 
-    private boolean displayAlertDialog() {
+    private boolean displayAlertDialogNoMove() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         View v = getLayoutInflater().inflate(R.layout.no_move_dialog, null, false);
         builder.setView(v);
@@ -678,9 +678,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     private boolean possibleMoves(Node startNode, Node nodeTouched) {
         if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_attacker))) {
-            return possibleMovesAttacker(startNode, nodeTouched);
+            return possibleMovesAttacker(startNode);
         } else {
-            return possibleMovesDefender(startNode, nodeTouched);
+            return possibleMovesDefender(startNode);
         }
     }
 
