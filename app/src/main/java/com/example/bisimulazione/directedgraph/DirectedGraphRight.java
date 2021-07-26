@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -58,10 +57,8 @@ public class DirectedGraphRight extends DirectedGraph implements CallbackNodeCol
     @Override
     protected void drawEdges(Canvas canvas) {
         if (this.getEdges() != null) {
-            Log.i(TAG, "This.getEdges() != null (RIGHT)");
             for (int i = 0; i < this.getEdges().length; i++) {
                 if (this.getEdges()[i] != null) {
-                    Log.i(TAG, "This.getEdges()[" + i + "] != null (RIGHT)");
                     // coordinates of centre of first vertex
                     Point pointOne = new Point(this.getEdges()[i].getOne().getX(), this.getEdges()[i].getOne().getY());
                     // coordinates of centre of second vertex

@@ -93,10 +93,8 @@ public class DirectedGraphLeft extends DirectedGraph implements CallbackNodeColo
     @Override
     protected void drawEdges(Canvas canvas) {
         if (this.getEdges() != null) {
-            Log.i(TAG, "This.getEdges() != null (LEFT)");
             for (int i = 0; i < this.getEdges().length; i++) {
                 if (this.getEdges()[i] != null) {
-                    Log.i(TAG, "This.getEdges()[" + i + "] != null (LEFT)");
                     // coordinates of centre of first vertex
                     Point pointOne = new Point(this.getEdges()[i].getOne().getX(), this.getEdges()[i].getOne().getY());
                     // coordinates of centre of second vertex

@@ -146,17 +146,4 @@ public abstract class DirectedGraph extends View {
             }
         });
     }
-
-    protected int stringToIntColour(String colour) {
-        int colore = -1;
-        switch (colour) {
-            case "black":
-                return -16777216;
-            case "blue":
-                return -15774591;
-            default:
-                break;
-        }
-        return colore;
-    }
 }

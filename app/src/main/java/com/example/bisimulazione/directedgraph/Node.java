@@ -100,17 +100,6 @@ public class Node {
         return this.alreadyDrawn;
     }
 
-    public void setIncomingEdges(Edge[] incomingEdges) {
-        this.incomingEdges = incomingEdges;
-    }
-
-    public Edge[] getIncomingEdges() {
-        for (Edge edge : this.incomingEdges) {
-            Log.i(TAG, "Edge: " + edge.getId() + ", left table? " + edge.isLeftTable());
-        }
-        return this.incomingEdges;
-    }
-
     public void setOutgoingEdges(Edge[] outgoingEdges) {
         this.outgoingEdges = outgoingEdges;
     }
