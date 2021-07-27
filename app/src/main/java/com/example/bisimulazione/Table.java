@@ -451,6 +451,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                         Toast.makeText(this, getResources().getString(R.string.table_possible_moves), Toast.LENGTH_LONG).show();
                                     } else {
                                         // end game
+                                        removeReferences();
                                         roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
                                     }
                                 }
@@ -460,6 +461,11 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 }
             }
         }
+    }
+
+    private void removeReferences() {
+        roomNameRef.removeValue();
+        FirebaseDatabase.getInstance().getReference().child("players").child(playerName).removeValue();
     }
 
     private void noMove(boolean left, Node sNode, Node nodeTouched) {
