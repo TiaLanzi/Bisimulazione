@@ -6,47 +6,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.Log;
-
-import com.google.firebase.database.DatabaseReference;
 
 import interfaces.CallbackNodeColor;
 
 public class DirectedGraphLeft extends DirectedGraph implements CallbackNodeColor {
-
-    protected static final String TAG = "Bisimulazione";
-
-    private DatabaseReference reference;
-
-    private Edge[] edges;
-    private Node[] nodes;
-
-    protected final float stroke = 8f;
-    protected final float radius = 40f;
-
-    public void setReference(DatabaseReference reference) {
-        this.reference = reference;
-    }
-
-    protected DatabaseReference getReference() {
-        return this.reference;
-    }
-
-    public void setEdges(Edge[] edges) {
-        this.edges = edges;
-    }
-
-    public Edge[] getEdges() {
-        return this.edges;
-    }
-
-    public void setNodes(Node[] nodes) {
-        this.nodes = nodes;
-    }
-
-    public Node[] getNodes() {
-        return this.nodes;
-    }
 
     public DirectedGraphLeft(Context context) {
         super(context);
@@ -59,7 +22,6 @@ public class DirectedGraphLeft extends DirectedGraph implements CallbackNodeColo
     public DirectedGraphLeft(Context context, AttributeSet attributeSet, int defStyle) {
         super(context, attributeSet, defStyle);
     }
-
 
     @Override
     public void onDraw(Canvas canvas) {
@@ -96,9 +58,9 @@ public class DirectedGraphLeft extends DirectedGraph implements CallbackNodeColo
             for (int i = 0; i < this.getEdges().length; i++) {
                 if (this.getEdges()[i] != null) {
                     // coordinates of centre of first vertex
-                    Point pointOne = new Point(this.getEdges()[i].getOne().getX(), this.getEdges()[i].getOne().getY());
+                    Point pointOne = new Point(this.getEdges()[i].getSource().getX(), this.getEdges()[i].getSource().getY());
                     // coordinates of centre of second vertex
-                    Point pointTwo = new Point(this.getEdges()[i].getTwo().getX(), this.getEdges()[i].getTwo().getY());
+                    Point pointTwo = new Point(this.getEdges()[i].getDestination().getX(), this.getEdges()[i].getDestination().getY());
                     Point endPoint;
                     Point a;
                     Point b;

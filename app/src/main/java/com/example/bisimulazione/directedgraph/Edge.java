@@ -3,22 +3,23 @@ package com.example.bisimulazione.directedgraph;
 public class Edge {
 
     private int id;
-    private Node one;
-    private Node two;
+    private Node source;
+    private Node destination;
     private int color;
     private boolean leftTable;
     private boolean toBottom;
     private boolean line;
 
-    public Edge(int id, Node one, Node two, int color, boolean leftTable, boolean toBottom, boolean line) {
+    public Edge(int id, Node source, Node destination, int color, boolean leftTable, boolean toBottom, boolean line) {
         setId(id);
-        setOne(one);
-        setTwo(two);
+        setSource(source);
+        setDestination(destination);
         setColor(color);
         setLeftTable(leftTable);
         setToBottom(toBottom);
         setLine(line);
     }
+
     private void setId(int id) {
         this.id = id;
     }
@@ -27,20 +28,20 @@ public class Edge {
         return this.id;
     }
 
-    private void setOne(Node one) {
-        this.one = one;
+    private void setSource(Node source) {
+        this.source = source;
     }
 
-    public Node getOne() {
-        return this.one;
+    public Node getSource() {
+        return this.source;
     }
 
-    private void setTwo(Node two) {
-        this.two = two;
+    private void setDestination(Node destination) {
+        this.destination = destination;
     }
 
-    public Node getTwo() {
-        return this.two;
+    public Node getDestination() {
+        return this.destination;
     }
 
     private void setColor(int color) {
@@ -76,8 +77,8 @@ public class Edge {
     }
 
     public String toString() {
-        return "First point: x: " + this.getOne().getX()  + ", y: " + this.getOne().getY() +
-                ", Second point: x: " + this.getTwo().getX() + ", y: " + this.getTwo().getY() + ", Color: " +
+        return "First point: x: " + this.getSource().getX() + ", y: " + this.getSource().getY() +
+                ", Second point: x: " + this.getDestination().getX() + ", y: " + this.getDestination().getY() + ", Color: " +
                 this.getColor() + ", is to bottom? " + this.isToBottom() + ", verticalLine? " + this.isLine();
     }
 }

@@ -60,9 +60,9 @@ public class DirectedGraphRight extends DirectedGraph implements CallbackNodeCol
             for (int i = 0; i < this.getEdges().length; i++) {
                 if (this.getEdges()[i] != null) {
                     // coordinates of centre of first vertex
-                    Point pointOne = new Point(this.getEdges()[i].getOne().getX(), this.getEdges()[i].getOne().getY());
+                    Point pointOne = new Point(this.getEdges()[i].getSource().getX(), this.getEdges()[i].getSource().getY());
                     // coordinates of centre of second vertex
-                    Point pointTwo = new Point(this.getEdges()[i].getTwo().getX(), this.getEdges()[i].getTwo().getY());
+                    Point pointTwo = new Point(this.getEdges()[i].getDestination().getX(), this.getEdges()[i].getDestination().getY());
                     Point endPoint;
                     Point a;
                     Point b;

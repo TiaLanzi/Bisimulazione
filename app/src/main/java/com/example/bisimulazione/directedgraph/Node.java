@@ -10,11 +10,10 @@ public class Node {
     private int id;
     private int x;
     private int y;
+    private int color;
     private boolean leftTable;
     private boolean root;
     private boolean alreadyDrawn;
-    private int color;
-    private Edge[] incomingEdges;
     private Edge[] outgoingEdges;
 
     public Node(int id, int x, int y, boolean root, boolean toLeft, boolean toRight, boolean leftTable, int color) {
@@ -42,6 +41,7 @@ public class Node {
         setLeftTable(leftTable);
         setColor(color);
         setAlreadyDrawn(false);
+        setOutgoingEdges(null);
     }
 
     private void setId(int id) {

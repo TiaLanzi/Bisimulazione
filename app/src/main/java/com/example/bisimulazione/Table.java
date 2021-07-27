@@ -41,7 +41,6 @@ import interfaces.CallbackGameInProgress;
 import interfaces.CallbackLastMoveColour;
 import interfaces.CallbackPlayerOne;
 import interfaces.CallbackPlayerTwo;
-import interfaces.CallbackActivePlayers;
 import interfaces.CallbackSelectedNode;
 import interfaces.CallbackTurnOf;
 
@@ -672,7 +671,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private boolean possibleMovesDefender(Node startNode) {
         for (int i = 0; i < startNode.getOutgoingEdges().length; i++) {
             for (Edge edge : startNode.getOutgoingEdges()) {
-                if (isWeakMove(startNode.getOutgoingEdges()[i].getTwo(), edge.getTwo())) {
+                if (isWeakMove(startNode.getOutgoingEdges()[i].getDestination(), edge.getDestination())) {
                     Log.i(TAG, "Ritorna true possible moves");
                     return true;
                 }
@@ -703,7 +702,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     // check if edge is not null
                     if (edge != null) {
                         // check if second node of edge has the same id of the node touched
-                        if (edge.getTwo().getId() == nodeTouched.getId()) {
+                        if (edge.getDestination().getId() == nodeTouched.getId()) {
                             String colore = colourToString(edge.getColor());
                             // set colour of the move
                             roomNameRef.child("lastMoveColour").setValue(colore);
@@ -727,6 +726,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private boolean isWeakMove(Node startNode, Node nodeTouched) {
+        String specialC = coloreSpeciale.getText().toString().trim();
+        String lastMoveC = lastMoveColour.getText().toString().trim();
+        if (specialC.equalsIgnoreCase(lastMoveC)) {
+
+        }
+        /*
         String specialC = coloreSpeciale.getText().toString().trim();
         String lastMoveC = lastMoveColour.getText().toString().trim();
         if (specialC.equalsIgnoreCase(lastMoveC)) {
@@ -810,7 +815,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     }
                 }
             }
-        }
+        } */
         return false;
     }
 
@@ -1021,7 +1026,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         roomNameRef.child("lastMoveColour").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (snapshot.toString() != null) {
+                if (snapshot.getValue() != null) {
                     String value = Objects.requireNonNull(snapshot.getValue()).toString();
                     callback.onCallbackLastMoveColour(value);
                 }
