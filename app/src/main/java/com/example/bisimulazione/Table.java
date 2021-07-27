@@ -41,6 +41,7 @@ import interfaces.CallbackGameInProgress;
 import interfaces.CallbackLastMoveColour;
 import interfaces.CallbackPlayerOne;
 import interfaces.CallbackPlayerTwo;
+import interfaces.CallbackActivePlayers;
 import interfaces.CallbackSelectedNode;
 import interfaces.CallbackTurnOf;
 
@@ -479,7 +480,18 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     refreshTurnOf();
                 }
             } else {
-                Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
+                Log.i(TAG, "Colore speciale e colore dell'ultima mossa sono diversi --> passo a isWeakMove");
+                if (!isWeakMove(sNode, nodeTouched)) {
+                    Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
+                } else {
+                    if (left) {
+                        graphRef = leftGraphRef;
+                    } else {
+                        graphRef = rightGraphRef;
+                    }
+                    refreshNodes(graphRef, sNode, nodeTouched);
+                    refreshTurnOf();
+                }
             }
         }
     }
@@ -491,7 +503,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         builder.setNegativeButton(getString(R.string.no_move_no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                Log.i(TAG, "Clicked no button");
                 value = false;
+                Log.i(TAG, "Value of value " + value);
                 dialog.dismiss();
             }
         });
@@ -499,13 +513,16 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         builder.setPositiveButton(getString(R.string.no_move_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                Log.i(TAG, "Clicked yes button");
                 value = true;
+                Log.i(TAG, "Value of value " + value);
                 dialog.dismiss();
             }
         });
         android.app.AlertDialog alertDialog = builder.create();
         alertDialog.show();
 
+        Log.i(TAG, "Return value of dialog " + value);
         return value;
     }
 
@@ -710,6 +727,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             Log.i(TAG, "Special colour e last move colour sono uguali");
             if (startNode.getOutgoingEdges() != null) {
                 for (Edge e : startNode.getOutgoingEdges()) {
+                    Log.i(TAG, "1 - Si valuta arco id " + e.getId() + ", left table? " + e.getOne().isLeftTable());
                     if (!colourToString(e.getColor()).equalsIgnoreCase(specialC)) {
                         Log.i(TAG, "Leggo un colore che non è quello speciale (che è uguale a quello dell'ultima mossa");
                         Log.i(TAG, "Weak move ritorna false");
@@ -722,7 +740,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             Log.i(TAG, "Weak move ritorna true");
                             return true;
                         } else {
-                            Log.i(TAG, "Si cicla su nuovo nodo (id " + e.getTwo().getId() + ", left table? " + e.getTwo().isLeftTable() + ")");
+                            Log.i(TAG, "2 - Si valuta arco id " + e.getId() + ", left table? " + e.getTwo().isLeftTable());
                             isWeakMove(e.getTwo(), nodeTouched);
                         }
                     }
@@ -734,6 +752,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             if (startNode.getOutgoingEdges() != null) {
                 // loop on outgoing edges of start node
                 for (Edge edge : startNode.getOutgoingEdges()) {
+                    Log.i(TAG, "3 - Si valuta arco id " + edge.getId() + ", left table? " + edge.getOne().isLeftTable());
                     // check if edge is not null
                     if (edge != null) {
                         // check if colour of the edge is the same of last move colour
@@ -766,7 +785,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                         return true;
                                     }
                                 } else {
-                                    Log.i(TAG, "Si cicla su nuovo nodo (id " + edge.getTwo().getId() + ", left table? " + edge.getTwo().isLeftTable() + ")");
+                                    Log.i(TAG, "4 - Si valuta arco id " + edge.getId() + ", left table? " + edge.getTwo().isLeftTable());
                                     isWeakMove(edge.getTwo(), nodeTouched);
                                 }
                             }
@@ -779,7 +798,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 // found more than one
                                 lmc.setText("null");
                             }
-                            Log.i(TAG, "Si cicla su nuovo nodo (id " + edge.getTwo().getId() + ", left table? " + edge.getTwo().isLeftTable() + ")");
+                            Log.i(TAG, "5 - Si valuta arco id " + edge.getId() + ", left table? " + edge.getTwo().isLeftTable());
                             isWeakMove(edge.getTwo(), nodeTouched);
                         }
                     }
@@ -926,6 +945,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 coloreSpeciale.setTextColor(getResources().getColor(R.color.primaryColor));
                 break;
             default:
+                coloreSpeciale.setTextColor(getResources().getColor(R.color.black));
                 break;
         }
         coloreSpeciale.setText(specialColour);
@@ -996,7 +1016,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if (snapshot.toString() != null) {
-                    String value = snapshot.getValue().toString();
+                    String value = Objects.requireNonNull(snapshot.getValue()).toString();
                     callback.onCallbackLastMoveColour(value);
                 }
             }

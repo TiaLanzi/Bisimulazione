@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telecom.Call;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +30,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+import interfaces.CallbackActivePlayers;
 import interfaces.CallbackGameCount;
 
-public class Home extends Fragment implements CallbackGameCount {
+public class Home extends Fragment implements CallbackGameCount, CallbackActivePlayers {
+
+    private static final String TAG = "Bisimulazione";
 
     private String playerName;
 
@@ -40,6 +45,9 @@ public class Home extends Fragment implements CallbackGameCount {
 
     private TextView win;
     private TextView lose;
+
+    private TextView aPlayers;
+    private TextView roomsCount;
 
     public Home() {
         // Required empty public constructor
@@ -62,6 +70,7 @@ public class Home extends Fragment implements CallbackGameCount {
         super.onViewCreated(view, savedInstanceState);
 
         MaterialCardView firstCard = view.findViewById(R.id.first_card);
+        MaterialCardView secondCard = view.findViewById(R.id.second_card);
 
         Button playGame = view.findViewById(R.id.home_play_button);
         Button activePlayers = view.findViewById(R.id.home_active_players_button);
@@ -71,6 +80,9 @@ public class Home extends Fragment implements CallbackGameCount {
 
         win = firstCard.findViewById(R.id.home_first_card_win_count);
         lose = firstCard.findViewById(R.id.home_first_card_lose_count);
+
+        aPlayers = secondCard.findViewById(R.id.home_second_card_active_players_count);
+        roomsCount = secondCard.findViewById(R.id.home_second_card_rooms_count);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -86,6 +98,9 @@ public class Home extends Fragment implements CallbackGameCount {
         }
 
         setGameCount();
+
+        setActivePlayers();
+        //setRoomsCount();
 
         playGame.setOnClickListener(v -> {
             sendData(playersRef, playerName);
@@ -104,6 +119,37 @@ public class Home extends Fragment implements CallbackGameCount {
         });
 
         floatingActionButton.setOnClickListener(v -> showDialog());
+    }
+
+    private void setActivePlayers() {
+        getActivePlayers(new CallbackActivePlayers() {
+            @Override
+            public void onCallbackActivePlayers(int counter) {
+                aPlayers.setText(String.valueOf(counter));
+            }
+        });
+    }
+
+    private void getActivePlayers(CallbackActivePlayers callback) {
+        FirebaseDatabase.getInstance().getReference().child("players").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                int counter = 0;
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (dataSnapshot != null) {
+                        counter++;
+                    }
+                }
+                Log.i(TAG, "Counter " + counter);
+                callback.onCallbackActivePlayers(counter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     private void showDialog() {
@@ -184,6 +230,11 @@ public class Home extends Fragment implements CallbackGameCount {
 
     @Override
     public void onCallbackLoseCount(String value) {
+
+    }
+
+    @Override
+    public void onCallbackActivePlayers(int counter) {
 
     }
 }

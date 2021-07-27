@@ -188,6 +188,7 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
             default:
                 break;
         }
+        Log.i(TAG, "Return colore in string " + colore);
         return colore;
     }
 
@@ -199,6 +200,7 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
         String colore = colourToString(colour);
         // set special colour
         roomNameRef.child("specialColour").setValue(colore);
+        Log.i(TAG, "Special colour " + colore);
         return colore;
     }
 
