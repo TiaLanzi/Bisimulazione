@@ -271,7 +271,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         // set defender
         setDefender();
         // set special colour text
-        setTextColour(specialColour);
+        setTextColourSpecial(specialColour);
         // set turn of text
         setTurnOf();
         // set last move colour
@@ -478,6 +478,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     refreshNodes(graphRef, sNode, nodeTouched);
                     refreshTurnOf();
                 }
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -705,24 +707,29 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         String specialC = coloreSpeciale.getText().toString().trim();
         String lastMoveC = lastMoveColour.getText().toString().trim();
         if (specialC.equalsIgnoreCase(lastMoveC)) {
+            Log.i(TAG, "Special colour e last move colour sono uguali");
             if (startNode.getOutgoingEdges() != null) {
                 for (Edge e : startNode.getOutgoingEdges()) {
                     if (!colourToString(e.getColor()).equalsIgnoreCase(specialC)) {
+                        Log.i(TAG, "Leggo un colore che non è quello speciale (che è uguale a quello dell'ultima mossa");
                         Log.i(TAG, "Weak move ritorna false");
                         return false;
                     } else {
                         if (e.getTwo().getId() == nodeTouched.getId()) {
+                            Log.i(TAG, "Trovato id toccato");
                             roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
                             roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
                             Log.i(TAG, "Weak move ritorna true");
                             return true;
                         } else {
+                            Log.i(TAG, "Si cicla su nuovo nodo (id " + e.getTwo().getId() + ", left table? " + e.getTwo().isLeftTable() + ")");
                             isWeakMove(e.getTwo(), nodeTouched);
                         }
                     }
                 }
             }
         } else {
+            Log.i(TAG, "Special colour e last move colour sono diversi");
             // check if nodes are not null
             if (startNode.getOutgoingEdges() != null) {
                 // loop on outgoing edges of start node
@@ -731,13 +738,17 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     if (edge != null) {
                         // check if colour of the edge is the same of last move colour
                         if (!colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
+                            Log.i(TAG, "Colore dell'arco diverso dal colore dell'ultima mossa");
                             if (!colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
+                                Log.i(TAG, "Colore dell'arco diverso dal colore speciale");
                                 Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
                                 Log.i(TAG, "Weak move ritorna false");
                                 return false;
                             } else {
                                 if (edge.getTwo().getId() == nodeTouched.getId()) {
+                                    Log.i(TAG, "Trovato nodo toccato");
                                     if (lastMoveC.equalsIgnoreCase(specialC)) {
+                                        Log.i(TAG, "Colore speciale e colore ultima mossa sono uguali");
                                         if (lmc.getText().toString().trim().equalsIgnoreCase(String.valueOf(true))) {
                                             roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
                                             roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
@@ -748,12 +759,14 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                             return false;
                                         }
                                     } else {
+                                        Log.i(TAG, "Colore speciale e colore ultima mossa sono diversi");
                                         roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
                                         roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
                                         Log.i(TAG, "Weak move ritorna true");
                                         return true;
                                     }
                                 } else {
+                                    Log.i(TAG, "Si cicla su nuovo nodo (id " + edge.getTwo().getId() + ", left table? " + edge.getTwo().isLeftTable() + ")");
                                     isWeakMove(edge.getTwo(), nodeTouched);
                                 }
                             }
@@ -766,6 +779,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 // found more than one
                                 lmc.setText("null");
                             }
+                            Log.i(TAG, "Si cicla su nuovo nodo (id " + edge.getTwo().getId() + ", left table? " + edge.getTwo().isLeftTable() + ")");
                             isWeakMove(edge.getTwo(), nodeTouched);
                         }
                     }
@@ -897,7 +911,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
     }
 
-    private void setTextColour(String sColour) {
+    private void setTextColourSpecial(String sColour) {
         switch (sColour) {
             case "red":
                 coloreSpeciale.setTextColor(getResources().getColor(R.color.red));
@@ -917,6 +931,26 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         coloreSpeciale.setText(specialColour);
     }
 
+    private void setTextColourLastMove(String lmColour) {
+        switch (lmColour) {
+            case "red":
+                lastMoveColour.setTextColor(getResources().getColor(R.color.red));
+                break;
+            case "green":
+                lastMoveColour.setTextColor(getResources().getColor(R.color.green));
+                break;
+            case "black":
+                lastMoveColour.setTextColor(getResources().getColor(R.color.black));
+                break;
+            case "blue":
+                lastMoveColour.setTextColor(getResources().getColor(R.color.primaryColor));
+                break;
+            default:
+                break;
+        }
+        lastMoveColour.setText(lmColour);
+    }
+
     private void setTurnOf() {
         getTurnOf(roomsRef.child(roomName), new CallbackTurnOf() {
             @Override
@@ -932,7 +966,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         roomNameRef.child("turnOf").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (snapshot.getValue().toString() != null) {
+                if (Objects.requireNonNull(snapshot.getValue()).toString() != null) {
                     String value = snapshot.getValue().toString();
                     callback.onCallbackTurnOf(value);
                 }
@@ -950,7 +984,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             @Override
             public void onCallbackLastMoveColour(String colour) {
                 if (colour != null) {
-                    lastMoveColour.setText(colour);
+                    setTextColourLastMove(colour);
                 }
             }
         });
