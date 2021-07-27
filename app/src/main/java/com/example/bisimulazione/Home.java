@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.telecom.Call;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,8 +33,9 @@ import java.util.Objects;
 
 import interfaces.CallbackActivePlayers;
 import interfaces.CallbackGameCount;
+import interfaces.CallbackRoomsCount;
 
-public class Home extends Fragment implements CallbackGameCount, CallbackActivePlayers {
+public class Home extends Fragment implements CallbackGameCount, CallbackActivePlayers, CallbackRoomsCount {
 
     private static final String TAG = "Bisimulazione";
 
@@ -100,7 +102,7 @@ public class Home extends Fragment implements CallbackGameCount, CallbackActiveP
         setGameCount();
 
         setActivePlayers();
-        //setRoomsCount();
+        setRoomsCount();
 
         playGame.setOnClickListener(v -> {
             sendData(playersRef, playerName);
@@ -119,6 +121,35 @@ public class Home extends Fragment implements CallbackGameCount, CallbackActiveP
         });
 
         floatingActionButton.setOnClickListener(v -> showDialog());
+    }
+
+    private void setRoomsCount() {
+        getRoomsCount(new CallbackRoomsCount() {
+            @Override
+            public void onCallbackRoomsCount(int counter) {
+                roomsCount.setText(String.valueOf(counter));
+            }
+        });
+    }
+
+    private void getRoomsCount(CallbackRoomsCount callback) {
+        FirebaseDatabase.getInstance().getReference().child("rooms").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                int counter = 0;
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (dataSnapshot != null) {
+                        counter++;
+                    }
+                }
+                callback.onCallbackRoomsCount(counter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void setActivePlayers() {
@@ -235,6 +266,11 @@ public class Home extends Fragment implements CallbackGameCount, CallbackActiveP
 
     @Override
     public void onCallbackActivePlayers(int counter) {
+
+    }
+
+    @Override
+    public void onCallbackRoomsCount(int counter) {
 
     }
 }
