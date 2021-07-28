@@ -489,7 +489,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             }
         } else {
             Log.i(TAG, "Colore speciale e colore dell'ultima mossa sono diversi --> passo a isWeakMove");
-            if (!isWeakMove(sNode, nodeTouched)) {
+            if (!isWeakMove(sNode, nodeTouched, 0, 0, false)) {
                 Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
             } else {
                 if (left) {
@@ -664,9 +664,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private boolean possibleMovesDefender(Node startNode) {
+           
         for (int i = 0; i < startNode.getOutgoingEdges().length; i++) {
             for (Edge edge : startNode.getOutgoingEdges()) {
-                if (isWeakMove(startNode.getOutgoingEdges()[i].getDestination(), edge.getDestination())) {
+                if (isWeakMove(startNode.getOutgoingEdges()[i].getDestination(), edge.getDestination(), 0, 0, false)) {
                     Log.i(TAG, "Ritorna true possible moves");
                     return true;
                 }
@@ -683,7 +684,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             return isStrongMove(startNode, nodeTouched);
         } else {
             Log.i(TAG, "Weak move");
-            return isWeakMove(startNode, nodeTouched);
+            return isWeakMove(startNode, nodeTouched, 0, 0, false);
         }
     }
 
@@ -720,18 +721,69 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return false;
     }
 
-    private boolean isWeakMove(Node startNode, Node nodeTouched) {
-        boolean value = false;
-        int counterLastMove = 0;
-        int counterSpecialMove = 0;
+    private boolean isWeakMove(Node startNode, Node nodeTouched, int counterLastMove, int counterSpecialMove, boolean lastColourJustUsed) {
         String specialC = coloreSpeciale.getText().toString().trim();
         String lastMoveC = lastMoveColour.getText().toString().trim();
+        if (specialC.equalsIgnoreCase(lastMoveC)) {
+            Log.i(TAG, "Special colour e last move colour sono uguali");
+            for (Edge edge : startNode.getOutgoingEdges()) {
+                Log.i(TAG, "1 - Edge id " + edge.getId() + ", color " + colourToString(edge.getColor()));
+                if (colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
+                    if (edge.getDestination().getId() == nodeTouched.getId()) {
+                        Log.i(TAG, "Mossa debole valida");
+                        return true;
+                    } else {
+                        Log.i(TAG, "Proseguo");
+                        isWeakMove(edge.getDestination(), nodeTouched, counterLastMove, counterSpecialMove, false);
+                    }
+                }
+            }
+        } else {
+            if (startNode.getId() == nodeTouched.getId()) {
+                if (counterLastMove == 1 && counterSpecialMove != 0) {
+                    Log.i(TAG, "Mossa debole valida");
+                    return true;
+                }
+            } else {
+                for (Edge edge : startNode.getOutgoingEdges()) {
+                    Log.i(TAG, "2 - Edge id " + edge.getId() + ", color " + colourToString(edge.getColor()));
+                    boolean usingLastColour = false;
+                    if (colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
+                        if (lastColourJustUsed) {
+                            continue;
+                        }
+                        usingLastColour = true;
+                    }
+                    if (!colourToString(edge.getColor()).equalsIgnoreCase(specialC) && !colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
+                        continue;
+                    }
+                    if (colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
+                        counterLastMove++;
+                        Log.i(TAG, "Incremento counter last move colour");
+                    } else if (colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
+                        counterSpecialMove++;
+                        Log.i(TAG, "Incremento counter special colour");
+                    }
+                    Log.i(TAG, "Proseguo");
+                    boolean found = isWeakMove(edge.getDestination(), nodeTouched, counterLastMove, counterSpecialMove, usingLastColour || lastColourJustUsed);
+                    if (found) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+        Log.i(TAG, "Ritorna false");
+        Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
+        return false;
+
+
+        /*boolean value = false;
         if (specialC.equalsIgnoreCase(lastMoveC)) {
             for (Edge edge : startNode.getOutgoingEdges()) {
                 Log.i(TAG, "1 - Edge id " + edge.getId() + ", color " + colourToString(edge.getColor()));
                 if (!colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
                     // legge un arco di un colore diverso da quello speciale --> false
-                    Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
                     value = false;
                 } else {
                     if (nodeTouched.getId() == edge.getDestination().getId()) {
@@ -739,7 +791,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         return true;
                     } else {
                         Log.i(TAG, "Ricorsione");
-                        isWeakMove(edge.getDestination(), nodeTouched);
+                        isWeakMove(edge.getDestination(), nodeTouched, counterLastMove, counterSpecialMove);
                     }
                 }
             }
@@ -749,7 +801,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 if (!colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
                     if (!colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
                         Log.i(TAG, "Non è del colore speciale e nemmeno del colore dell'ultima mossa");
-                        Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
+                        counterLastMove = 0;
+                        counterSpecialMove = 0;
                         value = false;
                     } else {
                         Log.i(TAG, "Incremento counter special move");
@@ -761,11 +814,14 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 Log.i(TAG, "Un solo nodo del colore dell'ultima mossa (" + counterLastMove + ") e counter special move != 0 (" + counterSpecialMove + ")");
                                 return true;
                             } else {
-                                Log.i(TAG, "Cerco un altro percorso");
                                 counterLastMove = 0;
                                 counterSpecialMove = 0;
+                                Log.i(TAG, "Cerco un altro percorso");
                                 value = false;
                             }
+                        } else {
+                            Log.i(TAG, "Proseguo");
+                            isWeakMove(edge.getDestination(), nodeTouched, counterLastMove, counterSpecialMove);
                         }
                     }
                 } else {
@@ -779,101 +835,19 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         } else {
                             counterLastMove = 0;
                             counterSpecialMove = 0;
+                            Log.i(TAG, "Azzera last move counter e special move counter");
                             value = false;
                         }
                     } else {
                         Log.i(TAG, "Proseguo");
-                        isWeakMove(edge.getDestination(), nodeTouched);
+                        isWeakMove(edge.getDestination(), nodeTouched, counterLastMove, counterSpecialMove);
                     }
                 }
             }
         }
-        return value;
-        /*
-        String specialC = coloreSpeciale.getText().toString().trim();
-        String lastMoveC = lastMoveColour.getText().toString().trim();
-        if (specialC.equalsIgnoreCase(lastMoveC)) {
-            Log.i(TAG, "Special colour e last move colour sono uguali");
-            if (startNode.getOutgoingEdges() != null) {
-                for (Edge e : startNode.getOutgoingEdges()) {
-                    Log.i(TAG, "1 - Si valuta arco id " + e.getId() + ", left table? " + e.getOne().isLeftTable());
-                    if (!colourToString(e.getColor()).equalsIgnoreCase(specialC)) {
-                        Log.i(TAG, "Leggo un colore che non è quello speciale (che è uguale a quello dell'ultima mossa");
-                        Log.i(TAG, "Weak move ritorna false");
-                        return false;
-                    } else {
-                        if (e.getTwo().getId() == nodeTouched.getId()) {
-                            Log.i(TAG, "Trovato id toccato");
-                            roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
-                            roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
-                            Log.i(TAG, "Weak move ritorna true");
-                            return true;
-                        } else {
-                            Log.i(TAG, "2 - Si valuta arco id " + e.getId() + ", left table? " + e.getTwo().isLeftTable());
-                            isWeakMove(e.getTwo(), nodeTouched);
-                        }
-                    }
-                }
-            }
-        } else {
-            Log.i(TAG, "Special colour e last move colour sono diversi");
-            // check if nodes are not null
-            if (startNode.getOutgoingEdges() != null) {
-                // loop on outgoing edges of start node
-                for (Edge edge : startNode.getOutgoingEdges()) {
-                    Log.i(TAG, "3 - Si valuta arco id " + edge.getId() + ", left table? " + edge.getOne().isLeftTable());
-                    // check if edge is not null
-                    if (edge != null) {
-                        // check if colour of the edge is the same of last move colour
-                        if (!colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
-                            Log.i(TAG, "Colore dell'arco diverso dal colore dell'ultima mossa");
-                            if (!colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
-                                Log.i(TAG, "Colore dell'arco diverso dal colore speciale");
-                                Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
-                                Log.i(TAG, "Weak move ritorna false");
-                                return false;
-                            } else {
-                                if (edge.getTwo().getId() == nodeTouched.getId()) {
-                                    Log.i(TAG, "Trovato nodo toccato");
-                                    if (lastMoveC.equalsIgnoreCase(specialC)) {
-                                        Log.i(TAG, "Colore speciale e colore ultima mossa sono uguali");
-                                        if (lmc.getText().toString().trim().equalsIgnoreCase(String.valueOf(true))) {
-                                            roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
-                                            roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
-                                            Log.i(TAG, "Weak move ritorna true");
-                                            return true;
-                                        } else {
-                                            Log.i(TAG, "Weak move ritorna false");
-                                            return false;
-                                        }
-                                    } else {
-                                        Log.i(TAG, "Colore speciale e colore ultima mossa sono diversi");
-                                        roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
-                                        roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
-                                        Log.i(TAG, "Weak move ritorna true");
-                                        return true;
-                                    }
-                                } else {
-                                    Log.i(TAG, "4 - Si valuta arco id " + edge.getId() + ", left table? " + edge.getTwo().isLeftTable());
-                                    isWeakMove(edge.getTwo(), nodeTouched);
-                                }
-                            }
-                        } else {
-                            if (lmc.getText().toString().trim().equalsIgnoreCase("")) {
-                                Log.i(TAG, " da niente a true");
-                                lmc.setText(String.valueOf(true));
-                            } else if (lmc.getText().toString().trim().equalsIgnoreCase("true")) {
-                                Log.i(TAG, "Setta a null");
-                                // found more than one
-                                lmc.setText("null");
-                            }
-                            Log.i(TAG, "5 - Si valuta arco id " + edge.getId() + ", left table? " + edge.getTwo().isLeftTable());
-                            isWeakMove(edge.getTwo(), nodeTouched);
-                        }
-                    }
-                }
-            }
-        } */
+        Log.i(TAG, "Ritorna false");
+        Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
+        return value;*/
     }
 
     private int stringToID(String sNode) {
