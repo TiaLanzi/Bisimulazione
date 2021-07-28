@@ -171,24 +171,32 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
     }
 
     private String colourToString(int colour) {
+        Log.i(TAG, "Colore (int)" + colour);
         String colore = "";
         switch (colour) {
             case -237502:
+                Log.i(TAG, "Case red");
                 colore = getString(R.string.table_red);
                 break;
             case -16711895:
+                Log.i(TAG, "Case green");
                 colore = getString(R.string.table_green);
                 break;
-            case -16777216:
+            case -13421773:
+                Log.i(TAG, "Case black");
                 colore = getString(R.string.table_black);
                 break;
             case -15774591:
+                Log.i(TAG, "Case blue");
                 colore = getString(R.string.table_blue);
                 break;
             default:
                 break;
         }
         Log.i(TAG, "Return colore in string " + colore);
+        if (colore.equalsIgnoreCase("")) {
+
+        }
         return colore;
     }
 
