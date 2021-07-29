@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,11 +49,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
+        View header = navigationView.getHeaderView(0);
+        TextView fullName = header.findViewById(R.id.navigation_header_user_name);
+        TextView email = header.findViewById(R.id.navigation_header_user_mail);
+
         appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home, R.id.navigation_host_fragment).setDrawerLayout(drawerLayout).build();
 
         NavController navController = Navigation.findNavController(this, R.id.navigation_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        String playerName = getResources().getString(R.string.navigation_header_user_name);
+        String mail = getResources().getString(R.string.navigation_header_user_mail);
+        if (user != null) {
+            playerName = user.getDisplayName();
+            mail = user.getEmail();
+        }
+
+        fullName.setText(playerName);
+        email.setText(mail);
+
 
         initDrawerLayout();
     }
