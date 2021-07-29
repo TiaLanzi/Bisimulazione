@@ -117,7 +117,7 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
 
     private void sendDataGameInProgress(DatabaseReference roomNameRef) {
         // game is on
-        roomNameRef.child("gameInProgress").setValue("true");
+        roomNameRef.child("gameInProgress").setValue(String.valueOf(true));
     }
 
     private void getRoomsList() {

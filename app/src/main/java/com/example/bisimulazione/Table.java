@@ -1,5 +1,6 @@
 package com.example.bisimulazione;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.bisimulazione.directedgraph.DirectedGraph;
@@ -39,12 +39,13 @@ import interfaces.CallbackEnabledLeftGraph;
 import interfaces.CallbackEnabledRightGraph;
 import interfaces.CallbackGameInProgress;
 import interfaces.CallbackLastMoveColour;
+import interfaces.CallbackNoMove;
 import interfaces.CallbackPlayerOne;
 import interfaces.CallbackPlayerTwo;
 import interfaces.CallbackSelectedNode;
 import interfaces.CallbackTurnOf;
 
-public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackSelectedNode, CallbackGameInProgress, CallbackEnabledLeftGraph, CallbackEnabledRightGraph {
+public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackSelectedNode, CallbackGameInProgress, CallbackEnabledLeftGraph, CallbackEnabledRightGraph, CallbackNoMove {
 
     private static final String TAG = "Bisimulazione";
 
@@ -202,7 +203,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         nodesR = divideNodes(nodes, left);
         edgesR = divideEdges(edges, left);
 
-        //directedGraphRight = findViewById(R.id.table_right_table_directed_graph);
         directedGraphRight = new DirectedGraphRight(this);
 
         directedGraphRight.setNodes(nodesR);
@@ -247,7 +247,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private void refreshDirectedGraph(DirectedGraph directedGraph, String selectedNode, boolean bool) {
         if (directedGraph.getNodes() != null) {
             for (Node node : directedGraph.getNodes()) {
-                //Log.i(TAG, "Selected node id" + stringToID(selectedNode));
                 if (node.getId() == stringToID(selectedNode)) {
                     if (bool) {
                         node.setColor(getResources().getColor(R.color.black));
@@ -275,6 +274,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         setSelectedNode(true);
         // set selected node right table
         setSelectedNode(false);
+        // set no move
+        //setNoMove();
     }
 
     private Edge[] divideEdges(Edge[] edges, boolean left) {
@@ -426,11 +427,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             Log.i(TAG, "Nodo selezionato è " + sNode.getId() + ", left table? " + sNode.isLeftTable());
                             // case no move
                             if (sNode.getId() == nodeTouched.getId()) {
-                                Log.i(TAG, "Nodo toccato e nodo selezionato sono uguali");
-                                roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
-                                roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
-                                //noMove(node.isLeftTable(), sNode, nodeTouched);
-                                refreshTurnOf();
+                                noMove(node.isLeftTable(), sNode, nodeTouched);
                             } else {
                                 if (isValidMove(sNode, nodeTouched)) {
                                     // set reference to proper graph
@@ -444,13 +441,11 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     refreshTurnOf();
                                 } else {
                                     Log.i(TAG, "Valuta possible moves");
-                                    /*if (possibleMoves(sNode, nodeTouched)) {
+                                    if (possibleMoves(sNode, nodeTouched)) {
                                         Toast.makeText(this, getResources().getString(R.string.table_possible_moves), Toast.LENGTH_LONG).show();
                                     } else {
-                                        // end game
-                                        removeReferences();
                                         roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
-                                    } */
+                                    }
                                 }
                             }
                         }
@@ -465,52 +460,47 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         if (roomNameRef != null) {
             roomNameRef.removeValue();
         }
-        // remove player name
-        FirebaseDatabase.getInstance().getReference().child("players").child(playerName).removeValue();
+        // remove players name
+        if (attacker.getText() != null) {
+            FirebaseDatabase.getInstance().getReference().child("players").child(attacker.getText().toString().trim()).removeValue();
+        }
+        if (defender.getText() != null) {
+            FirebaseDatabase.getInstance().getReference().child("players").child(defender.getText().toString().trim()).removeValue();
+        }
     }
 
-    private void noMove(boolean left, Node sNode, Node nodeTouched) {
+    private boolean noMove(boolean left, Node sNode, Node nodeTouched) {
         DatabaseReference graphRef;
         if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_defender))) {
             Log.i(TAG, "Turno del difensore --> sono in no move");
             if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(lastMoveColour.getText().toString().trim())) {
                 Log.i(TAG, "Colore speciale e colore dell'ultima mossa sono uguali");
-                displayAlertDialogNoMove();
-                if (noMossa.getText().toString().trim().equalsIgnoreCase(String.valueOf(true))) {
-                    // set reference to proper graph
-                    if (left) {
-                        graphRef = leftGraphRef;
-                    } else {
-                        graphRef = rightGraphRef;
-                    }
-                    refreshNodes(graphRef, sNode, nodeTouched);
-                    refreshTurnOf();
-                }
-            }
-        } else {
-            Log.i(TAG, "Colore speciale e colore dell'ultima mossa sono diversi --> passo a isWeakMove");
-            if (!isWeakMove(sNode, nodeTouched, 0, 0, false)) {
-                Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
-            } else {
+                // set reference to proper graph
                 if (left) {
                     graphRef = leftGraphRef;
                 } else {
                     graphRef = rightGraphRef;
                 }
-                refreshNodes(graphRef, sNode, nodeTouched);
-                refreshTurnOf();
+                displayAlertDialogNoMove(graphRef, sNode, nodeTouched);
+                return true;
+            } else {
+                //return true;
+                return isWeakMove(sNode, nodeTouched, false);
             }
+        } else {
+            Toast.makeText(this, getResources().getString(R.string.table_invalid_move_attacker), Toast.LENGTH_LONG).show();
+            return false;
         }
     }
 
-    private void displayAlertDialogNoMove() {
+    private void displayAlertDialogNoMove(DatabaseReference graphRef, Node sNode, Node nodeTouched) {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         View v = getLayoutInflater().inflate(R.layout.no_move_dialog, null, false);
         builder.setView(v);
         builder.setNegativeButton(getString(R.string.no_move_no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                noMossa.setText(String.valueOf(true));
+                roomNameRef.child("noMove").setValue(String.valueOf(false));
                 dialog.dismiss();
             }
         });
@@ -518,7 +508,11 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         builder.setPositiveButton(getString(R.string.no_move_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                noMossa.setText(String.valueOf(false));
+                roomNameRef.child("noMove").setValue(String.valueOf(true));
+                roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
+                roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
+                refreshNodes(graphRef, sNode, nodeTouched);
+                refreshTurnOf();
                 dialog.dismiss();
             }
         });
@@ -603,7 +597,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         if (controlMatrix[(nodeLeftSelected.getId() - 1)][(nodeRightSelected.getId() - 1)] == 1) {
             // configuration already visited after defender move --> end game
             if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
-                roomNameRef.child("gameInProgress").setValue("false");
+                roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
             }
         }
     }
@@ -664,17 +658,18 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private boolean possibleMovesDefender(Node startNode) {
-           
+        return true;
+        /*
         for (int i = 0; i < startNode.getOutgoingEdges().length; i++) {
             for (Edge edge : startNode.getOutgoingEdges()) {
-                if (isWeakMove(startNode.getOutgoingEdges()[i].getDestination(), edge.getDestination(), 0, 0, false)) {
+                if (isWeakMove(startNode.getOutgoingEdges()[i].getDestination(), edge.getDestination(), false)) {
                     Log.i(TAG, "Ritorna true possible moves");
                     return true;
                 }
             }
         }
         Log.i(TAG, "Ritorna false possible moves");
-        return false;
+        return false; */
     }
 
     private boolean isValidMove(Node startNode, Node nodeTouched) {
@@ -683,8 +678,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             Log.i(TAG, "Strong move");
             return isStrongMove(startNode, nodeTouched);
         } else {
-            Log.i(TAG, "Weak move");
-            return isWeakMove(startNode, nodeTouched, 0, 0, false);
+            return isWeakMove(startNode, nodeTouched, false);
         }
     }
 
@@ -703,8 +697,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             // set colour of the move
                             roomNameRef.child("lastMoveColour").setValue(colore);
                             if (nodeTouched.isLeftTable()) {
+                                Log.i(TAG, "Disable left graph");
                                 roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(false));
                             } else {
+                                Log.i(TAG, "Disable right graph");
                                 roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(false));
                             }
                             Log.i(TAG, "Strong move ritorna true");
@@ -721,133 +717,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return false;
     }
 
-    private boolean isWeakMove(Node startNode, Node nodeTouched, int counterLastMove, int counterSpecialMove, boolean lastColourJustUsed) {
-        String specialC = coloreSpeciale.getText().toString().trim();
-        String lastMoveC = lastMoveColour.getText().toString().trim();
-        if (specialC.equalsIgnoreCase(lastMoveC)) {
-            Log.i(TAG, "Special colour e last move colour sono uguali");
-            for (Edge edge : startNode.getOutgoingEdges()) {
-                Log.i(TAG, "1 - Edge id " + edge.getId() + ", color " + colourToString(edge.getColor()));
-                if (colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
-                    if (edge.getDestination().getId() == nodeTouched.getId()) {
-                        Log.i(TAG, "Mossa debole valida");
-                        return true;
-                    } else {
-                        Log.i(TAG, "Proseguo");
-                        isWeakMove(edge.getDestination(), nodeTouched, counterLastMove, counterSpecialMove, false);
-                    }
-                }
-            }
-        } else {
-            if (startNode.getId() == nodeTouched.getId()) {
-                if (counterLastMove == 1 && counterSpecialMove != 0) {
-                    Log.i(TAG, "Mossa debole valida");
-                    return true;
-                }
-            } else {
-                for (Edge edge : startNode.getOutgoingEdges()) {
-                    Log.i(TAG, "2 - Edge id " + edge.getId() + ", color " + colourToString(edge.getColor()));
-                    boolean usingLastColour = false;
-                    if (colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
-                        if (lastColourJustUsed) {
-                            continue;
-                        }
-                        usingLastColour = true;
-                    }
-                    if (!colourToString(edge.getColor()).equalsIgnoreCase(specialC) && !colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
-                        continue;
-                    }
-                    if (colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
-                        counterLastMove++;
-                        Log.i(TAG, "Incremento counter last move colour");
-                    } else if (colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
-                        counterSpecialMove++;
-                        Log.i(TAG, "Incremento counter special colour");
-                    }
-                    Log.i(TAG, "Proseguo");
-                    boolean found = isWeakMove(edge.getDestination(), nodeTouched, counterLastMove, counterSpecialMove, usingLastColour || lastColourJustUsed);
-                    if (found) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
-        Log.i(TAG, "Ritorna false");
-        Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
-        return false;
-
-
-        /*boolean value = false;
-        if (specialC.equalsIgnoreCase(lastMoveC)) {
-            for (Edge edge : startNode.getOutgoingEdges()) {
-                Log.i(TAG, "1 - Edge id " + edge.getId() + ", color " + colourToString(edge.getColor()));
-                if (!colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
-                    // legge un arco di un colore diverso da quello speciale --> false
-                    value = false;
-                } else {
-                    if (nodeTouched.getId() == edge.getDestination().getId()) {
-                        Log.i(TAG, "Mossa debole valida");
-                        return true;
-                    } else {
-                        Log.i(TAG, "Ricorsione");
-                        isWeakMove(edge.getDestination(), nodeTouched, counterLastMove, counterSpecialMove);
-                    }
-                }
-            }
-        } else {
-            for (Edge edge : startNode.getOutgoingEdges()) {
-                Log.i(TAG, "2 - Edge id " + edge.getId() + ", color " + colourToString(edge.getColor()));
-                if (!colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
-                    if (!colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
-                        Log.i(TAG, "Non è del colore speciale e nemmeno del colore dell'ultima mossa");
-                        counterLastMove = 0;
-                        counterSpecialMove = 0;
-                        value = false;
-                    } else {
-                        Log.i(TAG, "Incremento counter special move");
-                        counterSpecialMove++;
-                        if (nodeTouched.getId() == edge.getDestination().getId()) {
-                            Log.i(TAG, "Trovato il nodo toccato");
-                            Log.i(TAG, "Valore di counter last move (" + counterLastMove + "), valore di counter special move (" + counterSpecialMove + ")");
-                            if (counterLastMove == 1 && counterSpecialMove != 0) {
-                                Log.i(TAG, "Un solo nodo del colore dell'ultima mossa (" + counterLastMove + ") e counter special move != 0 (" + counterSpecialMove + ")");
-                                return true;
-                            } else {
-                                counterLastMove = 0;
-                                counterSpecialMove = 0;
-                                Log.i(TAG, "Cerco un altro percorso");
-                                value = false;
-                            }
-                        } else {
-                            Log.i(TAG, "Proseguo");
-                            isWeakMove(edge.getDestination(), nodeTouched, counterLastMove, counterSpecialMove);
-                        }
-                    }
-                } else {
-                    Log.i(TAG, "Incremento counter last move");
-                    counterLastMove++;
-                    if (nodeTouched.getId() == edge.getDestination().getId()) {
-                        Log.i(TAG, "Trovato il nodo toccato");
-                        if (counterLastMove == 1 && counterSpecialMove != 0) {
-                            Log.i(TAG, "Un solo nodo del colore dell'ultima mossa (" + counterLastMove + ") e counter special move != 0 (" + counterSpecialMove + ")");
-                            return true;
-                        } else {
-                            counterLastMove = 0;
-                            counterSpecialMove = 0;
-                            Log.i(TAG, "Azzera last move counter e special move counter");
-                            value = false;
-                        }
-                    } else {
-                        Log.i(TAG, "Proseguo");
-                        isWeakMove(edge.getDestination(), nodeTouched, counterLastMove, counterSpecialMove);
-                    }
-                }
-            }
-        }
-        Log.i(TAG, "Ritorna false");
-        Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
-        return value;*/
+    private boolean isWeakMove(Node startNode, Node nodeTouched, boolean foundLastMoveColour) {
+        roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
+        roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
+        return true;
     }
 
     private int stringToID(String sNode) {
@@ -980,9 +853,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             case "green":
                 coloreSpeciale.setTextColor(getResources().getColor(R.color.green));
                 break;
-            case "black":
-                coloreSpeciale.setTextColor(getResources().getColor(R.color.black));
-                break;
             case "blue":
                 coloreSpeciale.setTextColor(getResources().getColor(R.color.primaryColor));
                 break;
@@ -1040,6 +910,34 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             }
         });
     }
+
+    /*private void setNoMove() {
+        getNoMove(new CallbackNoMove() {
+            @Override
+            public void onCallbackNoMove(String value) {
+                if (value != null) {
+                    noMossa.setText(value);
+                }
+            }
+        });
+    }*/
+
+    /*private void getNoMove(CallbackNoMove callback) {
+        roomNameRef.child("noMove").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    String value = Objects.requireNonNull(snapshot.getValue().toString());
+                    callback.onCallbackNoMove(value);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    } */
 
     private void setLastMoveColour() {
         getLastMoveColour(roomsRef.child(roomName), new CallbackLastMoveColour() {
@@ -1176,20 +1074,35 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
     }
 
+    private void endGame() {
+        Log.i(TAG, "End game");
+        removeReferences();
+    }
+
+    private void displayEndGameDialog() {
+        Log.i(TAG, "Display end game");
+        AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        View v = getLayoutInflater().inflate(R.layout.end_game_dialog, null, false);
+        builder.setView(v);
+        builder.setPositiveButton(getResources().getString(R.string.alert_continue), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i(TAG, "Clicked end game dialog");
+                endGame();
+                finish();
+            }
+        });
+        android.app.AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     private void setEndGame() {
         getGameInProgress(new CallbackGameInProgress() {
             @Override
             public void onCallbackGameInProgress(String value) {
                 if (value != null) {
-                    if (value.equalsIgnoreCase("false")) {
-                        new AlertDialog.Builder(getApplicationContext()).setTitle(getString(R.string.alert_end_game))
-                                .setMessage(getString(R.string.alert_win_congrats) + " " + playerName)
-                                .setPositiveButton(R.string.alert_continue, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
-                                    }
-                                });
+                    if (value.equalsIgnoreCase(String.valueOf(false))) {
+                        displayEndGameDialog();
                     }
                 }
             }
@@ -1355,4 +1268,62 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     public void onCallbackEnabledRightGraph(String value) {
 
     }
+
+    @Override
+    public void onCallbackNoMove(String value) {
+
+    }
 }
+
+/*Log.i(TAG, "Weak move");
+        String specialC = coloreSpeciale.getText().toString().trim();
+        String lastMoveC = lastMoveColour.getText().toString().trim();
+        if (startNode.getId() == nodeTouched.getId()) {
+            Log.i(TAG, "Trovato nodo toccato");
+            if (specialC.equalsIgnoreCase(lastMoveC)) {
+                Log.i(TAG, "no move");
+                return noMove(startNode.isLeftTable(), startNode, nodeTouched);
+            } else {
+                if (foundLastMoveColour) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        if (specialC.equalsIgnoreCase(lastMoveC)) {
+            Log.i(TAG, "Special colour e last move colour sono uguali");
+            for (Edge edge : startNode.getOutgoingEdges()) {
+                Log.i(TAG, "1 - Edge id " + edge.getId() + ", color " + colourToString(edge.getColor()));
+                if (colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
+                    if (edge.getDestination().getId() == nodeTouched.getId()) {
+                        Log.i(TAG, "Mossa debole valida");
+                        return true;
+                    } else {
+                        Log.i(TAG, "Proseguo");
+                        isWeakMove(edge.getDestination(), nodeTouched, false);
+                    }
+                }
+            }
+        } else {
+            for (Edge edge : startNode.getOutgoingEdges()) {
+                Log.i(TAG, "2 - Edge id " + edge.getId() + ", color " + colourToString(edge.getColor()));
+                if (colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
+                    if (foundLastMoveColour) {
+                        continue;
+                    }
+                    foundLastMoveColour = true;
+                }
+                if (!colourToString(edge.getColor()).equalsIgnoreCase(specialC) && !colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
+                    continue;
+                }
+                boolean found = isWeakMove(edge.getDestination(), nodeTouched, foundLastMoveColour);
+                if (found) {
+                    return true;
+                } else {
+                    foundLastMoveColour = false;
+                }
+            }
+            return false;
+        }
+        return false;*/
