@@ -128,6 +128,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         rightGraphRef = roomNameRef.child("rightGraph");
         // initialize control matrix
         controlMatrix = new int[5][5];
+        controlMatrix[0][0] = 1;
 
         selectedNodeLeft.addTextChangedListener(new TextWatcher() {
             @Override
@@ -400,7 +401,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private void setOnTouchGraph(MotionEvent event, DirectedGraph directedGraph) {
         DatabaseReference graphRef;
         boolean left;
-        Node nodeTouched;
+        Node nodeTouched = null;
         Node sNode;
         if (directedGraph != null) {
             if (directedGraph.getNodes() != null) {
@@ -436,17 +437,25 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     refreshTurnOf();
                                 } else {
                                     Log.i(TAG, "Valuta possible moves");
+                                    possibleMoves(sNode, nodeTouched);
+                                    /*
                                     if (possibleMoves(sNode, nodeTouched)) {
                                         Toast.makeText(this, getResources().getString(R.string.table_possible_moves), Toast.LENGTH_LONG).show();
                                     } else {
                                         roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
-                                    }
+                                    } */
                                 }
                             }
+                            /*Node sNodeLeft = stringToNode(selectedNodeLeft.getText().toString().trim(), true);
+                            Node sNodeRight = stringToNode(selectedNodeRight.getText().toString().trim(), true);
+                            boolean v = controlMatrix(sNodeLeft, sNodeRight);
+                            if (!v) {
+                                Log.i(TAG, "control matrix false");
+                                roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
+                            } */
                         }
                     }
                 }
-                //controlMatrix();
             }
         }
     }
@@ -570,31 +579,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         }
     }
 
-    private void controlMatrix(Node nodeLeftSelected, Node nodeRightSelected, Node nodeTouched) {
-        System.out.println("Before...");
-        for (int i = 0; i < controlMatrix.length; i++) {
-            for (int j = 0; j < controlMatrix[i].length; j++) {
-                System.out.print(controlMatrix[i][j] + " ");
-            }
-            System.out.println();
-        }
-        if (nodeTouched.isLeftTable()) {
-            controlMatrix[(nodeTouched.getId() - 1)][(nodeRightSelected.getId() - 1)] = 1;
+    private boolean controlMatrix(Node nodeLeftSelected, Node nodeRightSelected) {
+        if (controlMatrix[nodeLeftSelected.getId() - 1][nodeRightSelected.getId() - 1] == 1) {
+            return false;
         } else {
-            controlMatrix[(nodeLeftSelected.getId() - 1)][(nodeTouched.getId() - 1)] = 1;
-        }
-        System.out.println("After...");
-        for (int i = 0; i < controlMatrix.length; i++) {
-            for (int j = 0; j < controlMatrix[i].length; j++) {
-                System.out.print(controlMatrix[i][j] + " ");
-            }
-            System.out.println();
-        }
-        if (controlMatrix[(nodeLeftSelected.getId() - 1)][(nodeRightSelected.getId() - 1)] == 1) {
-            // configuration already visited after defender move --> end game
-            if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
-                roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
-            }
+            controlMatrix[nodeLeftSelected.getId() -1][nodeRightSelected.getId() - 1] = 1;
+            return true;
         }
     }
 
@@ -617,15 +607,15 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return returnNode;
     }
 
-    private boolean possibleMoves(Node startNode, Node nodeTouched) {
+    private void possibleMoves(Node startNode, Node nodeTouched) {
         if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_attacker))) {
-            return possibleMovesAttacker(startNode);
+            possibleMovesAttacker(startNode);
         } else {
-            return possibleMovesDefender(startNode);
+            possibleMovesDefender(startNode);
         }
     }
 
-    private boolean possibleMovesAttacker(Node startNode) {
+    private void possibleMovesAttacker(Node startNode) {
         int counterLeft = 0;
         int counterRight = 0;
         String selectedNode;
@@ -650,11 +640,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 counterRight++;
             }
         }
-        return counterLeft != 0 || counterRight != 0;
+        if (!(counterLeft != 0 || counterRight != 0)) {
+            roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
+        }
     }
 
-    private boolean possibleMovesDefender(Node startNode) {
-        return true;
+    private void possibleMovesDefender(Node startNode) {
         /*
         for (int i = 0; i < startNode.getOutgoingEdges().length; i++) {
             for (Edge edge : startNode.getOutgoingEdges()) {

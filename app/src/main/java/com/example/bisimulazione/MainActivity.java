@@ -68,32 +68,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.menu_home));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.menu_home));
                 navigateTo(new Home());
                 break;
             case R.id.navigation_my_account:
-                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.my_account));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.menu_home));
                 Intent intentMyAccount = new Intent(this, MyAccount.class);
                 startActivity(intentMyAccount);
                 break;
             case R.id.navigation_game:
-                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.menu_play_game));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.menu_home));
                 sendData();
                 Intent intentGame = new Intent(this, MatchmakingRoom.class);
                 startActivity(intentGame);
                 break;
             case R.id.navigation_faq:
-                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.menu_faq));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.menu_home));
                 Intent intentFaq = new Intent(this, FAQ.class);
                 startActivity(intentFaq);
                 break;
             case R.id.navigation_settings:
-                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.menu_settings));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.menu_home));
                 Intent intentSettings = new Intent(this, Settings.class);
                 startActivity(intentSettings);
                 break;
             case R.id.navigation_bug_report:
-                Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.menu_bug_report));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.menu_home));
                 Intent intentBugReport = new Intent(this, BugReport.class);
                 startActivity(intentBugReport);
                 break;

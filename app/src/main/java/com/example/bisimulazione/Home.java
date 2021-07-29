@@ -171,7 +171,6 @@ public class Home extends Fragment implements CallbackGameCount, CallbackActiveP
                         counter++;
                     }
                 }
-                Log.i(TAG, "Counter " + counter);
                 callback.onCallbackActivePlayers(counter);
             }
 
