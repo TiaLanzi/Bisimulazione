@@ -39,13 +39,12 @@ import interfaces.CallbackEnabledLeftGraph;
 import interfaces.CallbackEnabledRightGraph;
 import interfaces.CallbackGameInProgress;
 import interfaces.CallbackLastMoveColour;
-import interfaces.CallbackNoMove;
 import interfaces.CallbackPlayerOne;
 import interfaces.CallbackPlayerTwo;
 import interfaces.CallbackSelectedNode;
 import interfaces.CallbackTurnOf;
 
-public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackSelectedNode, CallbackGameInProgress, CallbackEnabledLeftGraph, CallbackEnabledRightGraph, CallbackNoMove {
+public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackSelectedNode, CallbackGameInProgress, CallbackEnabledLeftGraph, CallbackEnabledRightGraph {
 
     private static final String TAG = "Bisimulazione";
 
@@ -61,8 +60,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private TextView lastMoveColour;
     private TextView selectedNodeLeft;
     private TextView selectedNodeRight;
-    private TextView lmc;
-    private TextView noMossa;
 
     private DatabaseReference roomsRef;
     private DatabaseReference roomNameRef;
@@ -98,8 +95,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         lastMoveColour = findViewById(R.id.table_last_move_colour);
         selectedNodeLeft = findViewById(R.id.table_left_selected_node);
         selectedNodeRight = findViewById(R.id.table_right_selected_node);
-        lmc = findViewById(R.id.table_found_last_move_colour);
-        noMossa = findViewById(R.id.table_no_move);
         // initialize firebase user
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
@@ -451,6 +446,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         }
                     }
                 }
+                //controlMatrix();
             }
         }
     }
@@ -911,34 +907,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
     }
 
-    /*private void setNoMove() {
-        getNoMove(new CallbackNoMove() {
-            @Override
-            public void onCallbackNoMove(String value) {
-                if (value != null) {
-                    noMossa.setText(value);
-                }
-            }
-        });
-    }*/
-
-    /*private void getNoMove(CallbackNoMove callback) {
-        roomNameRef.child("noMove").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (snapshot.getValue() != null) {
-                    String value = Objects.requireNonNull(snapshot.getValue().toString());
-                    callback.onCallbackNoMove(value);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-    } */
-
     private void setLastMoveColour() {
         getLastMoveColour(roomsRef.child(roomName), new CallbackLastMoveColour() {
             @Override
@@ -1266,11 +1234,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     @Override
     public void onCallbackEnabledRightGraph(String value) {
-
-    }
-
-    @Override
-    public void onCallbackNoMove(String value) {
 
     }
 }
