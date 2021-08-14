@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
             fragmentManager.popBackStackImmediate();
         }
-        fragmentTransaction.replace(R.id.nav_host_fragment_container, fragment);
+        fragmentTransaction.replace(R.id.navigation_host_fragment, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
