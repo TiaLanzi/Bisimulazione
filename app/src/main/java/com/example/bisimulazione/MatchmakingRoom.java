@@ -2,7 +2,6 @@ package com.example.bisimulazione;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -204,8 +203,8 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
         // set special colour
         /*roomNameRef.child("specialColour").setValue(colore);
         return colore; */
-        roomNameRef.child("specialColour").setValue(getResources().getString(R.string.table_black));
-        return getResources().getString(R.string.table_black);
+        roomNameRef.child("specialColour").setValue(getResources().getString(R.string.table_green));
+        return getResources().getString(R.string.table_green);
     }
 
     private void getColour(DatabaseReference roomNameRef, CallbackColour callback) {

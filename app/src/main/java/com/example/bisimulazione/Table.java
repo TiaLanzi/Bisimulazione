@@ -429,7 +429,19 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             Log.i(TAG, "Nodo selezionato è " + sNode.getId() + ", left table? " + sNode.isLeftTable());
                             // case no move
                             if (sNode.getId() == nodeTouched.getId()) {
-                                noMove(node.isLeftTable(), sNode, nodeTouched);
+                                boolean noMove = noMove(node.isLeftTable(), sNode, nodeTouched);
+                                if (noMove) {
+                                    updateValidWeakMove();
+                                    if (sNode.isLeftTable()) {
+                                        graphRef = leftGraphRef;
+                                    } else {
+                                        graphRef = rightGraphRef;
+                                    }
+                                    refreshNodes(graphRef, sNode, nodeTouched);
+                                    refreshTurnOf();
+                                } else {
+                                    Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
+                                }
                             } else {
                                 if (isValidMove(sNode, nodeTouched)) {
                                     // set reference to proper graph
@@ -442,6 +454,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     refreshNodes(graphRef, sNode, nodeTouched);
                                     refreshTurnOf();
                                 } else {
+                                    Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
                                     Log.i(TAG, "Valuta possible moves");
                                     //possibleMoves(sNode, nodeTouched);
                                     /*
@@ -495,13 +508,32 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 displayAlertDialogNoMove(graphRef, sNode, nodeTouched);
                 return true;
             } else {
-                //return true;
-                return isWeakMove(sNode, nodeTouched, false, null);
+                if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_green)) && lastMoveColour.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_red))) {
+                    if (sNode.isLeftTable()) {
+                        if ((sNode.getId() == 1 && nodeTouched.getId() == 1) || (sNode.getId() == 2 && nodeTouched.getId() == 2) || (sNode.getId() == 3 && nodeTouched.getId() == 3)) {
+                            updateValidWeakMove();
+                            return true;
+                        } else {
+                            Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
+                            return false;
+                        }
+                    } else {
+                        if ((sNode.getId() == 1 && nodeTouched.getId() == 1) || (sNode.getId() == 2 && nodeTouched.getId() == 2)) {
+                            updateValidWeakMove();
+                            return true;
+                        } else {
+                            Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
+                            return false;
+                        }
+                    }
+                }
             }
         } else {
             Toast.makeText(this, getResources().getString(R.string.table_invalid_move_attacker), Toast.LENGTH_LONG).show();
             return false;
         }
+        Log.i(TAG, "Return false");
+        return false;
     }
 
     private void displayAlertDialogNoMove(DatabaseReference graphRef, Node sNode, Node nodeTouched) {
@@ -520,8 +552,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 roomNameRef.child("noMove").setValue(String.valueOf(true));
-                roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
-                roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
+                updateValidWeakMove();
                 refreshNodes(graphRef, sNode, nodeTouched);
                 refreshTurnOf();
                 dialog.dismiss();
@@ -715,19 +746,29 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         Log.i(TAG, "Weak move");
         String lmc = lastMoveColour.getText().toString().trim();
         String sc = coloreSpeciale.getText().toString().trim();
+        boolean found = false;
+        if (lmc.equalsIgnoreCase(sc)) {
+            for (Edge edge : startNode.getOutgoingEdges()) {
+                if (!colourToString(edge.getColor()).equalsIgnoreCase(sc)) {
+                    continue;
+                } else {
+                    found = true;
+                }
+            }
+            Log.i(TAG, "Return found, " + String.valueOf(found));
+            return found;
+        }
 
         if (visitedNodes.containsKey(startNode)) {
             Log.i(TAG, "Map contiene nodo " + startNode.getId());
             if (visitedNodes.get(startNode)) {
-                roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
-                roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
+                updateValidWeakMove();
                 return true;
             } else {
                 Log.i(TAG, "Visited nodes contains key start node");
                 return false;
             }
         }
-
         if (startNode.getId() == nodeTouched.getId()) {
             Log.i(TAG, "Ho trovato nodo toccato");
             Log.i(TAG, "Valore atLeast " + String.valueOf(atLeastOneArcOfLastMoveColour));
@@ -745,8 +786,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 if (isWeakMove(edge.getDestination(), nodeTouched, lastColorJustUsed, visitedNodes)) {
                     Log.i(TAG, "Put true node " + startNode.getId());
                     visitedNodes.put(edge.getDestination(), true);
-                    roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
-                    roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
+                    updateValidWeakMove();
                     return true;
                 }
             }
@@ -754,6 +794,11 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             visitedNodes.put(startNode, false);
             return false;
         }
+    }
+
+    private void updateValidWeakMove() {
+        roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
+        roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
     }
 
     private int stringToID(String sNode) {
