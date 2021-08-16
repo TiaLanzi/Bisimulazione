@@ -94,6 +94,7 @@
     <string name="table_possible_moves">Ci sono ancora mosse disponibili.</string>
     <string name="table_invalid_move_attacker">MOSSA NON CONSENTITA PER L\'ATTACCANTE</string>
     <string name="table_invalid_move_defender">MOSSA NON CONSENTITA PER IL DIFENSORE</string>
+    <string name="table_cycle">cycle</string>
 
 
     <!-- matchmaking room -->

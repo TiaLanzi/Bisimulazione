@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,11 +32,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import interfaces.CallbackEnabledLeftGraph;
 import interfaces.CallbackEnabledRightGraph;
@@ -456,13 +453,11 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 } else {
                                     Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
                                     Log.i(TAG, "Valuta possible moves");
-                                    //possibleMoves(sNode, nodeTouched);
-                                    /*
                                     if (possibleMoves(sNode, nodeTouched)) {
                                         Toast.makeText(this, getResources().getString(R.string.table_possible_moves), Toast.LENGTH_LONG).show();
                                     } else {
                                         roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
-                                    } */
+                                    }
                                 }
                             }
                             /*Node sNodeLeft = stringToNode(selectedNodeLeft.getText().toString().trim(), true);
@@ -511,6 +506,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_green)) && lastMoveColour.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_red))) {
                     if (sNode.isLeftTable()) {
                         if ((sNode.getId() == 1 && nodeTouched.getId() == 1) || (sNode.getId() == 2 && nodeTouched.getId() == 2) || (sNode.getId() == 3 && nodeTouched.getId() == 3)) {
+                            Toast.makeText(this, getResources().getString(R.string.table_cycle), Toast.LENGTH_LONG).show();
                             updateValidWeakMove();
                             return true;
                         } else {
@@ -519,6 +515,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         }
                     } else {
                         if ((sNode.getId() == 1 && nodeTouched.getId() == 1) || (sNode.getId() == 2 && nodeTouched.getId() == 2)) {
+                            Toast.makeText(this, getResources().getString(R.string.table_cycle), Toast.LENGTH_LONG).show();
                             updateValidWeakMove();
                             return true;
                         } else {
@@ -644,15 +641,15 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return returnNode;
     }
 
-    private void possibleMoves(Node startNode, Node nodeTouched) {
+    private boolean possibleMoves(Node startNode, Node nodeTouched) {
         if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_attacker))) {
-            possibleMovesAttacker(startNode);
+            return possibleMovesAttacker(startNode);
         } else {
-            possibleMovesDefender(startNode);
+            return possibleMovesDefender(startNode);
         }
     }
 
-    private void possibleMovesAttacker(Node startNode) {
+    private boolean possibleMovesAttacker(Node startNode) {
         int counterLeft = 0;
         int counterRight = 0;
         String selectedNode;
@@ -677,23 +674,26 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 counterRight++;
             }
         }
-        if (!(counterLeft != 0 || counterRight != 0)) {
-            roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
-        }
+        return counterLeft != 0 || counterRight != 0;
     }
 
-    private void possibleMovesDefender(Node startNode) {
-        /*
-        for (int i = 0; i < startNode.getOutgoingEdges().length; i++) {
-            for (Edge edge : startNode.getOutgoingEdges()) {
-                if (isWeakMove(startNode.getOutgoingEdges()[i].getDestination(), edge.getDestination(), false)) {
-                    Log.i(TAG, "Ritorna true possible moves");
+    private boolean possibleMovesDefender(Node startNode) {
+        visitedNodes = new HashMap<Node, Boolean>(5);
+        DirectedGraph directedGraph;
+        if (startNode.isLeftTable()) {
+            directedGraph = directedGraphLeft;
+        } else {
+            directedGraph = directedGraphRight;
+        }
+        for (Node node : directedGraph.getNodes()) {
+            for (Edge edge : node.getOutgoingEdges()) {
+                if (isWeakMove(node, edge.getDestination(), false, visitedNodes)) {
                     return true;
                 }
             }
         }
-        Log.i(TAG, "Ritorna false possible moves");
-        return false; */
+        Log.i(TAG, "Default return false");
+        return false;
     }
 
     private boolean isValidMove(Node startNode, Node nodeTouched) {
