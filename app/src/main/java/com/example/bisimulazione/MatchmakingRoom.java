@@ -171,7 +171,6 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
     }
 
     private String colourToString(int colour) {
-        Log.i(TAG, "Colore (int)" + colour);
         String colore = "";
         switch (colour) {
             case -237502:
@@ -193,10 +192,6 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
             default:
                 break;
         }
-        Log.i(TAG, "Return colore in string " + colore);
-        if (colore.equalsIgnoreCase("")) {
-
-        }
         return colore;
     }
 
@@ -207,9 +202,10 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
         int colour = colours[getNumber()];
         String colore = colourToString(colour);
         // set special colour
-        roomNameRef.child("specialColour").setValue(colore);
-        Log.i(TAG, "Special colour " + colore);
-        return colore;
+        /*roomNameRef.child("specialColour").setValue(colore);
+        return colore; */
+        roomNameRef.child("specialColour").setValue(getResources().getString(R.string.table_black));
+        return getResources().getString(R.string.table_black);
     }
 
     private void getColour(DatabaseReference roomNameRef, CallbackColour callback) {

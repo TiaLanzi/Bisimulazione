@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,8 +33,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import interfaces.CallbackEnabledLeftGraph;
 import interfaces.CallbackEnabledRightGraph;
@@ -77,6 +81,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     private Node[] nodesR;
     private Edge[] edgesR;
+
+    private Map<Node, Boolean> visitedNodes;
 
     private int[][] controlMatrix;
 
@@ -437,7 +443,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     refreshTurnOf();
                                 } else {
                                     Log.i(TAG, "Valuta possible moves");
-                                    possibleMoves(sNode, nodeTouched);
+                                    //possibleMoves(sNode, nodeTouched);
                                     /*
                                     if (possibleMoves(sNode, nodeTouched)) {
                                         Toast.makeText(this, getResources().getString(R.string.table_possible_moves), Toast.LENGTH_LONG).show();
@@ -490,7 +496,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 return true;
             } else {
                 //return true;
-                return isWeakMove(sNode, nodeTouched, false);
+                return isWeakMove(sNode, nodeTouched, false, null);
             }
         } else {
             Toast.makeText(this, getResources().getString(R.string.table_invalid_move_attacker), Toast.LENGTH_LONG).show();
@@ -583,7 +589,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         if (controlMatrix[nodeLeftSelected.getId() - 1][nodeRightSelected.getId() - 1] == 1) {
             return false;
         } else {
-            controlMatrix[nodeLeftSelected.getId() -1][nodeRightSelected.getId() - 1] = 1;
+            controlMatrix[nodeLeftSelected.getId() - 1][nodeRightSelected.getId() - 1] = 1;
             return true;
         }
     }
@@ -665,7 +671,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             Log.i(TAG, "Strong move");
             return isStrongMove(startNode, nodeTouched);
         } else {
-            return isWeakMove(startNode, nodeTouched, false);
+            visitedNodes = new HashMap<Node, Boolean>(5);
+            return isWeakMove(startNode, nodeTouched, false, visitedNodes);
         }
     }
 
@@ -704,10 +711,49 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return false;
     }
 
-    private boolean isWeakMove(Node startNode, Node nodeTouched, boolean foundLastMoveColour) {
-        roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
-        roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
-        return true;
+    private boolean isWeakMove(Node startNode, Node nodeTouched, boolean atLeastOneArcOfLastMoveColour, Map<Node, Boolean> visitedNodes) {
+        Log.i(TAG, "Weak move");
+        String lmc = lastMoveColour.getText().toString().trim();
+        String sc = coloreSpeciale.getText().toString().trim();
+
+        if (visitedNodes.containsKey(startNode)) {
+            Log.i(TAG, "Map contiene nodo " + startNode.getId());
+            if (visitedNodes.get(startNode)) {
+                roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
+                roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
+                return true;
+            } else {
+                Log.i(TAG, "Visited nodes contains key start node");
+                return false;
+            }
+        }
+
+        if (startNode.getId() == nodeTouched.getId()) {
+            Log.i(TAG, "Ho trovato nodo toccato");
+            Log.i(TAG, "Valore atLeast " + String.valueOf(atLeastOneArcOfLastMoveColour));
+            return atLeastOneArcOfLastMoveColour;
+        } else {
+            for (Edge edge : startNode.getOutgoingEdges()) {
+                Log.i(TAG, "Valuto arco " + edge.getId() + ", " + colourToString(edge.getColor()));
+                boolean lastColorJustUsed = atLeastOneArcOfLastMoveColour;
+                if (colourToString(edge.getColor()).equalsIgnoreCase(lmc)) {
+                    lastColorJustUsed = true;
+                } else if (!colourToString(edge.getColor()).equalsIgnoreCase(sc)) {
+                    continue;
+                }
+
+                if (isWeakMove(edge.getDestination(), nodeTouched, lastColorJustUsed, visitedNodes)) {
+                    Log.i(TAG, "Put true node " + startNode.getId());
+                    visitedNodes.put(edge.getDestination(), true);
+                    roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(true));
+                    roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(true));
+                    return true;
+                }
+            }
+            Log.i(TAG, "Put false node " + startNode.getId());
+            visitedNodes.put(startNode, false);
+            return false;
+        }
     }
 
     private int stringToID(String sNode) {
