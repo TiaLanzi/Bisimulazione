@@ -278,8 +278,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         setSelectedNode(true);
         // set selected node right table
         setSelectedNode(false);
-        // set no move
-        //setNoMove();
     }
 
     private Edge[] divideEdges(Edge[] edges, boolean left) {
@@ -555,7 +553,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         builder.setNegativeButton(getString(R.string.no_move_no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                roomNameRef.child("noMove").setValue(String.valueOf(false));
                 dialog.dismiss();
             }
         });
@@ -563,7 +560,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         builder.setPositiveButton(getString(R.string.no_move_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                roomNameRef.child("noMove").setValue(String.valueOf(true));
                 updateValidWeakMove();
                 refreshNodes(graphRef, sNode, nodeTouched);
                 refreshTurnOf();
