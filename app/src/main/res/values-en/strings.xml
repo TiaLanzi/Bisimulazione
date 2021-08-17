@@ -95,6 +95,7 @@
     <string name="table_invalid_move_attacker">INVALID MOVE FOR THE ATTACKER</string>
     <string name="table_invalid_move_defender">INVALID MOVE FOR THE DEFENDER</string>
     <string name="table_cycle">cycle</string>
+    <string name="table_configuration_already_visited">CONFIGURATION ALREADY VISITED</string>
 
     <!-- matchmaking room -->
     <string name="matchmaking_room">Matchmaking room</string>

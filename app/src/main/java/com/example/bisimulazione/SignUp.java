@@ -175,8 +175,8 @@ public class SignUp extends AppCompatActivity {
         map.put("username", utente.getUsername());
         map.put("email", utente.getMail());
         map.put("pwd", utente.getPassword());
-        map.put("winCount", "0");
-        map.put("loseCount", "0");
+        map.put("winCount", String.valueOf(0));
+        map.put("loseCount", String.valueOf(0));
 
         // if lastName + firstName already exists --> add a counter (or something like this)
         if (userFullName.equalsIgnoreCase("")) {

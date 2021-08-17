@@ -95,6 +95,7 @@
     <string name="table_invalid_move_attacker">MOSSA NON CONSENTITA PER L\'ATTACCANTE</string>
     <string name="table_invalid_move_defender">MOSSA NON CONSENTITA PER IL DIFENSORE</string>
     <string name="table_cycle">cycle</string>
+    <string name="table_configuration_already_visited">CONFIGURAZIONE GIA\' VISITATA</string>
 
 
     <!-- matchmaking room -->

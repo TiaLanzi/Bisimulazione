@@ -22,6 +22,7 @@ import com.example.bisimulazione.directedgraph.DirectedGraphLeft;
 import com.example.bisimulazione.directedgraph.DirectedGraphRight;
 import com.example.bisimulazione.directedgraph.Edge;
 import com.example.bisimulazione.directedgraph.Node;
+import com.example.bisimulazione.models.Pair;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 
@@ -81,7 +83,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     private Map<Node, Boolean> visitedNodes;
 
-    private int[][] controlMatrix;
+    private HashSet<Pair> pairHashSet;
 
     private final float radius = 40f;
 
@@ -129,9 +131,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         leftGraphRef = roomNameRef.child("leftGraph");
         // set right graph reference
         rightGraphRef = roomNameRef.child("rightGraph");
-        // initialize control matrix
-        controlMatrix = new int[5][5];
-        controlMatrix[0][0] = 1;
 
         selectedNodeLeft.addTextChangedListener(new TextWatcher() {
             @Override
@@ -241,6 +240,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 return true;
             }
         });
+
+        // initialize pair hash set
+        pairHashSet = new HashSet<Pair>();
+        // add start configuration
+        Pair start = new Pair(nodesL[0], nodesR[0]);
+        pairHashSet.add(start);
     }
 
     private void refreshDirectedGraph(DirectedGraph directedGraph, String selectedNode, boolean bool) {
@@ -436,6 +441,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     }
                                     refreshNodes(graphRef, sNode, nodeTouched);
                                     refreshTurnOf();
+                                    Node sNodeLeft = stringToNode(selectedNodeLeft.getText().toString().trim(), true);
+                                    Node sNodeRight = stringToNode(selectedNodeRight.getText().toString().trim(), false);
+                                    controlConfiguration(sNodeLeft, sNodeRight);
                                 } else {
                                     Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
                                 }
@@ -450,6 +458,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     }
                                     refreshNodes(graphRef, sNode, nodeTouched);
                                     refreshTurnOf();
+                                    Node sNodeLeft = stringToNode(selectedNodeLeft.getText().toString().trim(), true);
+                                    Node sNodeRight = stringToNode(selectedNodeRight.getText().toString().trim(), false);
+                                    controlConfiguration(sNodeLeft, sNodeRight);
                                 } else {
                                     Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
                                     Log.i(TAG, "Valuta possible moves");
@@ -460,18 +471,22 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     }
                                 }
                             }
-                            /*Node sNodeLeft = stringToNode(selectedNodeLeft.getText().toString().trim(), true);
-                            Node sNodeRight = stringToNode(selectedNodeRight.getText().toString().trim(), true);
-                            boolean v = controlMatrix(sNodeLeft, sNodeRight);
-                            if (!v) {
-                                Log.i(TAG, "control matrix false");
-                                roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
-                            } */
                         }
                     }
                 }
             }
         }
+    }
+
+    private void controlConfiguration(Node sNodeLeft, Node sNodeRight) {
+        Pair pair = new Pair(sNodeLeft, sNodeRight);
+        if (turnoDi.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_defender))) {
+            if (pairHashSet.contains(pair)) {
+                Toast.makeText(this, getResources().getString(R.string.table_configuration_already_visited), Toast.LENGTH_LONG).show();
+                roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
+            }
+        }
+        pairHashSet.add(pair);
     }
 
     private void removeReferences() {
@@ -610,15 +625,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 break;
             default:
                 break;
-        }
-    }
-
-    private boolean controlMatrix(Node nodeLeftSelected, Node nodeRightSelected) {
-        if (controlMatrix[nodeLeftSelected.getId() - 1][nodeRightSelected.getId() - 1] == 1) {
-            return false;
-        } else {
-            controlMatrix[nodeLeftSelected.getId() - 1][nodeRightSelected.getId() - 1] = 1;
-            return true;
         }
     }
 
@@ -1319,56 +1325,3 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     }
 }
-
-/*Log.i(TAG, "Weak move");
-        String specialC = coloreSpeciale.getText().toString().trim();
-        String lastMoveC = lastMoveColour.getText().toString().trim();
-        if (startNode.getId() == nodeTouched.getId()) {
-            Log.i(TAG, "Trovato nodo toccato");
-            if (specialC.equalsIgnoreCase(lastMoveC)) {
-                Log.i(TAG, "no move");
-                return noMove(startNode.isLeftTable(), startNode, nodeTouched);
-            } else {
-                if (foundLastMoveColour) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
-        if (specialC.equalsIgnoreCase(lastMoveC)) {
-            Log.i(TAG, "Special colour e last move colour sono uguali");
-            for (Edge edge : startNode.getOutgoingEdges()) {
-                Log.i(TAG, "1 - Edge id " + edge.getId() + ", color " + colourToString(edge.getColor()));
-                if (colourToString(edge.getColor()).equalsIgnoreCase(specialC)) {
-                    if (edge.getDestination().getId() == nodeTouched.getId()) {
-                        Log.i(TAG, "Mossa debole valida");
-                        return true;
-                    } else {
-                        Log.i(TAG, "Proseguo");
-                        isWeakMove(edge.getDestination(), nodeTouched, false);
-                    }
-                }
-            }
-        } else {
-            for (Edge edge : startNode.getOutgoingEdges()) {
-                Log.i(TAG, "2 - Edge id " + edge.getId() + ", color " + colourToString(edge.getColor()));
-                if (colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
-                    if (foundLastMoveColour) {
-                        continue;
-                    }
-                    foundLastMoveColour = true;
-                }
-                if (!colourToString(edge.getColor()).equalsIgnoreCase(specialC) && !colourToString(edge.getColor()).equalsIgnoreCase(lastMoveC)) {
-                    continue;
-                }
-                boolean found = isWeakMove(edge.getDestination(), nodeTouched, foundLastMoveColour);
-                if (found) {
-                    return true;
-                } else {
-                    foundLastMoveColour = false;
-                }
-            }
-            return false;
-        }
-        return false;*/
