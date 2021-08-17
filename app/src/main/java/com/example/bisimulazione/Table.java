@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -38,6 +40,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 
+import interfaces.CallbackAlertDialog;
 import interfaces.CallbackEnabledLeftGraph;
 import interfaces.CallbackEnabledRightGraph;
 import interfaces.CallbackGameInProgress;
@@ -47,7 +50,7 @@ import interfaces.CallbackPlayerTwo;
 import interfaces.CallbackSelectedNode;
 import interfaces.CallbackTurnOf;
 
-public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackSelectedNode, CallbackGameInProgress, CallbackEnabledLeftGraph, CallbackEnabledRightGraph {
+public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackSelectedNode, CallbackGameInProgress, CallbackEnabledLeftGraph, CallbackEnabledRightGraph, CallbackAlertDialog {
 
     private static final String TAG = "Bisimulazione";
 
@@ -84,6 +87,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private Map<Node, Boolean> visitedNodes;
 
     private HashSet<Pair> pairHashSet;
+
+    private boolean bool;
 
     private final float radius = 40f;
 
@@ -513,8 +518,18 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 } else {
                     graphRef = rightGraphRef;
                 }
-                displayAlertDialogNoMove(graphRef, sNode, nodeTouched);
-                return true;
+                displayAlertDialogNoMove(graphRef, sNode, nodeTouched, new CallbackAlertDialog() {
+                    @Override
+                    public void onClickPositiveButton(boolean value) {
+                        bool = value;
+                    }
+
+                    @Override
+                    public void onClickNegativeButton(boolean value) {
+                        bool = value;
+                    }
+                });
+                return bool;
             } else {
                 if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_green)) && lastMoveColour.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_red))) {
                     if (sNode.isLeftTable()) {
@@ -546,13 +561,14 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return false;
     }
 
-    private void displayAlertDialogNoMove(DatabaseReference graphRef, Node sNode, Node nodeTouched) {
+    private void displayAlertDialogNoMove(DatabaseReference graphRef, Node sNode, Node nodeTouched, CallbackAlertDialog callback) {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         View v = getLayoutInflater().inflate(R.layout.no_move_dialog, null, false);
         builder.setView(v);
         builder.setNegativeButton(getString(R.string.no_move_no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                callback.onClickNegativeButton(false);
                 dialog.dismiss();
             }
         });
@@ -560,6 +576,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         builder.setPositiveButton(getString(R.string.no_move_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                callback.onClickPositiveButton(true);
                 updateValidWeakMove();
                 refreshNodes(graphRef, sNode, nodeTouched);
                 refreshTurnOf();
@@ -1318,6 +1335,16 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     @Override
     public void onCallbackEnabledRightGraph(String value) {
+
+    }
+
+    @Override
+    public void onClickPositiveButton(boolean value) {
+
+    }
+
+    @Override
+    public void onClickNegativeButton(boolean value) {
 
     }
 }
