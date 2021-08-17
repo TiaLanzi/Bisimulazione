@@ -140,7 +140,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         selectedNodeLeft.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //Log.i(TAG, "Left Before " + s.toString());
                 refreshDirectedGraph(directedGraphLeft, s.toString().trim(), true);
             }
 
@@ -151,7 +150,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
             @Override
             public void afterTextChanged(Editable s) {
-                //Log.i(TAG, "Left After " + s.toString());
                 refreshDirectedGraph(directedGraphLeft, s.toString().trim(), false);
             }
         });
@@ -422,7 +420,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         boolean touchInCircle = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
                         if (touchInCircle) {
                             nodeTouched = node;
-                            Log.i(TAG, "Tocco rilevato su nodo " + nodeTouched.getId() + ", left table? " + nodeTouched.isLeftTable());
                             String selectedNode;
                             if (node.isLeftTable()) {
                                 selectedNode = selectedNodeLeft.getText().toString().trim();
@@ -431,7 +428,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             }
                             // get selected node
                             sNode = stringToNode(selectedNode, node.isLeftTable());
-                            Log.i(TAG, "Nodo selezionato è " + sNode.getId() + ", left table? " + sNode.isLeftTable());
                             // case no move
                             if (sNode.getId() == nodeTouched.getId()) {
                                 boolean noMove = noMove(node.isLeftTable(), sNode, nodeTouched);
@@ -466,7 +462,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     controlConfiguration(sNodeLeft, sNodeRight);
                                 } else {
                                     Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
-                                    Log.i(TAG, "Valuta possible moves");
                                     if (possibleMoves(sNode, nodeTouched)) {
                                         Toast.makeText(this, getResources().getString(R.string.table_possible_moves), Toast.LENGTH_LONG).show();
                                     } else {
@@ -509,9 +504,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private boolean noMove(boolean left, Node sNode, Node nodeTouched) {
         DatabaseReference graphRef;
         if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_defender))) {
-            Log.i(TAG, "Turno del difensore --> sono in no move");
             if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(lastMoveColour.getText().toString().trim())) {
-                Log.i(TAG, "Colore speciale e colore dell'ultima mossa sono uguali");
                 // set reference to proper graph
                 if (left) {
                     graphRef = leftGraphRef;
@@ -557,7 +550,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             Toast.makeText(this, getResources().getString(R.string.table_invalid_move_attacker), Toast.LENGTH_LONG).show();
             return false;
         }
-        Log.i(TAG, "Return false");
         return false;
     }
 
@@ -588,7 +580,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void refreshNodes(DatabaseReference graphRef, Node selectedNode, Node nodeTouched) {
-        Log.i(TAG, "Refresh nodes");
         // set selected node to colour --> black and selected --> false
         switch (selectedNode.getId()) {
             case 1:
@@ -711,14 +702,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 }
             }
         }
-        Log.i(TAG, "Default return false");
         return false;
     }
 
     private boolean isValidMove(Node startNode, Node nodeTouched) {
         // if turn of attacker --> strong move else --> weak move
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
-            Log.i(TAG, "Strong move");
             return isStrongMove(startNode, nodeTouched);
         } else {
             visitedNodes = new HashMap<Node, Boolean>(5);
@@ -741,13 +730,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             // set colour of the move
                             roomNameRef.child("lastMoveColour").setValue(colore);
                             if (nodeTouched.isLeftTable()) {
-                                Log.i(TAG, "Disable left graph");
                                 roomNameRef.child("leftGraph").child("enabled").setValue(String.valueOf(false));
                             } else {
-                                Log.i(TAG, "Disable right graph");
                                 roomNameRef.child("rightGraph").child("enabled").setValue(String.valueOf(false));
                             }
-                            Log.i(TAG, "Strong move ritorna true");
                             return true;
                         }
                     }
@@ -757,12 +743,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 return false;
             }
         }
-        Log.i(TAG, "Strong move ritorna false");
         return false;
     }
 
     private boolean isWeakMove(Node startNode, Node nodeTouched, boolean atLeastOneArcOfLastMoveColour, Map<Node, Boolean> visitedNodes) {
-        Log.i(TAG, "Weak move");
         String lmc = lastMoveColour.getText().toString().trim();
         String sc = coloreSpeciale.getText().toString().trim();
         boolean found = false;
@@ -774,27 +758,21 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     found = true;
                 }
             }
-            Log.i(TAG, "Return found, " + String.valueOf(found));
             return found;
         }
 
         if (visitedNodes.containsKey(startNode)) {
-            Log.i(TAG, "Map contiene nodo " + startNode.getId());
             if (visitedNodes.get(startNode)) {
                 updateValidWeakMove();
                 return true;
             } else {
-                Log.i(TAG, "Visited nodes contains key start node");
                 return false;
             }
         }
         if (startNode.getId() == nodeTouched.getId()) {
-            Log.i(TAG, "Ho trovato nodo toccato");
-            Log.i(TAG, "Valore atLeast " + String.valueOf(atLeastOneArcOfLastMoveColour));
             return atLeastOneArcOfLastMoveColour;
         } else {
             for (Edge edge : startNode.getOutgoingEdges()) {
-                Log.i(TAG, "Valuto arco " + edge.getId() + ", " + colourToString(edge.getColor()));
                 boolean lastColorJustUsed = atLeastOneArcOfLastMoveColour;
                 if (colourToString(edge.getColor()).equalsIgnoreCase(lmc)) {
                     lastColorJustUsed = true;
@@ -803,13 +781,11 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 }
 
                 if (isWeakMove(edge.getDestination(), nodeTouched, lastColorJustUsed, visitedNodes)) {
-                    Log.i(TAG, "Put true node " + startNode.getId());
                     visitedNodes.put(edge.getDestination(), true);
                     updateValidWeakMove();
                     return true;
                 }
             }
-            Log.i(TAG, "Put false node " + startNode.getId());
             visitedNodes.put(startNode, false);
             return false;
         }
@@ -1144,19 +1120,16 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void endGame() {
-        Log.i(TAG, "End game");
         removeReferences();
     }
 
     private void displayEndGameDialog() {
-        Log.i(TAG, "Display end game");
         AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         View v = getLayoutInflater().inflate(R.layout.end_game_dialog, null, false);
         builder.setView(v);
         builder.setPositiveButton(getResources().getString(R.string.alert_continue), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.i(TAG, "Clicked end game dialog");
                 endGame();
                 finish();
             }

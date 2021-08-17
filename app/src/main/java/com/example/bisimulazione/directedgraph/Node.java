@@ -1,7 +1,6 @@
 package com.example.bisimulazione.directedgraph;
 
 import android.content.res.Resources;
-import android.util.Log;
 
 public class Node {
 
@@ -88,10 +87,6 @@ public class Node {
         this.root = root;
     }
 
-    public boolean isRoot() {
-        return this.root;
-    }
-
     protected void setAlreadyDrawn(boolean drawn) {
         this.alreadyDrawn = drawn;
     }
@@ -105,9 +100,6 @@ public class Node {
     }
 
     public Edge[] getOutgoingEdges() {
-        /*for (Edge edge : this.outgoingEdges) {
-            Log.i(TAG, "Edge: " + edge.getId() + ", left table? " + edge.isLeftTable());
-        }*/
         return this.outgoingEdges;
     }
 }
