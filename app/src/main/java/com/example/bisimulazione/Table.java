@@ -4,11 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -31,6 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -58,6 +56,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private String roomName;
     private String role;
     private String specialColour;
+    private String winner;
+    private String loser;
 
     private TextView coloreSpeciale;
     private TextView turnoDi;
@@ -66,6 +66,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private TextView lastMoveColour;
     private TextView selectedNodeLeft;
     private TextView selectedNodeRight;
+
+    private FirebaseDatabase database;
 
     private DatabaseReference roomsRef;
     private DatabaseReference roomNameRef;
@@ -113,7 +115,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             playerName = user.getDisplayName();
         }
         // initialize database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
         // initialize reference to rooms
         roomsRef = database.getReference("rooms");
         // get data from matchmaking
@@ -1121,6 +1123,23 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     private void endGame() {
         removeReferences();
+        updateScoreCount();
+    }
+
+    private void updateScoreCount() {
+        DatabaseReference usersRef = database.getReference("users");
+        if (turnoDi.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_attacker))) {
+            winner = defender.getText().toString().trim();
+            loser = attacker.getText().toString().trim();
+        } else {
+            winner = attacker.getText().toString().trim();
+            loser = defender.getText().toString().trim();
+        }
+        if (playerName.equalsIgnoreCase(winner)) {
+            usersRef.child(playerName).child("winCount").setValue(ServerValue.increment(1));
+        } else {
+            usersRef.child(playerName).child("loseCount").setValue(ServerValue.increment(1));
+        }
     }
 
     private void displayEndGameDialog() {
