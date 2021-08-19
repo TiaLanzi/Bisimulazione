@@ -466,6 +466,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         noMoveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i(TAG, "Button clicked");
                 if (sNode != null && nTouched != null) {
                     DatabaseReference graphRef;
                     if (sNode.isLeftTable()) {
@@ -473,22 +474,27 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     } else {
                         graphRef = rightGraphRef;
                     }
-                    if (controlNoMove(sNode, nTouched)) {
+                    if (controlNoMove(sNode)) {
+                        Log.i(TAG, "No move true");
                         roomNameRef.child("noMove").setValue(String.valueOf(false));
                         updateValidWeakMove();
                         refreshNodes(graphRef, sNode, nTouched);
                         controlConfiguration();
                         refreshTurnOf();
                     } else {
+                        Log.i(TAG, "No move false");
                         roomNameRef.child("noMove").setValue(String.valueOf(true));
                     }
+                } else {
+                    Toast.makeText(Table.this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
-    private boolean controlNoMove(Node selectedNode, Node nodeTouched) {
-        if (selectedNode != null && nodeTouched != null) {
+    private boolean controlNoMove(Node selectedNode) {
+        Log.i(TAG, "Control no move");
+        if (selectedNode != null) {
             if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_defender))) {
                 if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(lastMoveColour.getText().toString().trim())) {
                     return true;
@@ -496,7 +502,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                     // special cases
                     if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_green)) && lastMoveColour.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_red))) {
                         if (sNode.isLeftTable()) {
-                            if ((sNode.getId() == 1 && nodeTouched.getId() == 1) || (sNode.getId() == 2 && nodeTouched.getId() == 2) || (sNode.getId() == 3 && nodeTouched.getId() == 3)) {
+                            if ((sNode.getId() == 1) || (sNode.getId() == 2) || (sNode.getId() == 3)) {
                                 Toast.makeText(this, getResources().getString(R.string.table_cycle), Toast.LENGTH_LONG).show();
                                 return true;
                             } else {
@@ -504,7 +510,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                 return false;
                             }
                         } else {
-                            if ((sNode.getId() == 1 && nodeTouched.getId() == 1) || (sNode.getId() == 2 && nodeTouched.getId() == 2)) {
+                            if ((sNode.getId() == 1) || (sNode.getId() == 2)) {
                                 Toast.makeText(this, getResources().getString(R.string.table_cycle), Toast.LENGTH_LONG).show();
                                 return true;
                             } else {

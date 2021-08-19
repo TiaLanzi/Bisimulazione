@@ -203,10 +203,10 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
         int colour = colours[getNumber()];
         String colore = colourToString(colour);
         // set special colour
-        //roomNameRef.child("specialColour").setValue(colore);
-        //return colore;
-        roomNameRef.child("specialColour").setValue(getResources().getString(R.string.table_green));
-        return getResources().getString(R.string.table_green);
+        roomNameRef.child("specialColour").setValue(colore);
+        return colore;
+        //roomNameRef.child("specialColour").setValue(getResources().getString(R.string.table_green));
+        //return getResources().getString(R.string.table_green);
     }
 
     private void getColour(DatabaseReference roomNameRef, CallbackColour callback) {

@@ -113,6 +113,7 @@
             android:backgroundTint="@color/primaryColor"
             android:contentDescription="@string/home_todo"
             android:src="@drawable/floating_action_button"
-            app:fabSize="normal" />
+            app:fabSize="normal"
+            tools:targetApi="lollipop" />
     </LinearLayout>
 </RelativeLayout>
