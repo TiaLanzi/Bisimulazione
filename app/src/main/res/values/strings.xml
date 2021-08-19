@@ -96,7 +96,9 @@
     <string name="table_invalid_move_defender">MOSSA NON CONSENTITA PER IL DIFENSORE</string>
     <string name="table_cycle">cycle</string>
     <string name="table_configuration_already_visited">CONFIGURAZIONE GIA\' VISITATA</string>
-
+    <string name="table_no_move_text">STAI FERMO</string>
+    <string name="table_no_move_btn_text">SE NODO DI PARTENZA E DI ARRIVO COINCIDONO O VUOI RIMANERE
+        FERMO, CLICCA SUL PULSANTE \"STAI FERMO\".</string>
 
     <!-- matchmaking room -->
     <string name="matchmaking_room">Stanza pre-game</string>

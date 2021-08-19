@@ -96,6 +96,8 @@
     <string name="table_invalid_move_defender">INVALID MOVE FOR THE DEFENDER</string>
     <string name="table_cycle">cycle</string>
     <string name="table_configuration_already_visited">CONFIGURATION ALREADY VISITED</string>
+    <string name="table_no_move_text">NO MOVE</string>
+    <string name="table_no_move_btn_text">IF YOU DON\'T WANT TO MOVE, CLICK ON THE BUTTON \"NO MOVE\"</string>
 
     <!-- matchmaking room -->
     <string name="matchmaking_room">Matchmaking room</string>

@@ -2,7 +2,6 @@ package com.example.bisimulazione;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -85,6 +84,9 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
             setTurnOf(roomNameRef);
             // initialize to empty string last move colour
             initializeLastMoveColour(roomNameRef);
+            // initialize no move
+            initializeNoMove(roomNameRef);
+            // initialize graphs
             initializeGraphs(roomNameRef);
             initializeEnabledGraphs(roomNameRef);
             sendDataP1(roomNameRef, playerName);
@@ -112,6 +114,10 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
         });
         // show new rooms created
         getRoomsList();
+    }
+
+    private void initializeNoMove(DatabaseReference roomNameRef) {
+        roomNameRef.child("noMove").setValue(String.valueOf(false));
     }
 
     private void sendDataGameInProgress(DatabaseReference roomNameRef) {
@@ -197,10 +203,10 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
         int colour = colours[getNumber()];
         String colore = colourToString(colour);
         // set special colour
-        roomNameRef.child("specialColour").setValue(colore);
-        return colore;
-        //roomNameRef.child("specialColour").setValue(getResources().getString(R.string.table_green));
-        //return getResources().getString(R.string.table_green);
+        //roomNameRef.child("specialColour").setValue(colore);
+        //return colore;
+        roomNameRef.child("specialColour").setValue(getResources().getString(R.string.table_green));
+        return getResources().getString(R.string.table_green);
     }
 
     private void getColour(DatabaseReference roomNameRef, CallbackColour callback) {

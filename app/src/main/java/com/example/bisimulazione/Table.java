@@ -1,13 +1,18 @@
 package com.example.bisimulazione;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +43,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 
-import interfaces.CallbackAlertDialog;
+import interfaces.CallbackNoMove;
 import interfaces.CallbackEnabledLeftGraph;
 import interfaces.CallbackEnabledRightGraph;
 import interfaces.CallbackGameInProgress;
@@ -48,7 +53,7 @@ import interfaces.CallbackPlayerTwo;
 import interfaces.CallbackSelectedNode;
 import interfaces.CallbackTurnOf;
 
-public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackSelectedNode, CallbackGameInProgress, CallbackEnabledLeftGraph, CallbackEnabledRightGraph, CallbackAlertDialog {
+public class Table extends AppCompatActivity implements CallbackTurnOf, CallbackPlayerOne, CallbackPlayerTwo, CallbackLastMoveColour, CallbackSelectedNode, CallbackGameInProgress, CallbackEnabledLeftGraph, CallbackEnabledRightGraph, CallbackNoMove {
 
     private static final String TAG = "Bisimulazione";
 
@@ -56,8 +61,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private String roomName;
     private String role;
     private String specialColour;
-    private String winner;
-    private String loser;
 
     private TextView coloreSpeciale;
     private TextView turnoDi;
@@ -66,6 +69,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private TextView lastMoveColour;
     private TextView selectedNodeLeft;
     private TextView selectedNodeRight;
+
+    private Button noMoveBtn;
 
     private FirebaseDatabase database;
 
@@ -86,11 +91,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private Node[] nodesR;
     private Edge[] edgesR;
 
+    private Node sNode;
+    private Node nTouched;
+
     private Map<Node, Boolean> visitedNodes;
 
     private HashSet<Pair> pairHashSet;
-
-    private boolean bool;
 
     private final float radius = 40f;
 
@@ -105,6 +111,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         attacker = findViewById(R.id.table_attacker_is);
         defender = findViewById(R.id.table_defender_is);
         lastMoveColour = findViewById(R.id.table_last_move_colour);
+        noMoveBtn = findViewById(R.id.table_no_move_button);
         selectedNodeLeft = findViewById(R.id.table_left_selected_node);
         selectedNodeRight = findViewById(R.id.table_right_selected_node);
         // initialize firebase user
@@ -248,9 +255,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
         // initialize pair hash set
         pairHashSet = new HashSet<Pair>();
-        // add start configuration
-        Pair start = new Pair(nodesL[0], nodesR[0]);
-        pairHashSet.add(start);
     }
 
     private void refreshDirectedGraph(DirectedGraph directedGraph, String selectedNode, boolean bool) {
@@ -283,6 +287,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         setSelectedNode(true);
         // set selected node right table
         setSelectedNode(false);
+        // set no move
+        setNoMove();
     }
 
     private Edge[] divideEdges(Edge[] edges, boolean left) {
@@ -412,8 +418,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private void setOnTouchGraph(MotionEvent event, DirectedGraph directedGraph) {
         DatabaseReference graphRef;
         boolean left;
-        Node nodeTouched = null;
-        Node sNode;
         if (directedGraph != null) {
             if (directedGraph.getNodes() != null) {
                 for (Node node : directedGraph.getNodes()) {
@@ -421,7 +425,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         // control whether the touch is in the circle or not
                         boolean touchInCircle = touchIsInCircle(event.getX(), event.getY(), node.getX(), node.getY(), radius);
                         if (touchInCircle) {
-                            nodeTouched = node;
+                            nTouched = node;
                             String selectedNode;
                             if (node.isLeftTable()) {
                                 selectedNode = selectedNodeLeft.getText().toString().trim();
@@ -431,25 +435,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                             // get selected node
                             sNode = stringToNode(selectedNode, node.isLeftTable());
                             // case no move
-                            if (sNode.getId() == nodeTouched.getId()) {
-                                boolean noMove = noMove(node.isLeftTable(), sNode, nodeTouched);
-                                if (noMove) {
-                                    updateValidWeakMove();
-                                    if (sNode.isLeftTable()) {
-                                        graphRef = leftGraphRef;
-                                    } else {
-                                        graphRef = rightGraphRef;
-                                    }
-                                    refreshNodes(graphRef, sNode, nodeTouched);
-                                    refreshTurnOf();
-                                    Node sNodeLeft = stringToNode(selectedNodeLeft.getText().toString().trim(), true);
-                                    Node sNodeRight = stringToNode(selectedNodeRight.getText().toString().trim(), false);
-                                    controlConfiguration(sNodeLeft, sNodeRight);
-                                } else {
-                                    Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
-                                }
+                            if (sNode.getId() == nTouched.getId()) {
+                                Toast.makeText(this, getResources().getString(R.string.table_no_move_btn_text), Toast.LENGTH_LONG).show();
                             } else {
-                                if (isValidMove(sNode, nodeTouched)) {
+                                if (isValidMove(sNode, nTouched)) {
                                     // set reference to proper graph
                                     left = node.isLeftTable();
                                     if (left) {
@@ -457,14 +446,13 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     } else {
                                         graphRef = rightGraphRef;
                                     }
-                                    refreshNodes(graphRef, sNode, nodeTouched);
+                                    refreshNodes(graphRef, sNode, nTouched);
+                                    controlConfiguration();
+                                    refreshNoMove();
                                     refreshTurnOf();
-                                    Node sNodeLeft = stringToNode(selectedNodeLeft.getText().toString().trim(), true);
-                                    Node sNodeRight = stringToNode(selectedNodeRight.getText().toString().trim(), false);
-                                    controlConfiguration(sNodeLeft, sNodeRight);
                                 } else {
                                     Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
-                                    if (possibleMoves(sNode, nodeTouched)) {
+                                    if (possibleMoves(sNode, nTouched)) {
                                         Toast.makeText(this, getResources().getString(R.string.table_possible_moves), Toast.LENGTH_LONG).show();
                                     } else {
                                         roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
@@ -476,17 +464,89 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 }
             }
         }
+        noMoveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sNode != null && nTouched != null) {
+                    DatabaseReference graphRef;
+                    if (sNode.isLeftTable()) {
+                        graphRef = leftGraphRef;
+                    } else {
+                        graphRef = rightGraphRef;
+                    }
+                    if (controlNoMove(sNode, nTouched)) {
+                        roomNameRef.child("noMove").setValue(String.valueOf(false));
+                        updateValidWeakMove();
+                        refreshNodes(graphRef, sNode, nTouched);
+                        controlConfiguration();
+                        refreshTurnOf();
+                    } else {
+                        roomNameRef.child("noMove").setValue(String.valueOf(true));
+                    }
+                }
+            }
+        });
     }
 
-    private void controlConfiguration(Node sNodeLeft, Node sNodeRight) {
-        Pair pair = new Pair(sNodeLeft, sNodeRight);
-        if (turnoDi.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_defender))) {
-            if (pairHashSet.contains(pair)) {
-                Toast.makeText(this, getResources().getString(R.string.table_configuration_already_visited), Toast.LENGTH_LONG).show();
-                roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
+    private boolean controlNoMove(Node selectedNode, Node nodeTouched) {
+        if (selectedNode != null && nodeTouched != null) {
+            if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_defender))) {
+                if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(lastMoveColour.getText().toString().trim())) {
+                    return true;
+                } else {
+                    // special cases
+                    if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_green)) && lastMoveColour.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_red))) {
+                        if (sNode.isLeftTable()) {
+                            if ((sNode.getId() == 1 && nodeTouched.getId() == 1) || (sNode.getId() == 2 && nodeTouched.getId() == 2) || (sNode.getId() == 3 && nodeTouched.getId() == 3)) {
+                                Toast.makeText(this, getResources().getString(R.string.table_cycle), Toast.LENGTH_LONG).show();
+                                return true;
+                            } else {
+                                Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
+                                return false;
+                            }
+                        } else {
+                            if ((sNode.getId() == 1 && nodeTouched.getId() == 1) || (sNode.getId() == 2 && nodeTouched.getId() == 2)) {
+                                Toast.makeText(this, getResources().getString(R.string.table_cycle), Toast.LENGTH_LONG).show();
+                                return true;
+                            } else {
+                                Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
+                                return false;
+                            }
+                        }
+                    }
+                }
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.table_invalid_move_attacker), Toast.LENGTH_LONG).show();
+                return false;
             }
         }
-        pairHashSet.add(pair);
+        return false;
+    }
+
+    private void refreshNoMove() {
+        String turnOf = turnoDi.getText().toString().trim();
+        if (turnOf.equalsIgnoreCase(getResources().getString(R.string.table_attacker))) {
+            roomNameRef.child("noMove").setValue(String.valueOf(true));
+        } else {
+            roomNameRef.child("noMove").setValue(String.valueOf(false));
+        }
+    }
+
+    private void controlConfiguration() {
+        if (turnoDi.getText().toString().equalsIgnoreCase(getResources().getString(R.string.table_defender))) {
+            Node sNodeLeft = stringToNode(selectedNodeLeft.getText().toString().trim(), true);
+            Node sNodeRight = stringToNode(selectedNodeRight.getText().toString().trim(), false);
+            if (sNodeLeft != null && sNodeRight != null) {
+                Pair pair = new Pair(sNodeLeft, sNodeRight);
+                if (pairHashSet.contains(pair)) {
+                    Log.i(TAG, "Contiene pair");
+                    Toast.makeText(this, getResources().getString(R.string.table_configuration_already_visited), Toast.LENGTH_LONG).show();
+                    roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
+                }
+                Log.i(TAG, "Aggiunta " + sNodeLeft.getId() + " e " + sNodeRight.getId());
+                pairHashSet.add(pair);
+            }
+        }
     }
 
     private void removeReferences() {
@@ -501,84 +561,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         if (defender.getText() != null) {
             FirebaseDatabase.getInstance().getReference().child("players").child(defender.getText().toString().trim()).removeValue();
         }
-    }
-
-    private boolean noMove(boolean left, Node sNode, Node nodeTouched) {
-        DatabaseReference graphRef;
-        if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_defender))) {
-            if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(lastMoveColour.getText().toString().trim())) {
-                // set reference to proper graph
-                if (left) {
-                    graphRef = leftGraphRef;
-                } else {
-                    graphRef = rightGraphRef;
-                }
-                displayAlertDialogNoMove(graphRef, sNode, nodeTouched, new CallbackAlertDialog() {
-                    @Override
-                    public void onClickPositiveButton(boolean value) {
-                        bool = value;
-                    }
-
-                    @Override
-                    public void onClickNegativeButton(boolean value) {
-                        bool = value;
-                    }
-                });
-                return bool;
-            } else {
-                if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_green)) && lastMoveColour.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_red))) {
-                    if (sNode.isLeftTable()) {
-                        if ((sNode.getId() == 1 && nodeTouched.getId() == 1) || (sNode.getId() == 2 && nodeTouched.getId() == 2) || (sNode.getId() == 3 && nodeTouched.getId() == 3)) {
-                            Toast.makeText(this, getResources().getString(R.string.table_cycle), Toast.LENGTH_LONG).show();
-                            updateValidWeakMove();
-                            return true;
-                        } else {
-                            Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
-                            return false;
-                        }
-                    } else {
-                        if ((sNode.getId() == 1 && nodeTouched.getId() == 1) || (sNode.getId() == 2 && nodeTouched.getId() == 2)) {
-                            Toast.makeText(this, getResources().getString(R.string.table_cycle), Toast.LENGTH_LONG).show();
-                            updateValidWeakMove();
-                            return true;
-                        } else {
-                            Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
-                            return false;
-                        }
-                    }
-                }
-            }
-        } else {
-            Toast.makeText(this, getResources().getString(R.string.table_invalid_move_attacker), Toast.LENGTH_LONG).show();
-            return false;
-        }
-        return false;
-    }
-
-    private void displayAlertDialogNoMove(DatabaseReference graphRef, Node sNode, Node nodeTouched, CallbackAlertDialog callback) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        View v = getLayoutInflater().inflate(R.layout.no_move_dialog, null, false);
-        builder.setView(v);
-        builder.setNegativeButton(getString(R.string.no_move_no), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                callback.onClickNegativeButton(false);
-                dialog.dismiss();
-            }
-        });
-
-        builder.setPositiveButton(getString(R.string.no_move_yes), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                callback.onClickPositiveButton(true);
-                updateValidWeakMove();
-                refreshNodes(graphRef, sNode, nodeTouched);
-                refreshTurnOf();
-                dialog.dismiss();
-            }
-        });
-        android.app.AlertDialog alertDialog = builder.create();
-        alertDialog.show();
     }
 
     private void refreshNodes(DatabaseReference graphRef, Node selectedNode, Node nodeTouched) {
@@ -1015,6 +997,43 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
     }
 
+    private void setNoMove() {
+        getNoMove(new CallbackNoMove() {
+            @Override
+            public void onCallbackNoMove(String value) {
+                if (value != null) {
+                    if (value.equalsIgnoreCase(String.valueOf(false))) {
+                        noMoveBtn.setEnabled(false);
+                        noMoveBtn.setClickable(false);
+                        noMoveBtn.setFocusable(false);
+                        noMoveBtn.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+                    } else {
+                        noMoveBtn.setEnabled(true);
+                        noMoveBtn.setClickable(true);
+                        noMoveBtn.setFocusable(true);
+                        noMoveBtn.setBackground(getResources().getDrawable(R.drawable.corner_radius_button));
+                    }
+                }
+            }
+        });
+    }
+
+    private void getNoMove(CallbackNoMove callback) {
+        roomNameRef.child("noMove").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    callback.onCallbackNoMove(snapshot.getValue().toString().trim());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void setSelectedNode(boolean leftTable) {
         getSelectedNode(new CallbackSelectedNode() {
             @Override
@@ -1128,6 +1147,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     private void updateScoreCount() {
         DatabaseReference usersRef = database.getReference("users");
+        String winner;
+        String loser;
         if (turnoDi.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_attacker))) {
             winner = defender.getText().toString().trim();
             loser = attacker.getText().toString().trim();
@@ -1154,7 +1175,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             }
         });
         android.app.AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        if (!isFinishing()){
+            alertDialog.show();
+        }
     }
 
     private void setEndGame() {
@@ -1331,12 +1354,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     @Override
-    public void onClickPositiveButton(boolean value) {
-
-    }
-
-    @Override
-    public void onClickNegativeButton(boolean value) {
+    public void onCallbackNoMove(String value) {
 
     }
 }
