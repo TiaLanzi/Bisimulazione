@@ -195,9 +195,10 @@
     <!-- active players -->
     <string name="active_players">Giocatori attivi</string>
 
-    <!-- no move -->
-    <string name="no_move_dialog">Sei sicuro di voler rimanere fermo?</string>
-    <string name="no_move_no">NO</string>
-    <string name="no_move_yes">SI</string>
-    <string name="no_move_do_another_move">FAI UN\'ALTRA MOSSA</string>
+    <!-- nodes -->
+    <string name="node_one">Node one</string>
+    <string name="node_two">Node two</string>
+    <string name="node_three">Node three</string>
+    <string name="node_four">Node four</string>
+    <string name="node_five">Node five</string>
 </resources>

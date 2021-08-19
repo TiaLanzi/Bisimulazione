@@ -1,6 +1,5 @@
 package com.example.bisimulazione;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -254,7 +253,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
 
         // initialize pair hash set
-        pairHashSet = new HashSet<Pair>();
+        pairHashSet = new HashSet<>();
     }
 
     private void refreshDirectedGraph(DirectedGraph directedGraph, String selectedNode, boolean bool) {
@@ -452,7 +451,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                                     refreshTurnOf();
                                 } else {
                                     Toast.makeText(this, getResources().getString(R.string.table_invalid_move_defender), Toast.LENGTH_LONG).show();
-                                    if (possibleMoves(sNode, nTouched)) {
+                                    if (possibleMoves(sNode)) {
                                         Toast.makeText(this, getResources().getString(R.string.table_possible_moves), Toast.LENGTH_LONG).show();
                                     } else {
                                         roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
@@ -635,7 +634,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return returnNode;
     }
 
-    private boolean possibleMoves(Node startNode, Node nodeTouched) {
+    private boolean possibleMoves(Node startNode) {
         if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_attacker))) {
             return possibleMovesAttacker(startNode);
         } else {
@@ -672,7 +671,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private boolean possibleMovesDefender(Node startNode) {
-        visitedNodes = new HashMap<Node, Boolean>(5);
+        visitedNodes = new HashMap<>(5);
         DirectedGraph directedGraph;
         if (startNode.isLeftTable()) {
             directedGraph = directedGraphLeft;
@@ -694,7 +693,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         if (turnoDi.getText().toString().equalsIgnoreCase(getString(R.string.table_attacker))) {
             return isStrongMove(startNode, nodeTouched);
         } else {
-            visitedNodes = new HashMap<Node, Boolean>(5);
+            visitedNodes = new HashMap<>(5);
             return isWeakMove(startNode, nodeTouched, false, visitedNodes);
         }
     }
@@ -1041,9 +1040,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 if (sNode != null) {
                     if (sNode.equalsIgnoreCase("true")) {
                         if (leftTable) {
-                            selectedNodeLeft.setText("Node one");
+                            selectedNodeLeft.setText(getResources().getString(R.string.node_one));
                         } else {
-                            selectedNodeRight.setText("Node one");
+                            selectedNodeRight.setText(getResources().getString(R.string.node_one));
                         }
                     }
                 }
@@ -1054,9 +1053,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 if (sNode != null) {
                     if (sNode.equalsIgnoreCase("true")) {
                         if (leftTable) {
-                            selectedNodeLeft.setText("Node two");
+                            selectedNodeLeft.setText(getResources().getString(R.string.node_two));
                         } else {
-                            selectedNodeRight.setText("Node two");
+                            selectedNodeRight.setText(getResources().getString(R.string.node_two));
                         }
                     }
                 }
@@ -1067,9 +1066,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 if (sNode != null) {
                     if (sNode.equalsIgnoreCase("true")) {
                         if (leftTable) {
-                            selectedNodeLeft.setText("Node three");
+                            selectedNodeLeft.setText(getResources().getString(R.string.node_three));
                         } else {
-                            selectedNodeRight.setText("Node three");
+                            selectedNodeRight.setText(getResources().getString(R.string.node_three));
                         }
                     }
                 }
@@ -1080,9 +1079,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 if (sNode != null) {
                     if (sNode.equalsIgnoreCase("true")) {
                         if (leftTable) {
-                            selectedNodeLeft.setText("Node four");
+                            selectedNodeLeft.setText(getResources().getString(R.string.node_four));
                         } else {
-                            selectedNodeRight.setText("Node four");
+                            selectedNodeRight.setText(getResources().getString(R.string.node_four));
                         }
                     }
                 }
@@ -1093,9 +1092,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 if (sNode != null) {
                     if (sNode.equalsIgnoreCase("true")) {
                         if (leftTable) {
-                            selectedNodeLeft.setText("Node five");
+                            selectedNodeLeft.setText(getResources().getString(R.string.node_five));
                         } else {
-                            selectedNodeRight.setText("Node five");
+                            selectedNodeRight.setText(getResources().getString(R.string.node_five));
                         }
                     }
                 }
@@ -1148,13 +1147,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     private void updateScoreCount() {
         DatabaseReference usersRef = database.getReference("users");
         String winner;
-        String loser;
         if (turnoDi.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_attacker))) {
             winner = defender.getText().toString().trim();
-            loser = attacker.getText().toString().trim();
         } else {
             winner = attacker.getText().toString().trim();
-            loser = defender.getText().toString().trim();
         }
         if (playerName.equalsIgnoreCase(winner)) {
             usersRef.child(playerName).child("winCount").setValue(ServerValue.increment(1));
@@ -1175,7 +1171,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             }
         });
         android.app.AlertDialog alertDialog = builder.create();
-        if (!isFinishing()){
+        if (!isFinishing()) {
             alertDialog.show();
         }
     }
