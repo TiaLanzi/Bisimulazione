@@ -29,10 +29,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 import interfaces.CallbackActivePlayers;
-import interfaces.CallbackGameCount;
+import interfaces.CallbackLoseCount;
 import interfaces.CallbackRoomsCount;
+import interfaces.CallbackWinCount;
 
-public class Home extends Fragment implements CallbackGameCount, CallbackActivePlayers, CallbackRoomsCount {
+public class Home extends Fragment implements CallbackActivePlayers, CallbackRoomsCount, CallbackWinCount, CallbackLoseCount {
 
     private static final String TAG = "Bisimulazione";
 
@@ -42,8 +43,8 @@ public class Home extends Fragment implements CallbackGameCount, CallbackActiveP
 
     private DatabaseReference playersRef;
 
-    private TextView win;
-    private TextView lose;
+    private TextView winCount;
+    private TextView loseCount;
 
     private TextView aPlayers;
     private TextView roomsCount;
@@ -77,8 +78,8 @@ public class Home extends Fragment implements CallbackGameCount, CallbackActiveP
 
         FloatingActionButton floatingActionButton = view.findViewById(R.id.home_floating_action_button);
 
-        win = firstCard.findViewById(R.id.home_first_card_win_count);
-        lose = firstCard.findViewById(R.id.home_first_card_lose_count);
+        winCount = firstCard.findViewById(R.id.home_first_card_win_count);
+        loseCount = firstCard.findViewById(R.id.home_first_card_lose_count);
 
         aPlayers = secondCard.findViewById(R.id.home_second_card_active_players_count);
         roomsCount = secondCard.findViewById(R.id.home_second_card_rooms_count);
@@ -96,10 +97,11 @@ public class Home extends Fragment implements CallbackGameCount, CallbackActiveP
             }
         }
 
-        setGameCount();
-
         setActivePlayers();
         setRoomsCount();
+
+        setWinCount();
+        setLoseCount();
 
         playGame.setOnClickListener(v -> {
             sendData(playersRef, playerName);
@@ -149,6 +151,61 @@ public class Home extends Fragment implements CallbackGameCount, CallbackActiveP
         });
     }
 
+    private void setLoseCount() {
+        getLoseCount(new CallbackLoseCount() {
+            @Override
+            public void onCallbackLoseCount(String value) {
+                if (value != null) {
+                    loseCount.setText(value);
+                }
+            }
+        });
+    }
+
+    private void getLoseCount(CallbackLoseCount callback) {
+        FirebaseDatabase.getInstance().getReference().child("users").child(playerName).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child("loseCount").getValue() != null) {
+                    callback.onCallbackLoseCount(Objects.requireNonNull(snapshot.child("loseCount").getValue()).toString().trim());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void setWinCount() {
+        getWinCount(new CallbackWinCount() {
+            @Override
+            public void onCallbackWinCount(String value) {
+                if (value != null) {
+                    winCount.setText(value);
+                }
+            }
+        });
+
+    }
+
+    private void getWinCount(CallbackWinCount callback) {
+        FirebaseDatabase.getInstance().getReference().child("users").child(playerName).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child("winCount").getValue() != null) {
+                    callback.onCallbackWinCount(Objects.requireNonNull(snapshot.child("winCount").getValue()).toString().trim());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void setActivePlayers() {
         getActivePlayers(new CallbackActivePlayers() {
             @Override
@@ -176,7 +233,6 @@ public class Home extends Fragment implements CallbackGameCount, CallbackActiveP
 
             }
         });
-
     }
 
     private void showDialog() {
@@ -207,47 +263,6 @@ public class Home extends Fragment implements CallbackGameCount, CallbackActiveP
     private void sendData(DatabaseReference playersRef, String playerName) {
         DatabaseReference playerRef = playersRef.child(playerName);
         playerRef.setValue(playerName);
-    }
-
-    private void getGameCount(CallbackGameCount callback) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String fullName = Objects.requireNonNull(user.getDisplayName()).replace(",", "");
-                    if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase(fullName)) {
-                        String win = Objects.requireNonNull(dataSnapshot.child("winCount").getValue()).toString();
-                        callback.onCallbackWinCount(win);
-                        String lose = Objects.requireNonNull(dataSnapshot.child("loseCount").getValue()).toString();
-                        callback.onCallbackLoseCount(lose);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void setGameCount() {
-        getGameCount(new CallbackGameCount() {
-            @Override
-            public void onCallbackWinCount(String value) {
-                if (value != null) {
-                    win.setText(value);
-                }
-            }
-
-            @Override
-            public void onCallbackLoseCount(String value) {
-                if (value != null) {
-                    lose.setText(value);
-                }
-            }
-        });
     }
 
     @Override

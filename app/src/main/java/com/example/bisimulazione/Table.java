@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -466,7 +465,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         noMoveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "Button clicked");
                 if (sNode != null && nTouched != null) {
                     DatabaseReference graphRef;
                     if (sNode.isLeftTable()) {
@@ -475,14 +473,12 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         graphRef = rightGraphRef;
                     }
                     if (controlNoMove(sNode)) {
-                        Log.i(TAG, "No move true");
                         roomNameRef.child("noMove").setValue(String.valueOf(false));
                         updateValidWeakMove();
                         refreshNodes(graphRef, sNode, nTouched);
                         controlConfiguration();
                         refreshTurnOf();
                     } else {
-                        Log.i(TAG, "No move false");
                         roomNameRef.child("noMove").setValue(String.valueOf(true));
                     }
                 } else {
@@ -493,7 +489,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private boolean controlNoMove(Node selectedNode) {
-        Log.i(TAG, "Control no move");
         if (selectedNode != null) {
             if (turnoDi.getText().toString().trim().equalsIgnoreCase(getString(R.string.table_defender))) {
                 if (coloreSpeciale.getText().toString().trim().equalsIgnoreCase(lastMoveColour.getText().toString().trim())) {
@@ -544,11 +539,9 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
             if (sNodeLeft != null && sNodeRight != null) {
                 Pair pair = new Pair(sNodeLeft, sNodeRight);
                 if (pairHashSet.contains(pair)) {
-                    Log.i(TAG, "Contiene pair");
                     Toast.makeText(this, getResources().getString(R.string.table_configuration_already_visited), Toast.LENGTH_LONG).show();
                     roomNameRef.child("gameInProgress").setValue(String.valueOf(false));
                 }
-                Log.i(TAG, "Aggiunta " + sNodeLeft.getId() + " e " + sNodeRight.getId());
                 pairHashSet.add(pair);
             }
         }

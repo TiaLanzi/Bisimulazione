@@ -11,19 +11,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
-import interfaces.CallbackGameCount;
+import interfaces.CallbackLoseCount;
+import interfaces.CallbackWinCount;
 
-public class MyAccount extends AppCompatActivity implements CallbackGameCount {
+public class MyAccount extends AppCompatActivity implements CallbackWinCount, CallbackLoseCount {
 
-    private FirebaseUser user;
+    private String playerName;
 
     private TextView winCount;
     private TextView loseCount;
@@ -46,66 +44,74 @@ public class MyAccount extends AppCompatActivity implements CallbackGameCount {
         String cognome;
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
+        FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
             email.setText(user.getEmail());
-            String fullName = user.getDisplayName();
-            assert fullName != null;
-            int index = fullName.indexOf(",");
-            cognome = fullName.substring(0, index);
-            nome = fullName.substring((index + 1));
+            playerName = user.getDisplayName();
+            assert playerName != null;
+            int index = playerName.indexOf(",");
+            cognome = playerName.substring(0, index);
+            nome = playerName.substring((index + 1));
             firstName.setText(nome);
             lastName.setText(cognome);
         }
 
-        setGameCount();
+        setWinCount();
+        setLoseCount();
     }
 
-    private void setGameCount() {
-        getGameCount(new CallbackGameCount() {
+    private void setWinCount() {
+        getWinCount(new CallbackWinCount() {
             @Override
             public void onCallbackWinCount(String value) {
-                winCount.setText(value);
-            }
-
-            @Override
-            public void onCallbackLoseCount(String value) {
-                loseCount.setText(value);
+                if (value != null) {
+                    winCount.setText(value);
+                }
             }
         });
     }
 
-    private void getGameCount(CallbackGameCount callback) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users");
-        reference.addValueEventListener(new ValueEventListener() {
+    private void getWinCount(CallbackWinCount callback) {
+        FirebaseDatabase.getInstance().getReference().child("users").child(playerName).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String fullName = Objects.requireNonNull(user.getDisplayName()).replace(",", "");
-                    if (Objects.requireNonNull(dataSnapshot.getKey()).equalsIgnoreCase(fullName)) {
-                        String win = Objects.requireNonNull(dataSnapshot.child("winCount").getValue()).toString();
-                        callback.onCallbackWinCount(win);
-                        String lose = Objects.requireNonNull(dataSnapshot.child("loseCount").getValue()).toString();
-                        callback.onCallbackLoseCount(lose);
-                    }
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child("winCount").getValue() != null) {
+                    callback.onCallbackWinCount(Objects.requireNonNull(snapshot.child("winCount").getValue()).toString().trim());
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
     }
 
-    @Override
-    public void onCallbackWinCount(String value) {
-
+    private void setLoseCount() {
+        getLoseCount(new CallbackLoseCount() {
+            @Override
+            public void onCallbackLoseCount(String value) {
+                if (value != null) {
+                    loseCount.setText(value);
+                }
+            }
+        });
     }
 
-    @Override
-    public void onCallbackLoseCount(String value) {
+    private void getLoseCount(CallbackLoseCount callback) {
+        FirebaseDatabase.getInstance().getReference().child("users").child(playerName).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child("loseCount").getValue() != null) {
+                    callback.onCallbackLoseCount(Objects.requireNonNull(snapshot.child("loseCount").getValue()).toString().trim());
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -114,5 +120,15 @@ public class MyAccount extends AppCompatActivity implements CallbackGameCount {
             this.finish();
         }
         return true;
+    }
+
+    @Override
+    public void onCallbackLoseCount(String value) {
+
+    }
+
+    @Override
+    public void onCallbackWinCount(String value) {
+
     }
 }
