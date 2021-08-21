@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -47,6 +48,7 @@ public class BugReport extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
+            Toast.makeText(this, getResources().getString(R.string.bug_report_msg_sent_successfully), Toast.LENGTH_LONG).show();
         }
     }
 

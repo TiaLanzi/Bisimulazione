@@ -108,7 +108,7 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
                 if (color != null) {
                     specialColour = color;
                     startActivity(roomName, false, specialColour);
-                    finish();
+                    this.finish();
                 }
             });
         });
@@ -162,7 +162,7 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
         intent.putExtra("player 1", player1);
         intent.putExtra("specialColour", specialColour);
         startActivity(intent);
-        finish();
+        this.finish();
     }
 
     private String remove(String roomN) {

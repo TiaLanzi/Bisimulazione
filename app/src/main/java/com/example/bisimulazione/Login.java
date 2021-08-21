@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -15,14 +16,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 
+import info.androidhive.fontawesome.FontTextView;
+
 public class Login extends AppCompatActivity {
 
     private EditText resetEmail;
-    private Button reset;
     private EditText username;
     private EditText pwd;
+
+    private Button reset;
+
+    private FontTextView closeIcon;
+
     private CheckBox rememberMe;
+
     private SharedPreferences.Editor editor;
+
     private FirebaseAuth auth;
 
     @Override
@@ -42,7 +51,7 @@ public class Login extends AppCompatActivity {
         notMemberYet.setOnClickListener(v -> {
             Intent intent = new Intent(Login.this, SignUp.class);
             startActivity(intent);
-            finish();
+            this.finish();
         });
 
         auth = FirebaseAuth.getInstance();
@@ -88,7 +97,7 @@ public class Login extends AppCompatActivity {
                             editor.commit();
                             Toast.makeText(Login.this, "Login successfully", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Login.this, MainActivity.class));
-                            finish();
+                            this.finish();
                         }).addOnFailureListener(e -> Toast.makeText(Login.this, "Login failed", Toast.LENGTH_SHORT).show());
             }
         });
@@ -100,6 +109,7 @@ public class Login extends AppCompatActivity {
             bottomSheetDialog.setCanceledOnTouchOutside(true);
             bottomSheetDialog.show();
             // initialize views in bottom sheet
+            closeIcon = bottomSheetDialog.findViewById(R.id.bottom_sheet_reset_pwd_close_icon);
             resetEmail = bottomSheetDialog.findViewById(R.id.bottom_sheet_reset_pwd_input);
             reset = bottomSheetDialog.findViewById(R.id.bottom_sheet_reset_pwd_reset_button);
             assert reset != null;
@@ -112,6 +122,13 @@ public class Login extends AppCompatActivity {
                             bottomSheetDialog.dismiss();
                         }
                     }));
+
+            closeIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bottomSheetDialog.dismiss();
+                }
+            });
         });
     }
 

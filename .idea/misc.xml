@@ -3,8 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Elbe Italia/AndroidStudioProjects/Bisimulazione/app/src/main/res/layout/activity_login.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Elbe Italia/AndroidStudioProjects/Bisimulazione/app/src/main/res/layout/activity_sign_up.xml" value="0.1" />
         <entry key="..\:/Users/Elbe Italia/AndroidStudioProjects/Bisimulazione/app/src/main/res/layout/activity_table.xml" value="0.20625" />
+        <entry key="..\:/Users/Elbe Italia/AndroidStudioProjects/Bisimulazione/app/src/main/res/layout/bottom_sheet_reset_pwd.xml" value="0.1" />
         <entry key="..\:/Users/Elbe Italia/AndroidStudioProjects/Bisimulazione/app/src/main/res/layout/end_game_dialog.xml" value="0.22239583333333332" />
         <entry key="..\:/Users/Elbe Italia/AndroidStudioProjects/Bisimulazione/app/src/main/res/layout/no_move_dialog.xml" value="0.22239583333333332" />
         <entry key="..\:/Users/Mattia Lanzi/AndroidStudioProjects/Bisimulazione/app/src/main/res/layout-v21/fragment_home.xml" value="0.13541666666666666" />

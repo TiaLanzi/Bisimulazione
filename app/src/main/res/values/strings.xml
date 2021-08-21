@@ -3,9 +3,9 @@
     <!--app name-->
     <string name="app_name">Bisimulazione</string>
 
-    <!--login activity-->
+    <!--login -->
     <string name="login_login_text_title">LOGIN</string>
-    <string name="login_username_text_header">Username</string>
+    <string name="login_mail_address_text_header">Indirizzo mail</string>
     <string name="login_password_text_header">Password</string>
     <string name="login_remember_me_text">Ricordami</string>
     <string name="login_sign_in_text_button">ACCEDI</string>
@@ -17,7 +17,8 @@
     <string name="login_username_input">prova@esempio.it</string>
     <string name="login_password_input">Inserisci qui la password…</string>
 
-    <!-- sign up activity-->
+    <!-- sign up -->
+    <string name="sign_up">Registrazione</string>
     <string name="sign_up_insert_name">Inserisci il tuo nome</string>
     <string name="sign_up_your_name_hint">Nome</string>
     <string name="sign_up_insert_surname">Inserisci il tuo cognome</string>
@@ -45,11 +46,12 @@
     <string name="msg_data_send_success">Dati inviati con successo</string>
 
     <!-- bug report-->
+    <string name="bug_report">Segnala un problema</string>
     <string name="bug_report_explanation_message">Mandaci un messaggio in cui riporti il problema che hai riscontrato:</string>
     <string name="bug_report_hint">Inserisci qui il testo</string>
     <string name="bug_report_send_message">Il messaggio verrà inviato a prova@mail.it\nGrazie per la segnalazione!</string>
     <string name="bug_report_send_button_text">INVIA</string>
-    <string name="bug_report">SEGNALA UN PROBLEMA</string>
+    <string name="bug_report_msg_sent_successfully">Il messaggio è stato inviato correttamente!</string>
 
     <!-- navigation -->
     <string name="navigation_navigation">Navigazione</string>
@@ -101,7 +103,7 @@
         FERMO, CLICCA SUL PULSANTE \"STAI FERMO\".</string>
 
     <!-- matchmaking room -->
-    <string name="matchmaking_room">Stanza pre-game</string>
+    <string name="matchmaking_room">Stanza pre-partita</string>
     <string name="matchmaking_room_create_room_text">CREA STANZA</string>
     <string name="matchmaking_room_player_unknown_text">Sconosciuto</string>
     <string name="matchmaking_room_creating_room_text">CREANDO LA STANZA…</string>
@@ -114,7 +116,7 @@
     <string name="bottom_sheet_reset_pwd_insert_mail">Inserisci il tuo indirizzo mail usato durante la registrazione:</string>
     <string name="bottom_sheet_reset_pwd_insert_mail_here">Inserisci il tuo indirizzo mail qui…</string>
     <string name="bottom_sheet_reset_pwd_reset">RESET</string>
-    <string name="bottom_sheet_reset_pwd_text">RESET PASSWORD</string>
+    <string name="bottom_sheet_reset_pwd_text">Reset password</string>
 
     <!-- directed graph -->
     <string name="directed_graph_attacker">attaccante</string>
@@ -151,7 +153,7 @@
         Presto saranno disponibili altri.</string>
 
     <!-- settings -->
-    <string name="settings">IMPOSTAZIONI</string>
+    <string name="settings">Impostazioni</string>
     <string name="settings_language">Scegli la lingua</string>
 
     <!-- language -->

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -46,6 +47,9 @@ public class SignUp extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.sign_up));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // initialize views
         Button signUp = findViewById(R.id.sign_up_sign_up_button);
@@ -194,6 +198,14 @@ public class SignUp extends AppCompatActivity {
         // ... and open it ...
         startActivity(intent);
         // ... and close this activity
-        finish();
+        this.finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent = new Intent(SignUp.this, Login.class);
+        startActivity(intent);
+        this.finish();
+        return true;
     }
 }
