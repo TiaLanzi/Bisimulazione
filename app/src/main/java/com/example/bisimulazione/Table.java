@@ -938,12 +938,26 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         lastMoveColour.setText(lmColour);
     }
 
+    private void showDialogTurnOf() {
+        String turn = turnoDi.getText().toString().trim();
+        if (turn.equalsIgnoreCase(getResources().getString(R.string.table_attacker))) {
+            if (playerName.equalsIgnoreCase(attacker.getText().toString().trim())) {
+                Toast.makeText(this, getResources().getString(R.string.table_your_turn), Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            if (playerName.equalsIgnoreCase(defender.getText().toString().trim())) {
+                Toast.makeText(this, getResources().getString(R.string.table_your_turn), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     private void setTurnOf() {
         getTurnOf(roomsRef.child(roomName), new CallbackTurnOf() {
             @Override
             public void onCallbackTurnOf(String turnOf) {
                 if (turnOf != null) {
                     turnoDi.setText(turnOf);
+                    showDialogTurnOf();
                 }
             }
         });
