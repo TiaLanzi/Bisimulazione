@@ -29,7 +29,7 @@ public class Settings extends AppCompatActivity {
         final String[] LANGUAGES = {getString(R.string.language_select), getString(R.string.language_italian), getString(R.string.language_english)};
         Spinner spinner = findViewById(R.id.settings_spinner);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, LANGUAGES);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, LANGUAGES);
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
