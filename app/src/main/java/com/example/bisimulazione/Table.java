@@ -1159,8 +1159,19 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void displayEndGameDialog() {
+        String winner;
+        if (turnoDi.getText().toString().trim().equalsIgnoreCase(getResources().getString(R.string.table_attacker))) {
+            winner = defender.getText().toString().trim();
+        } else {
+            winner = attacker.getText().toString().trim();
+        }
         AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        View v = getLayoutInflater().inflate(R.layout.end_game_dialog, null, false);
+        View v;
+        if (playerName.equalsIgnoreCase(winner)) {
+            v = getLayoutInflater().inflate(R.layout.end_game_dialog_winner, null, false);
+        } else {
+            v = getLayoutInflater().inflate(R.layout.end_game_dialog_loser, null, false);
+        }
         builder.setView(v);
         builder.setPositiveButton(getResources().getString(R.string.alert_continue), new DialogInterface.OnClickListener() {
             @Override

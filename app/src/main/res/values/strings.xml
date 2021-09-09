@@ -164,6 +164,8 @@
 
     <!-- alert end game -->
     <string name="alert_end_game">PARTITA TERMINATA</string>
+    <string name="alert_end_game_winner">CONGRATULAZIONI! HAI VINTO!</string>
+    <string name="alert_end_game_loser">PER QUESTA VOLTA HAI PERSO.</string>
     <string name="alert_continue">CONTINUA</string>
 
     <!-- navigation header -->

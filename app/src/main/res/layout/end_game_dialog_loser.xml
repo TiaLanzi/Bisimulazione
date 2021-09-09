@@ -11,4 +11,12 @@
         android:layout_gravity="center_horizontal|center_vertical"
         android:padding="16dp"
         android:text="@string/alert_end_game" />
+
+    <TextView
+        style="@style/Body2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:padding="16dp"
+        android:text="@string/alert_end_game_loser" />
 </LinearLayout>
