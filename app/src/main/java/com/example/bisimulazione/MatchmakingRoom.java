@@ -172,7 +172,8 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
 
     private int getNumber() {
         // return random number between 0 and 3
-        return (int) (Math.random() * 4);
+        //return (int) (Math.random() * 4);
+        return (int) (Math.random() * 3);
     }
 
     private String colourToString(int colour) {
@@ -197,7 +198,8 @@ public class MatchmakingRoom extends AppCompatActivity implements CallbackColour
     }
 
     private String setColour(DatabaseReference roomNameRef) {
-        int[] colours = {getResources().getColor(R.color.red), getResources().getColor(R.color.green), getResources().getColor(R.color.black),
+        //getResources().getColor(R.color.green),
+        int[] colours = {getResources().getColor(R.color.red),  getResources().getColor(R.color.black),
                 getResources().getColor(R.color.primaryColor)};
         // get random colour
         int colour = colours[getNumber()];

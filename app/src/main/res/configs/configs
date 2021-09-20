@@ -1,0 +1,17 @@
+## configuration file to create new tables
+# to create new configuration in the first line give a progressive number which will identify the configuration
+# then on a new line create the left table configuration, then on another new line the right table configuration
+# the configuration must follow these params (int id, int parentId, bool root, bool toLeft, bool toRight, Str colour)
+# id must be unique, must start from 1 and be progressive
+# if a node doesn't have a parent insert '0' --> this node will be the root
+# nodes colors can only be = {blue, black}
+# edges colors can only be = {red, green, blue, black}
+# to separate different node use ';' (also at the end)
+# never use spaces between nodes and their attributes
+# never leave blank lines within the declaration of a table
+# to write comments use the '#' at the beginning of the line (!! always before or after the declaration of a table, never in the middle !!)
+1
+1,0,false,false,blue;2,1,true,false,black;3,1,false,true,black;4,2,false,false,black;5,2,false,false,black;
+1,0,false,false,blue;2,1,true,false,black;3,1,false,true,black;4,2,false,false,black;5,2,false,false,black;
+# edges left
+# edges right
