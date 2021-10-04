@@ -1,13 +1,17 @@
 package com.example.bisimulazione;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -36,10 +40,23 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.Buffer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import interfaces.CallbackNoMove;
 import interfaces.CallbackEnabledLeftGraph;
@@ -144,35 +161,19 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         // set right graph reference
         rightGraphRef = roomNameRef.child("rightGraph");
 
-        selectedNodeLeft.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                refreshDirectedGraph(directedGraphLeft, s.toString().trim(), true);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                refreshDirectedGraph(directedGraphLeft, s.toString().trim(), false);
-            }
-        });
         // set info box
-        setInfoBox();
+        //setInfoBox();
         // enable / disable graphs
-        enableGraphs();
+        //enableGraphs();
         // end game
-        setEndGame();
+        //setEndGame();
 
         // initialize nodes
-        nodes = new Node[10];
+        //nodes = new Node[10];
         // set nodes
         setNodes();
         // initialize edges
-        edges = new Edge[14];
+        /*edges = new Edge[14];
         // set edges
         setEdges();
 
@@ -224,6 +225,23 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         LinearLayout layoutDirectedGraphRight = findViewById(R.id.table_right_directed_graph_layout);
         layoutDirectedGraphRight.addView(directedGraphRight);
 
+        selectedNodeLeft.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                refreshDirectedGraph(directedGraphLeft, s.toString().trim(), true);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                refreshDirectedGraph(directedGraphLeft, s.toString().trim(), false);
+            }
+        });
+
         selectedNodeRight.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -252,7 +270,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         });
 
         // initialize pair hash set
-        pairHashSet = new HashSet<>();
+        pairHashSet = new HashSet<>(); */
     }
 
     private void refreshDirectedGraph(DirectedGraph directedGraph, String selectedNode, boolean bool) {
@@ -313,11 +331,13 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         return appoggio;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void setNodes() {
+        readConfigFile();
         int shiftStartVertical = 200;
         // left graph
         // initialize root node
-        Node root = new Node(1, 0, shiftStartVertical, true, false, false, true, getResources().getColor(R.color.primaryColor));
+        /*Node root = new Node(1, 0, shiftStartVertical, true, false, false, true, getResources().getColor(R.color.primaryColor));
         // assign root node to index 0 of nodes array
         nodes[0] = root;
         Node second = new Node(2, root.getX(), root.getY(), false, true, false, true, getResources().getColor(R.color.black));
@@ -339,7 +359,158 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         Node fourthR = new Node(4, second.getX(), second.getY(), false, false, false, false, getResources().getColor(R.color.black));
         nodes[8] = fourthR;
         Node fifthR = new Node(5, thirdR.getX(), thirdR.getY(), false, false, false, false, getResources().getColor(R.color.black));
-        nodes[9] = fifthR;
+        nodes[9] = fifthR;*/
+    }
+
+    private void readConfigFile() {
+        BufferedReader bufferedReader;
+
+        try {
+            final InputStream file = getAssets().open("configs");
+            bufferedReader = new BufferedReader(new InputStreamReader(file));
+            String line = bufferedReader.readLine();
+            while (line != null) {
+                System.out.println("PROVA  " + line);
+                line = bufferedReader.readLine();
+            }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+        /*
+        boolean finished = false;
+        int configNumber = 1;
+
+        try {
+            InputStream inputStream = getResources().openRawResource(R.raw.configs);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            do (line = reader.readLine()) {
+                System.out.println(line);
+                if (line != null) {
+                    char first = line.charAt(0);
+                    if (first == '#') {
+                        System.out.println("First is #");
+                        reader.readLine();
+                        //burnLine(reader, 1);
+                    } else if (first >= 48 && first <= 57) {
+                        int number = (int) first - '0';
+                        if (configNumber == number) {
+                            reader.readLine();
+                            //burnLine(reader, 1);
+                            String nextLineLeft = reader.readLine();
+                            reader.readLine();
+                            //burnLine(reader, 1);
+                            String nextLineRight = reader.readLine();
+                            generateNodes(nextLineLeft, nextLineRight);
+                            finished = true;
+                        } else {
+                            reader.readLine();
+                            reader.readLine();
+                            reader.readLine();
+                            reader.readLine();
+                            reader.readLine();
+                            reader.readLine();
+                        }
+                    }
+                } else {
+                    finished = true;
+                }
+            } while (line != null);
+            reader.close();
+        } catch (FileNotFoundException fileNotFoundException) {
+            Log.e(TAG, "File not found exception.");
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            Log.e(TAG, "Index out of bounds exception.");
+        } catch (IOException ioException) {
+            Log.e(TAG, "IOException.");
+        } */
+
+        /*try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            String line;
+            while (!finished) {
+                if ((String) Files.readAllLines(Paths.get(fileName)).get(counter) != null) {
+                    line = (String) Files.readAllLines(Paths.get(fileName)).get(counter);
+                    char first = line.charAt(0);
+                    if (first == '#') {
+                        counter++;
+                        continue;
+                    } else if (first >= 48 && first <= 57) {
+                        int number = (int) first - '0';
+                        if (configNumber == number) {
+                            String nextLineLeft = Files.readAllLines(Paths.get(fileName)).get((counter + 1));
+                            String nextLineRight = Files.readAllLines(Paths.get(fileName)).get((counter + 2));
+                            generateNodes(nextLineLeft, nextLineRight);
+                            finished = true;
+                        } else {
+                            counter += 3;
+                            continue;
+                        }
+                    }
+                } else {
+                    finished = true;
+                }
+            }
+            reader.close();
+        } catch (FileNotFoundException fileNotFoundException) {
+            Log.e(TAG, "File not found exception.");
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            Log.e(TAG, "Index out of bounds exception.");
+        } catch (IOException ioException) {
+            Log.e(TAG, "IOException.");
+        } */
+
+        /*try {
+            InputStream inputStream = this.getResources().openRawResource(R.raw.configs);
+            if (new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines().toString() != null) {
+            String line = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines().toString();
+            System.out.println("QUI" + line);
+            /*while (!finished) {
+                if ((String) Files.readAllLines(Paths.get(fileName)).get(counter) != null) {
+                    line = (String) Files.readAllLines(Paths.get(fileName)).get(counter);
+                    char first = line.charAt(0);
+                    if (first == '#') {
+                        counter++;
+                        continue;
+                    } else if (first >= 48 && first <= 57) {
+                        int number = (int) first - '0';
+                        if (configNumber == number) {
+                            String nodesLineLeft = Files.readAllLines(Paths.get(fileName)).get(counter + 1);
+                            String nodesLineRight = Files.readAllLines(Paths.get(fileName)).get(counter + 2);
+                            generateNodes(nodesLineLeft, nodesLineRight);
+                            finished = true;
+                        } else {
+                            // skip lines of config
+                            counter += 3;
+                            continue;
+                        }
+                    }
+                } else {
+                    finished = true;
+                }
+            }
+            //reader.close();
+        //} catch (FileNotFoundException fileNotFoundException) {
+            //Log.e(TAG, "File non trovato.");
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            Log.e(TAG, "Nessuna configurazione trovata.");
+        //}
+        } */
+
+    /*private void burnLine(BufferedReader reader, int counter) {
+        try {
+            for (int i = 0; i < counter; i++) {
+                reader.readLine();
+            }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }*/
+
+    private void generateNodes(String nodesLineLeft, String nodesLineRight) {
+        System.out.println(nodesLineLeft);
+        System.out.println(nodesLineRight);
     }
 
     private void setEdges() {
