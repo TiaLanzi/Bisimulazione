@@ -4,8 +4,6 @@ import android.content.res.Resources;
 
 import androidx.annotation.NonNull;
 
-import com.example.bisimulazione.R;
-
 public class Node {
 
     private static final String TAG = "Bisimulazione";

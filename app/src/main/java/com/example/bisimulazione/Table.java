@@ -433,32 +433,13 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         for (int i = 0; i < nodesL.length; i++) {
             Node node = createNode(nodesLeft[i], true);
             nodesL[i] = node;
-            node = null;
         }
-
-        for (Node node : nodesL) {
-            if (node != null) {
-                System.out.println(node.toString());
-            } else {
-                System.out.println("NULL");
-            }
-        }
-
-        System.out.println("\n****\n");
 
         String[] nodesRight = nodesLineRight.split(";");
         nodesR = new Node[nodesRight.length];
         for (int j = 0; j < nodesR.length; j++) {
             Node n = createNode(nodesLeft[j], false);
             nodesR[j] = n;
-            n = null;
-        }
-        for (Node n : nodesR) {
-            if (n != null) {
-                System.out.println(n.toString());
-            } else {
-                System.out.println("NULL");
-            }
         }
     }
 
