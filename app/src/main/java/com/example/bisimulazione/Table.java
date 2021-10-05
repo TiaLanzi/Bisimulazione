@@ -163,7 +163,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         // set edges for left graph
         directedGraphLeft.setEdges(edgesL);
 
-        //setOutgoingEdgesLeft();
+        // must be implemented following config pattern
+        setOutgoingEdgesLeft();
 
         leftGraphRef = roomNameRef.child("leftGraph");
         directedGraphLeft.setReference(leftGraphRef);
@@ -186,7 +187,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         directedGraphRight.setNodes(nodesR);
         directedGraphRight.setEdges(edgesR);
 
-        //setOutgoingEdgesRight();
+        // must be implemented following config pattern
+        setOutgoingEdgesRight();
 
         rightGraphRef = roomNameRef.child("rightGraph");
         directedGraphRight.setReference(rightGraphRef);
