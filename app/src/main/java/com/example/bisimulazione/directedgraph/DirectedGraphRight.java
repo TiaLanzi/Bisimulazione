@@ -56,10 +56,15 @@ public class DirectedGraphRight extends DirectedGraph implements CallbackNodeCol
 
     @Override
     protected void drawEdges(Canvas canvas) {
-        for (Node n : this.getNodes()) {
-            if (n != null)
-            System.out.println(n.toString());
-        } /*
+        /*for (Edge e : this.getEdges()) {
+            System.out.println("ID: " + e.getId() + ", " + e.isLeftTable());
+            if (e.getSource() != null && e.getDestination() != null) {
+                System.out.println("SOURCE: " + e.getSource().toString());
+                System.out.println("DESTINATION: " + e.getDestination().toString());
+            } else {
+                System.out.println("NULL.");
+            }
+        } */
         if (this.getEdges() != null) {
             for (int i = 0; i < this.getEdges().length; i++) {
                 if (this.getEdges()[i] != null) {
@@ -173,7 +178,7 @@ public class DirectedGraphRight extends DirectedGraph implements CallbackNodeCol
                     }
                 }
             }
-        }*/
+        }
     }
 
     @Override
