@@ -378,10 +378,8 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                         int number = (int) first - '0';
                         if (configNumber == number) {
                             String[] config = readConfig(bufferedReader);
-                            for (String s : config) {
-                                if (s != null)
-                                    Log.i(TAG, s);
-                            }
+                            generateNodes(config[0], config[1]);
+                            generateEdges(config[2], config[3]);
                             foundConfig = true;
                         } else {
                             skipConfig(bufferedReader);
@@ -413,7 +411,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         }
     }
 
-    @NonNull
     private String[] readConfig(BufferedReader bufferedReader) {
         int counter = 0;
         String line;
@@ -431,8 +428,102 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void generateNodes(String nodesLineLeft, String nodesLineRight) {
-        System.out.println(nodesLineLeft);
-        System.out.println(nodesLineRight);
+        String[] nodesLeft = nodesLineLeft.split(";");
+        nodesL = new Node[nodesLeft.length];
+        for (int i = 0; i < nodesL.length; i++) {
+            Node node = createNode(nodesLeft[i], true);
+            nodesL[i] = node;
+            node = null;
+        }
+
+        for (Node node : nodesL) {
+            if (node != null) {
+                System.out.println(node.toString());
+            } else {
+                System.out.println("NULL");
+            }
+        }
+
+        System.out.println("\n****\n");
+
+        String[] nodesRight = nodesLineRight.split(";");
+        nodesR = new Node[nodesRight.length];
+        for (int j = 0; j < nodesR.length; j++) {
+            Node n = createNode(nodesLeft[j], false);
+            nodesR[j] = n;
+            n = null;
+        }
+        for (Node n : nodesR) {
+            if (n != null) {
+                System.out.println(n.toString());
+            } else {
+                System.out.println("NULL");
+            }
+        }
+    }
+
+    private Node createNode(String node, boolean leftTable) {
+        String[] attributes = node.split(",");
+        int id = Integer.parseInt(attributes[0]);
+        boolean root = false;
+        int x = 0;
+        int y = 200;
+        if (Integer.parseInt(attributes[1]) == 0) {
+            root = true;
+        } else {
+            Node parent = getNodeFromId(Integer.parseInt(attributes[1]), leftTable);
+            x = parent.getX();
+            y = parent.getY();
+        }
+        boolean toLeft = Boolean.parseBoolean(attributes[2]);
+        boolean toRight = Boolean.parseBoolean(attributes[3]);
+        int colour = stringToColour(attributes[4]);
+        Node n = new Node(id, x, y, root, toLeft, toRight, leftTable, colour);
+        return n;
+    }
+
+    private Node getNodeFromId(int id, boolean leftTable) {
+        Node[] nodes;
+        if (leftTable) {
+            nodes = nodesL;
+        } else {
+            nodes = nodesR;
+        }
+
+        if (nodes != null) {
+            for (Node node : nodes) {
+                if (node != null) {
+                    if (node.getId() == id) {
+                        return node;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private int stringToColour(String colour) {
+        int colore = -1;
+        switch (colour) {
+            case "red":
+                colore = -237502;
+                break;
+            case "green":
+                colore = -16711895;
+                break;
+            case "black":
+                colore = -13421773;
+                break;
+            case "blue":
+                colore = -15774591;
+                break;
+            default:
+                break;
+        }
+        return colore;
+    }
+
+    private void generateEdges(String edgesLineLeft, String edgesLineRight) {
     }
 
     private void setEdges() {

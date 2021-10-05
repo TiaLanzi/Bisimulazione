@@ -2,6 +2,10 @@ package com.example.bisimulazione.directedgraph;
 
 import android.content.res.Resources;
 
+import androidx.annotation.NonNull;
+
+import com.example.bisimulazione.R;
+
 public class Node {
 
     private static final String TAG = "Bisimulazione";
@@ -87,6 +91,10 @@ public class Node {
         this.root = root;
     }
 
+    private boolean isRoot() {
+        return this.root;
+    }
+
     protected void setAlreadyDrawn(boolean drawn) {
         this.alreadyDrawn = drawn;
     }
@@ -101,5 +109,33 @@ public class Node {
 
     public Edge[] getOutgoingEdges() {
         return this.outgoingEdges;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Node [ID: " + this.getId() + ", x: " + this.getX() + ", y: " + this.getY() + ", leftTable: "
+                + this.isLeftTable() + ", root: " + this.isRoot() + ", colour: " + colourToString(this.getColor()) + "]";
+    }
+
+    private String colourToString(int colour) {
+        String colore = "";
+        switch (colour) {
+            case -237502:
+                colore = "red";
+                break;
+            case -16711895:
+                colore = "green";
+                break;
+            case -13421773:
+                colore = "black";
+                break;
+            case -15774591:
+                colore = "blue";
+                break;
+            default:
+                break;
+        }
+        return colore;
     }
 }
