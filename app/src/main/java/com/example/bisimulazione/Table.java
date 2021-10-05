@@ -363,150 +363,72 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void readConfigFile() {
+        boolean foundConfig = false;
+        int configNumber = 1;
         BufferedReader bufferedReader;
 
         try {
             final InputStream file = getAssets().open("configs");
             bufferedReader = new BufferedReader(new InputStreamReader(file));
             String line = bufferedReader.readLine();
-            while (line != null) {
-                System.out.println("PROVA  " + line);
-                line = bufferedReader.readLine();
+            while (line != null && !foundConfig) {
+                char first = line.charAt(0);
+                if (first != '#') {
+                    if (first >= 48 && first <= 57) {
+                        int number = (int) first - '0';
+                        if (configNumber == number) {
+                            String[] config = readConfig(bufferedReader);
+                            for (String s : config) {
+                                if (s != null)
+                                    Log.i(TAG, s);
+                            }
+                            foundConfig = true;
+                        } else {
+                            skipConfig(bufferedReader);
+                        }
+                    }
+                } else {
+                    // read \n character and go to next line
+                    line = bufferedReader.readLine();
+                }
             }
+            bufferedReader.close();
         } catch (IOException ioException) {
+            Log.e(TAG, "IOException.");
             ioException.printStackTrace();
+
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            Log.e(TAG, "Index out of bounds exception.");
         }
     }
-        /*
-        boolean finished = false;
-        int configNumber = 1;
 
-        try {
-            InputStream inputStream = getResources().openRawResource(R.raw.configs);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            do (line = reader.readLine()) {
-                System.out.println(line);
-                if (line != null) {
-                    char first = line.charAt(0);
-                    if (first == '#') {
-                        System.out.println("First is #");
-                        reader.readLine();
-                        //burnLine(reader, 1);
-                    } else if (first >= 48 && first <= 57) {
-                        int number = (int) first - '0';
-                        if (configNumber == number) {
-                            reader.readLine();
-                            //burnLine(reader, 1);
-                            String nextLineLeft = reader.readLine();
-                            reader.readLine();
-                            //burnLine(reader, 1);
-                            String nextLineRight = reader.readLine();
-                            generateNodes(nextLineLeft, nextLineRight);
-                            finished = true;
-                        } else {
-                            reader.readLine();
-                            reader.readLine();
-                            reader.readLine();
-                            reader.readLine();
-                            reader.readLine();
-                            reader.readLine();
-                        }
-                    }
-                } else {
-                    finished = true;
-                }
-            } while (line != null);
-            reader.close();
-        } catch (FileNotFoundException fileNotFoundException) {
-            Log.e(TAG, "File not found exception.");
-        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-            Log.e(TAG, "Index out of bounds exception.");
-        } catch (IOException ioException) {
-            Log.e(TAG, "IOException.");
-        } */
-
-        /*try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
-            String line;
-            while (!finished) {
-                if ((String) Files.readAllLines(Paths.get(fileName)).get(counter) != null) {
-                    line = (String) Files.readAllLines(Paths.get(fileName)).get(counter);
-                    char first = line.charAt(0);
-                    if (first == '#') {
-                        counter++;
-                        continue;
-                    } else if (first >= 48 && first <= 57) {
-                        int number = (int) first - '0';
-                        if (configNumber == number) {
-                            String nextLineLeft = Files.readAllLines(Paths.get(fileName)).get((counter + 1));
-                            String nextLineRight = Files.readAllLines(Paths.get(fileName)).get((counter + 2));
-                            generateNodes(nextLineLeft, nextLineRight);
-                            finished = true;
-                        } else {
-                            counter += 3;
-                            continue;
-                        }
-                    }
-                } else {
-                    finished = true;
-                }
+    private void skipConfig(BufferedReader bufferedReader) {
+        for (int i = 0; i < 8; i++) {
+            try {
+                bufferedReader.readLine();
+            } catch (IOException ioException) {
+                Log.e(TAG, "IOException");
+                ioException.printStackTrace();
             }
-            reader.close();
-        } catch (FileNotFoundException fileNotFoundException) {
-            Log.e(TAG, "File not found exception.");
-        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-            Log.e(TAG, "Index out of bounds exception.");
-        } catch (IOException ioException) {
-            Log.e(TAG, "IOException.");
-        } */
-
-        /*try {
-            InputStream inputStream = this.getResources().openRawResource(R.raw.configs);
-            if (new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines().toString() != null) {
-            String line = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines().toString();
-            System.out.println("QUI" + line);
-            /*while (!finished) {
-                if ((String) Files.readAllLines(Paths.get(fileName)).get(counter) != null) {
-                    line = (String) Files.readAllLines(Paths.get(fileName)).get(counter);
-                    char first = line.charAt(0);
-                    if (first == '#') {
-                        counter++;
-                        continue;
-                    } else if (first >= 48 && first <= 57) {
-                        int number = (int) first - '0';
-                        if (configNumber == number) {
-                            String nodesLineLeft = Files.readAllLines(Paths.get(fileName)).get(counter + 1);
-                            String nodesLineRight = Files.readAllLines(Paths.get(fileName)).get(counter + 2);
-                            generateNodes(nodesLineLeft, nodesLineRight);
-                            finished = true;
-                        } else {
-                            // skip lines of config
-                            counter += 3;
-                            continue;
-                        }
-                    }
-                } else {
-                    finished = true;
-                }
-            }
-            //reader.close();
-        //} catch (FileNotFoundException fileNotFoundException) {
-            //Log.e(TAG, "File non trovato.");
-        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-            Log.e(TAG, "Nessuna configurazione trovata.");
-        //}
-        } */
-
-    /*private void burnLine(BufferedReader reader, int counter) {
-        try {
-            for (int i = 0; i < counter; i++) {
-                reader.readLine();
-            }
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
         }
-    }*/
+    }
+
+    @NonNull
+    private String[] readConfig(BufferedReader bufferedReader) {
+        int counter = 0;
+        String line;
+        String[] config = new String[4];
+        for (int i = 0; i < 4; i++) {
+            try {
+                line = bufferedReader.readLine();
+                config[counter] = line;
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            counter++;
+        }
+        return config;
+    }
 
     private void generateNodes(String nodesLineLeft, String nodesLineRight) {
         System.out.println(nodesLineLeft);

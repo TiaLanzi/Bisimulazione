@@ -13,5 +13,5 @@
 1
 1,0,false,false,blue;2,1,true,false,black;3,1,false,true,black;4,2,false,false,black;5,2,false,false,black;
 1,0,false,false,blue;2,1,true,false,black;3,1,false,true,black;4,2,false,false,black;5,2,false,false,black;
-# edges left
-# edges right
+2,0,false,false,blue;2,1,true,false,black;3,1,false,true,black;4,2,false,false,black;5,2,false,false,black;
+3,0,false,false,blue;2,1,true,false,black;3,1,false,true,black;4,2,false,false,black;5,2,false,false,black;
