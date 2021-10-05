@@ -1,10 +1,7 @@
 package com.example.bisimulazione;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
@@ -41,22 +38,13 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.Buffer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import interfaces.CallbackNoMove;
 import interfaces.CallbackEnabledLeftGraph;
@@ -96,9 +84,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
 
     private com.example.bisimulazione.directedgraph.DirectedGraphLeft directedGraphLeft;
     private com.example.bisimulazione.directedgraph.DirectedGraphRight directedGraphRight;
-
-    private Node[] nodes;
-    private Edge[] edges;
 
     private Node[] nodesL;
     private Edge[] edgesL;
@@ -168,22 +153,10 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         // end game
         setEndGame();
 
-        // initialize nodes
-        //nodes = new Node[10];
-        // set nodes
-        setNodes();
-        // initialize edges
-        edges = new Edge[14];
-        // set edges
-        //setEdges();
+        // set nodes and edges
+        setNodesAndEdges();
 
-        boolean left = true;
-        // get node of left graph
-        //nodesL = divideNodes(nodes, left);
-        // get edges of left graph
-        //edgesL = divideEdges(edges, left);
         // initialize directed graph left
-        //directedGraphLeft = findViewById(R.id.table_left_table_directed_graph);
         directedGraphLeft = new DirectedGraphLeft(this);
         // set nodes for left graph
         directedGraphLeft.setNodes(nodesL);
@@ -207,10 +180,6 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
                 return true;
             }
         });
-
-        left = false;
-        //nodesR = divideNodes(nodes, left);
-        edgesR = divideEdges(edges, left);
 
         directedGraphRight = new DirectedGraphRight(this);
 
@@ -307,32 +276,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         setNoMove();
     }
 
-    private Edge[] divideEdges(Edge[] edges, boolean left) {
-        Edge[] appoggio = new Edge[7];
-        if (left) {
-            System.arraycopy(edges, 0, appoggio, 0, 7);
-        } else {
-            for (int i = 7; i < 14; i++) {
-                appoggio[i - 7] = edges[i];
-            }
-        }
-        return appoggio;
-    }
-
-    /*private Node[] divideNodes(Node[] nodes, boolean left) {
-        Node[] appoggio = new Node[5];
-        if (left) {
-            System.arraycopy(nodes, 0, appoggio, 0, 5);
-        } else {
-            for (int i = 5; i < 10; i++) {
-                appoggio[i - 5] = nodes[i];
-            }
-        }
-        return appoggio;
-    }*/
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void setNodes() {
+    private void setNodesAndEdges() {
         readConfigFile();
     }
 
@@ -412,7 +356,7 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
         String[] nodesRight = nodesLineRight.split(";");
         nodesR = new Node[nodesRight.length];
         for (int j = 0; j < nodesR.length; j++) {
-            Node n = createNode(nodesLeft[j], false);
+            Node n = createNode(nodesRight[j], false);
             nodesR[j] = n;
         }
     }
@@ -479,43 +423,32 @@ public class Table extends AppCompatActivity implements CallbackTurnOf, Callback
     }
 
     private void generateEdges(String edgesLineLeft, String edgesLineRight) {
+        String[] edgesLeft = edgesLineLeft.split(";");
+        edgesL = new Edge[edgesLeft.length];
+        for (int i = 0; i < edgesL.length; i++) {
+            Edge edge = createEdge(edgesLeft[i], true);
+            edgesL[i] = edge;
+        }
+
+        String[] edgesRight = edgesLineRight.split(";");
+        edgesR = new Edge[edgesRight.length];
+        for (int j = 0; j < edgesR.length; j++) {
+            Edge e = createEdge(edgesRight[j], false);
+            edgesR[j] = e;
+        }
     }
 
-    /*private void setEdges() {
-        // left graph
-        // initialize first edge
-        Edge uno = new Edge(1, nodesL[0], nodesL[1], getResources().getColor(R.color.red), true, true, false);
-        // assign first edge to index 0 of edges array
-        edges[0] = uno;
-        Edge due = new Edge(2, nodesL[0], nodesL[2], getResources().getColor(R.color.red), true, true, false);
-        edges[1] = due;
-        Edge tre = new Edge(3, nodesL[1], nodesL[0], getResources().getColor(R.color.green), true, false, true);
-        edges[2] = tre;
-        Edge quattro = new Edge(4, nodes[2], nodes[0], getResources().getColor(R.color.green), true, false, true);
-        edges[3] = quattro;
-        Edge cinque = new Edge(5, nodes[2], nodes[4], getResources().getColor(R.color.black), true, true, true);
-        edges[4] = cinque;
-        Edge sei = new Edge(6, nodes[1], nodes[3], getResources().getColor(R.color.primaryColor), true, true, true);
-        edges[5] = sei;
-        Edge sette = new Edge(7, nodes[4], nodes[3], getResources().getColor(R.color.primaryColor), true, false, true);
-        edges[6] = sette;
-
-        // right graph
-        Edge unoR = new Edge(1, nodes[5], nodes[6], getResources().getColor(R.color.red), false, true, false);
-        edges[7] = unoR;
-        Edge dueR = new Edge(2, nodes[5], nodes[7], getResources().getColor(R.color.red), false, true, false);
-        edges[8] = dueR;
-        Edge treR = new Edge(3, nodes[7], nodes[5], getResources().getColor(R.color.green), false, false, true);
-        edges[9] = treR;
-        Edge quattroR = new Edge(4, nodes[9], nodes[5], getResources().getColor(R.color.green), false, false, false);
-        edges[10] = quattroR;
-        Edge cinqueR = new Edge(5, nodes[6], nodes[8], getResources().getColor(R.color.primaryColor), false, true, true);
-        edges[11] = cinqueR;
-        Edge seiR = new Edge(6, nodes[9], nodes[8], getResources().getColor(R.color.primaryColor), false, false, true);
-        edges[12] = seiR;
-        Edge setteR = new Edge(7, nodes[7], nodes[9], getResources().getColor(R.color.black), false, true, true);
-        edges[13] = setteR;
-    }*/
+    private Edge createEdge(String edge, boolean leftTable) {
+        String[] attributes = edge.split(",");
+        int id = Integer.parseInt(attributes[0]);
+        Node source = getNodeFromId(Integer.parseInt(attributes[1]), leftTable);
+        Node destination = getNodeFromId(Integer.parseInt(attributes[2]), leftTable);
+        int colour = stringToColour(attributes[3]);
+        boolean toBottom = Boolean.parseBoolean(attributes[4]);
+        boolean line = Boolean.parseBoolean(attributes[5]);
+        Edge e = new Edge(id, source, destination, colour, leftTable, toBottom, line);
+        return e;
+    }
 
     private void setOutgoingEdgesLeft() {
         // set outgoing edges

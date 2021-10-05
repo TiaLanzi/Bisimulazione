@@ -56,9 +56,14 @@ public class DirectedGraphRight extends DirectedGraph implements CallbackNodeCol
 
     @Override
     protected void drawEdges(Canvas canvas) {
+        for (Node n : this.getNodes()) {
+            if (n != null)
+            System.out.println(n.toString());
+        } /*
         if (this.getEdges() != null) {
             for (int i = 0; i < this.getEdges().length; i++) {
                 if (this.getEdges()[i] != null) {
+                    System.out.println("EDGE ID: " + this.getEdges()[i]);
                     // coordinates of centre of first vertex
                     Point pointOne = new Point(this.getEdges()[i].getSource().getX(), this.getEdges()[i].getSource().getY());
                     // coordinates of centre of second vertex
@@ -168,7 +173,7 @@ public class DirectedGraphRight extends DirectedGraph implements CallbackNodeCol
                     }
                 }
             }
-        }
+        }*/
     }
 
     @Override
