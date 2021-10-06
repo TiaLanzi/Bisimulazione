@@ -110,9 +110,14 @@ Assumiamo che \textit{P} e \textit{Q} siano stati in un LTS. Per ogni azione di 
 dove ($\xrightarrow{\tau}$)* indica la relazione riflessiva e transitiva $\xrightarrow{\tau}$.
 
 \section{Dispositivi Android}
-Secondo l'articolo riportato da Ericsson Mobility Report[4] sono 5.9 miliardi le persone nel mondo che possiedono un telefonino ed il numero di abbonamenti LTE risulta essere in crescita costante.\\
-Tra questi emergono i dispositivi con sistema operativo Android, che risulta essere il sistema operativo più diffuso al mondo per quanto riguarda i dispositivi mobili (Figura 1.5). I fattori che hanno determinato questo primato di Android sono i prezzi contenuti per i mercati emergenti e la disponibilità di poter usufruire di migliaia di app per la salute e per l'istruzione.\\
-Android, più di qualunque altra piattaforma per dispositivi mobili, aiuta le persone ad accedere alle informazioni e a più opportunità.[5]
+Secondo l'articolo riportato da Ericsson Mobility Report sono 5.9 miliardi le persone nel mondo che possiedono un telefonino ed il numero di abbonamenti LTE risulta essere in crescita costante.\\
+Tra questi emergono i dispositivi con sistema operativo Android, che risulta essere il sistema operativo più diffuso al mondo per quanto riguarda i dispositivi mobili (Figura 1.1). I fattori che hanno determinato questo primato di Android sono i prezzi contenuti per i mercati emergenti e la disponibilità di poter usufruire di migliaia di app per la salute e per l'istruzione.\\
+Android, più di qualunque altra piattaforma per dispositivi mobili, aiuta le persone ad accedere alle informazioni e a più opportunità.
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{images/Smartphone Android.png}
+\caption{Grafico smartphone con sistema operativo Android.}
+\end{figure}
 
 \section{Obiettivo dello stage}
 Come già anticipato, l'obiettivo dello stage è stato quello di implementare un'applicazione per dispositivi mobili che possa essere utilizzata come sostegno all'insegnamento e all'apprendimento del concetto della bisimulazione. Per lo sviluppo del progetto è stato scelto di programmare utilizzando l'\textbf{IDE} (\textit{integrated development environment})  \textbf{Android Studio}, un ambiente di sviluppo integrato adibito per la creazione di applicazioni Android, basato sul linguaggio \textbf{Java} per il \textit{backend} e sull'\textbf{XML} (\textit{extensible Markup Language}) per il \textit{frontend}. Android Studio offre inoltre un ampio supporto a serivizi di terze parti, in particolare ai serivizi di \textbf{Google}, tra cui \textbf{Firebase}, utilizzato principalmente come \textit{Realtime Database}.
@@ -150,7 +155,11 @@ La prima eccezione viene lanciata nel momento in cui la password non è sufficie
 Per quanto riguarda l'eccezione \textit{FirebaseAuthInvalidCredentialsException} essa viene lanciata se l'indirizzo email inserito non segue il pattern corretto.\\
 Infine l'ultima eccezione viene lanciata se è già presente un account con l'indirizzo mail inserito dall'utente.\\
 Ogni eccezione viene gestita da un blocco catch specifico che provvede a mostrare all'utente messaggi differenti in modo da spiegare le cause degli errori.\\
- Se il processo va a buon fine, questa funzione autentica anche l'utente all'interno dell'applicazione; inoltre, le generalità inserite dall'utente vengono memorizzate all'interno del Realtime Database di Firebase: viene creato un oggetto \textit{map} di tipo HashMap<String, String> a cui vengono aggiunti tramite metodo put() tutte le informazioni necessarie e poi salvate nel databse. L'utente sarà aggiunto all'interno del nodo \textit{users}, come rappresentato nella figura XXX.
+ Se il processo va a buon fine, questa funzione autentica anche l'utente all'interno dell'applicazione; inoltre, le generalità inserite dall'utente vengono memorizzate all'interno del Realtime Database di Firebase: viene creato un oggetto \textit{map} di tipo HashMap<String, String> a cui vengono aggiunti tramite metodo put() tutte le informazioni necessarie e poi salvate nel databse. L'utente sarà aggiunto all'interno del nodo \textit{users}, come rappresentato nella figura 2.1.
+\begin{figure}[h]
+\includegraphics{images/Users node.png}
+\caption{Creazione di un utente nel database.}
+\end{figure}
 
 \subsection{Autenticazione}
 L'autenticazione dell'utente all'interno dell'applicazione per utilizzare i servizi offerti da Firebase viene gestita dalla classe \textit{Login}. L'autenticazione avrà successo solo se l'utente in precedenza si è già registrato; in caso contrario non si potrà accedere e dunque non sarà reso possibile l'utilizzo dell'applicazione \textbf{Bisimulazione}.\\
@@ -174,7 +183,12 @@ Un aspetto fondamentale che ha favorito l'ultilizzo del Realtime Databsse come s
 
 \subsection{Scrittura dati}
 Per l'operazione di scrittura all'interno del database viene utlizzato il metodo \textit{setValue()} che permette di salvare il dato passato come argomento in un riferimento specifico, sostituendo qualsiasi dato esistente presente in quel percorso.\\
-Questo metodo è stato utilizzato in maniera molto frequente e un esempio chiaro del suo funzionamento è possibile trovarlo nella classe Java \textbf{MatchmakingRoom}: qui quando viene creata una partita si passa al riferimento della partita stessa tutte le informazioni poi smistate nei vari nodi figlio, portando ad un risultato come quello in figura \textbf{xxx!!!!}.
+Questo metodo è stato utilizzato in maniera molto frequente e un esempio chiaro del suo funzionamento è possibile trovarlo nella classe Java \textbf{MatchmakingRoom}: qui quando viene creata una partita si passa al riferimento della partita stessa tutte le informazioni poi smistate nei vari nodi figlio.\\
+Ogni operazione di scrittura genera un nodo figlio di uno dei tre nodi principali del database rappresentati in figura 2.2.
+\begin{figure}[h]
+\includegraphics{images/Main nodes.png}
+\caption{Nodi principali del database}
+\end{figure}
 
 \subsection{Lettura dati}
 La lettura dei dati salvati all'interno del database è fondamentale per la creazione, lo sviluppo e il termine delle sfide in tempo reale.\\
@@ -259,7 +273,12 @@ All'interno del file sono descritte le specifiche da seguire per poter creare un
 \section{Interazione con Realtime Database}
 \subsection{Preparazione}
 Per preparare la sfida tra i due avversari viene inviata al database di Firebase una struttura di base che viene aggiornata durante la partita in base alle mosse degli sfidanti.\\
-Una volta creata la partita dall'utente viene creato all'interno del nodo \textbf{rooms} una stanza che prende il nome del giocatore che l'ha creata, come in figura xxx.\\
+Una volta creata la partita dall'utente viene creato all'interno del nodo \textbf{rooms} una stanza che prende il nome del giocatore che l'ha creata, come in figura 3.1.\\
+\begin{figure}[h]
+\includegraphics{images/Room node.png}
+\caption{Nodo all'interno del database che rappresenta stanza creata da un giocatore.}
+\end{figure}
+
 I nodi figli di ogni singola stanza sono i seguenti:
 
 \begin{itemize}
@@ -285,7 +304,11 @@ I nodi figli di ogni singola stanza sono i seguenti:
 Il nodo padre, che indica il nome della stanza, acquisce un nodo figlio chiamato \textit{Player 2} nel momento in cui un avversario si unisce alla stanza. Questo nodo segue la stessa logica del nodo \textit{Player 1}. Questi nodi forniscono le informazioni sul nome dell'utente e il suo ruolo, attaccante o difensore.\\
 Nel momento in cui il secondo giocatore si unisce alla partita, quindi nei momenti che ancora precedono l'inizio della stessa, il nodo \textit{show} assume valore \textbf{false}.
 Il nodo \textit{show} se ha valore \textit{true} permette di mostrare la stanza della partita nella ListView, indicando che manca ancora un avversario. Quando questo nodo assume valore \textit{false} la stanza della partita non sarà più visibile all'interno della ListView.\\
-Il nodo \textit{specialColour} assume il valore di una stringa corrispondente al colore di uno degli archi utilizzati all'interno del gioco (rosso, blu, verde, nero). Anch'esso non viene modificato durante lo svoglimento della partita.\\
+Il nodo \textit{specialColour} assume il valore di una stringa corrispondente al colore di uno degli archi utilizzati all'interno del gioco (rosso, blu, verde, nero). Anch'esso non viene modificato durante lo svoglimento della partita. La figura 3.2 rappresenta un nodo completo prima dell'inizio della partita.\\
+\begin{figure}[h]
+\includegraphics{images/Match pre node.png}
+\caption{Nodo che contiene informazioni preparatorie per la partita.}
+\end{figure}
 
 \subsection{Svolgimento}
 Durante la partita i nodi \textit{leftGraph} e \textit{rightGraph} vengono aggiornati costantemente.\\
@@ -293,8 +316,12 @@ Prendendo come esempio il nodo \textit{leftGraph} (il meccanismo per il grafo di
 Il nodo \textit{lastMoveColour} assume il valore del colore dell'arco percorso dal giocatore in seguito all'ultima mossa compiuta.\\
 Il nodo \textit{turnOf} cambia ad ogni turno: inizialmente prende valore di "attacker" e ad ogni mossa eseguita, se valida, cambia il proprio valore passando a "defender" e viceversa.\\
 Tutte queste informazioni sono contenute nella casella sottostante i tavoli di gioco.\\
-In aggiunta è presente anche un attributo \textit{enabled} che, quando assume valore \textbf{false} rende il grafo inutilizzabile, come mostrato in figura xxx.\\
+In aggiunta è presente anche un attributo \textit{enabled} che, quando assume valore \textbf{false} rende il grafo inutilizzabile, come mostrato in figura 3.3.\\
 Infine il nodo \textit{gameInProgress} ha lo scopo di terminare la partita non appena esso assume valore \textbf{false}.
+\begin{figure}[h]
+\includegraphics{images/Match in progress node.png}
+\caption{Nodo riguardante partita che ha subito variazioni.}
+\end{figure}
 
 \chapter{Manuale utente}
 \section{Manuale d'uso}
