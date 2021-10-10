@@ -9,6 +9,8 @@
 \usepackage{mathtools}
 \usepackage{fancyhdr}
 \usepackage{url}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \begin{document}
     
@@ -214,7 +216,8 @@ All'interno dell'activity è presente anche una \textit{bottom sheet}, ovvero un
 La schermata principale (\textit{Home}) costituisce l'unico \textit{Fragment} presente all'interno del progetto.\\
 Qui sono presenti due \textit{cards} che forniscono all'utente informazioni sul proprio score personale e sulle partite attualmente attive.\\
 Ciascuna card è una \textbf{MaterialCardView} che contiente al proprio interno TextView e Button. Un elemento presente all'interno di ciascuna card che poi ricorre anche in altri componenti all'interno delle varie interfacce è il \textbf{separator}, ovvero una semplice \textit{view} dalla larghezza di un solo 1dp.\\
-In questo fragment troviamo anche un \textbf{FloatingActionButton}, ossia un pulsante circolare che permette di condividere la propria esperienza con l'applicazione sui social.
+In questo fragment troviamo anche un \textbf{FloatingActionButton}\cite{12}, ossia un pulsante utilizzato per un tipo speciale di azione. Un \textbf{FAB} si distingue per un'icona circolare.\\
+Questo pulsante circolare permette di condividere la propria esperienza con l'applicazione sui social.\\
 
 \subsection{Componenti Matchmaking Room Activity}
 Questa activity è composta semplicemente da un button e un \textbf{ListView} posizionati all'interno di un \textit{Relative Layout}.\\
@@ -315,14 +318,14 @@ Infine il nodo \textit{gameInProgress} ha lo scopo di terminare la partita non a
 
 \chapter{Manuale utente}
 \section{Manuale d'uso}
-L'applicazione è costituita dalle seguenti activities:
+L'applicazione sviluppata è costituita dalle seguenti schermate elencate con questi titoli:
 
 \begin{itemize}
 \item Login;
 
 \item Registrazione;
 
-\item Home / Main Activity;
+\item Home;
 
 \item Il mio profilo;
 
@@ -335,19 +338,26 @@ L'applicazione è costituita dalle seguenti activities:
 \item Segnala un problema.
 \end{itemize}
 
+L'insieme di queste schermate forma l'applicazione che risulta navigabile tramite un menù laterale in tutte le sue schermate, fatta eccezione per le schermate di Login e Registrazione.\\
 La funzione principale di questa applicazione è affrontare un avversario ad un gioco basato sul \textbf{principio della bisimulazione}. 
 
 \section{Guida all'uso}
 \subsection{Registrazione}
-La schermata iniziale dell'applicazione \textbf{Bisimulazione} è rappresentata dalla schermata di \textbf{Login}. Questa schermata permette di autenticarsi e in 
+La schermata iniziale dell'applicazione \textbf{Bisimulazione} è rappresentata dalla schermata di \textbf{Login} (Figura 4.1). Questa schermata permette di autenticarsi e in 
 seguito di utilizzare l'applicazione. L'autenticazione è possibile solo se già registrati. Se ancora non si è registrati, è necessario effettuare la registrazione.\\
 Per poter effettuare la registrazione bisogna premere nel link a piè pagina contrassegnato dalla scritta \textit{Clicca qui}, immediatamente successivo
 alla scritta \textit{Non sei ancora registrato?}.\\
 A questo punto comparirà la schermata di \textbf{Registrazione}; qui basterà inserire i propri dati nelle caselle di testo dedicate e infine cliccare su \textit{Registrati}.
 Una volta rilasciato il tasto \textit{Registrati}, i dati saranno inviati alla piattaforma Firebase e verrà aperta la schermata di \textbf{Login}.
 
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth,height=360pt,keepaspectratio]{images/SignUp.png}
+\caption{Schermata di registrazione.}
+\end{figure}
+
 \subsection{Login}
-Di default quando si esegue l'applicazione viene mostrata la schermata di \textbf{Login}. Questa schermata ha come funzione principale quella di permettere agli utenti
+Di default quando si esegue l'applicazione viene mostrata la schermata di \textbf{Login} (Figura (a)). Questa schermata ha come funzione principale quella di permettere agli utenti
 di autenticarsi in maniera semplice e veloce al fine di poter usufruire dell'applicazione. Per autenticarsi è necessario inserire il proprio indirizzo mail utilizzato in 
 fase di registrazione e la password scelta sempre durante la registrazione. A questo punto dovrà essere premuto il pulsante \textit{Login} e, una volta rilasciato,
 si potranno verificare due casi:
@@ -358,30 +368,51 @@ si potranno verificare due casi:
 \item l'autenticazione \textbf{fallisce}.
 \end{enumerate}
  
-Nel primo caso viene mostrato un messaggio di avvenuta autenticazione e successivamente comparirà la schermata principale con titolo \textbf{Bisimulazione} (Main Activity).\\
+Nel primo caso viene mostrato un messaggio di avvenuta autenticazione e successivamente comparirà la schermata principale con titolo \textbf{Home} (o Bisimulazione).\\
 Nel secondo caso viene stampato a video un messaggio di errore che non permette il passaggio alla schermata successiva, mantenendo l'utente sulla schermata
 corrente. I motivi della mancata autenticazione possono essere molteplici a partire da un input scorretto fornito dall'utente.\\
 Nel caso in cui si volessero memorizzare i propri dati di autenticazione è possibile spuntare con un flag la casella posizionata alla sinistra della scritta \textit{Ricordami}: in
 questo modo ogni volta che verrà eseguita l'applicazione non bisognerà inserire di nuovo le proprie credenziali di accesso, bensì saranno già memorizzate e basterà
 semplicemente cliccare sul pulsante \textit{Login}.\\
 Inoltre se è stata dimenticata la propria password si può toccare il link descritto dal testo \textit{Clicca qui} immediatamente successivo alla scritta \textit{Password dimenticata?}.
-A questo punto dal basso verrà mostrata una bottom sheet che invita l'utente ad inserire il proprio indirizzo mail utilizzato durante la registrazione; una volta digitato
+A questo punto dal basso verrà mostrata una \textbf{bottom sheet} che invita l'utente ad inserire il proprio indirizzo mail utilizzato durante la registrazione; una volta digitato
  l'indirizzo mail e premuto il tasto \textit{Reset}, verrà inviata una mail all'indirizzo mail appena inserito con una nuova password da utilizzare al seguente accesso.\\
+Con il termine bottom sheet \cite{11} (rappresentato in figura (b)) si intende una schermata aggiuntiva utilizzata principalmente nel mondo mobile. Una bottom sheet standard, come quella implementata, mostra un contenuto integrativo rispetto a quanto mostrato nella schermata principale. Mentre l'utente utilizza la schermata principale, la bottom sheet non è visibile.
 
-\subsection{Main Activity}
-La schermata principale dal titolo \textbf{Bisimulazione} presenta due cards, tre pulsanti e il menù di navigazione.\\
+\begin{figure}[h]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth,height=460pt,keepaspectratio]{images/Login.png}
+  \caption{Schermata di Login.}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth,height=460pt,keepaspectratio]{images/BottomSheet.png}
+  \caption{Bottom sheet utilizzata per reimpostare la password.}
+\end{subfigure}
+\end{figure}
+
+\subsection{Home}
+La schermata principale dal titolo \textbf{Home} (o \textbf{Bisimulazione}) presenta due cards, tre pulsanti e il menù di navigazione.\\
 Le due cards contengono informazioni riguardo l'utente, i giocatori e le partite in corso.\\ 
 In particolare la prima card dal titolo \textit{Statistiche personali}  mostra le vittorie ottenute dall'utente sotto la scritta \textit{Numero di vittorie} e le sconfitte 
 accumulate sotto la scritta \textit{Numero di sconfitte}. Inoltre questa card contiene un pulsante che presenta la dicitura \textit{Scopri di più} che se premuto apre la
 schermata \textbf{Il mio profilo}.\\
 La seconda card dal titolo \textit{Giocatori attivi} mostra il numero di giocatori attivi e le stanze da gioco attive al momento attuale.\\
-Al centro sono presenti due pulsanti dal titolo: \textit{Gioca ora!!} e \textit{Giocatori attivi}. Il pulsante \textit{Gioca ora!} se cliccato porta alla pagina
+Al centro sono presenti due pulsanti dal titolo: \textit{Gioca ora!} e \textit{Giocatori attivi}. Il pulsante \textit{Gioca ora!} se cliccato porta alla pagina
 \textbf{Stanza pre-partita}, mentre l'altro pulsante porta alla pagina \textbf{Giocatori attivi}.\\
-In basso a destra è presente anche un floating action button che permette di condividere un messaggio con i propri contatti su differenti social networks: una volta cliccato
+In basso a destra è presente anche un bottone circolare che permette di condividere un messaggio con i propri contatti su differenti social networks: una volta cliccato
 apparirà un messaggio che invita a condividere l'utilizzo dell'applicazione con i propri contatti. Se si clicca sul tasto \textit{Condividi}, si potrà proseguire condividendo
 il messaggio, altrimenti se si tocca su \textit{Chiudi} la finestra verrà chiusa.\\
 Infine questa schermata presenta lateralmente un menù di navigazione; per aprirlo basterà schiacciare sull'apposita icona e saranno mostrati le diverse activity
 presenti all'interno dell'applicazione che possono essere raggiunte con un semplice tocco sull'item desiderato.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth,height=360pt,keepaspectratio]{images/Home.png}
+\caption{Schermata principale.}
+\end{figure}
 
 \subsection{Il mio profilo}
 La schermata \textbf{Il mio profilo} presenta due sezioni: la prima sezione riguardanti le informazioni personali dell'utente dove è possibile trovare le generalità dell'utente
@@ -389,22 +420,40 @@ La schermata \textbf{Il mio profilo} presenta due sezioni: la prima sezione rigu
 è mostrato il numero di vittorie e il numero di sconfitte accumulate dal giocatore.
 
 \subsection{Giocatori attivi}
-Questa activity mostra semplicemente una lista con tutti i giocatori attualmente attivi (ovvero che sono impegnati in una partita oppure sono in attesa di iniziarne una nuova).
+Questa pagina mostra semplicemente una lista con tutti i giocatori attualmente attivi (ovvero che sono impegnati in una partita oppure sono in attesa di iniziarne una nuova).
 
 \subsection{FAQ}
 All'interno dell'applicazione è presente anche una pagina dedicata alle domande più frequenti (Frequently Asked Question) accessibile tramite menù di navigazione.
 Questa pagina presenta alcune domande da cui si può ricavare la risposta semplicemente toccando sulla domanda a cui si è interessati. A questo punto si aprirà verso il basso
-sotto la domanda un testo contenente la risposta alla domanda selezionata.
+sotto la domanda un testo contenente la risposta alla domanda selezionata. La figura 4.4 mostra la pagina appena descritta.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth,height=360pt,keepaspectratio]{images/FAQ.png}
+\caption{Schermata FAQ.}
+\end{figure}
 
 \subsection{Impostazioni}
 La schermata \textbf{Impostazioni} permette esclusivamente di cambiare la lingua dell'applicazione da italiano a inglese o viceversa. Per eseguire questa operazione è necessario 
 cliccare sulla scritta \textbf{Seleziona lingua...}; in seguito verrà mostrata la possibilità di scegliere tra \textit{Italiano} o \textit{Inglese}: per effettuare la propria scelta basterà toccare
 sulla lingua desiderata e subito si tornerà alla schermata \textbf{Main Activity} con la nuova lingua selezionata.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth,height=360pt,keepaspectratio]{images/Settings.png}
+\caption{Schermata impostazioni.}
+\end{figure}
+
 \subsection{Segnala un problema}
-Dal menù di navigazione è possibile raggiungere anche l'activity \textbf{Segnala un problema}. Qui è possibile segnalare eventuali problemi riscontrati durante l'utilizzo dell'applicazione
+Dal menù di navigazione è possibile raggiungere anche la pagina \textbf{Segnala un problema} (Figura 4.6). Qui è possibile segnalare eventuali problemi riscontrati durante l'utilizzo dell'applicazione
 o fornire dei suggerimenti per migliorare l'applicazione; per fare ciò è necessario toccare all'interno della casella di testo dove è presente la scritta \textit{Inserisci qui il testo} e scrivere
-il messaggio. Una volta terminato di scrivere il messaggio si deve cliccare sul tasto \textit{Invia} che, una volta rilasciato, mostrerà un messaggio di avvenuta spedizione del messaggio di testo.
+il messaggio che si intende recapitare. Una volta terminato di scrivere il messaggio si deve cliccare sul tasto \textit{Invia} che, una volta rilasciato, mostrerà un messaggio di avvenuta spedizione del messaggio di testo.
+
+\begin{figure}[]
+\centering
+\includegraphics[width=\linewidth,height=360pt,keepaspectratio]{images/BugReport.png}
+\caption{Schermata segnala un problema.}
+\end{figure}
 
 \subsection{Stanza pre-partita}
 L'activity \textbf{Stanza pre-partita} mostra tutte le partite create da altri giocatori che ancora stanno aspettando il proprio avversario. Per poter partecipare alla partita creata da un altro
@@ -432,7 +481,7 @@ Sotto i due tavoli è presente una tabella che contiene informazioni utili rigua
 \item \textbf\textit{colore speciale}.
 \end{itemize}
 
- Le regole del gioco possono essere trovate nella sezione \textbf{3.2} "\textbf{Regole del gioco}".
+ Le regole del gioco possono essere trovate nella sezione 4.3 "Regole del gioco".
 
 \section{Regole}
 
@@ -467,6 +516,9 @@ Attualmente è possibile affrontare esclusivamente un avversario reale in una pa
 
 \section{Animazioni}
 Uno sviluppo futuro può riguardare la \textbf{UI} (\textit{user interface}) ovvero l'interfaccia grafica. Si possono aggiungere animazioni più intrattenenti quando un utente compie una mossa e dunque c'è un passaggio di stato all'interno del grafo scelto.
+
+\section{Impostazioni}
+L'activity riguardante le impostazioni attualmente consta della sola funzionalità di cambio lingua. In futuro è programmata l'implementazione di nuove funzionalità in questa pagina quali la possibilità di cambiare tema, aggiungere un collegamento sulle info del progetto e sui servizi di terze parti.
 
 \bibliographystyle{plainurl}
 \bibliography{bibliography.bib}
