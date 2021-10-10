@@ -1,54 +1,40 @@
-\documentclass[a4paper,12pt,twoside,openright]{report}
+\documentclass[a4paper,11pt,twoside,openright]{report}
 \usepackage{graphicx}
 \usepackage[hidelinks]{hyperref}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{setspace}
-\usepackage{biblatex}
+\usepackage[paper=a4paper,margin=1in]{geometry}
 \usepackage[italian]{babel}
-\usepackage{fancyhdr}
 \usepackage{mathtools}
-
-\preto{\section}{\filbreak}
-
-\title{Applicazione per dispositivi mobili basata sul principio della bisimulazione}
-\author{Lanzi Mattia}
-
-\pagestyle{fancy}
-\setlength{\headsep}{0.35in}
-\let\MakeUppercase\relax
-\renewcommand\sectionmark[1]{}
-\setcounter{secnumdepth}{3}
-\setcounter{tocdepth}{3}
-
-\makeatletter
-\let\inserttitle\@title
-\let\insertauthor\@author
-\makeatother
+\usepackage{fancyhdr}
+\usepackage{url}
 
 \begin{document}
-
-\begin{titlepage}
-\noindent
-\begin{minipage}[t]{0.19\textwidth}
-\vspace{-4mm}{\includegraphics[scale=1.15]{logo_unimib.pdf}}
-\end{minipage}
-
-\begin{minipage}[t]{0.81\textwidth}
-	{
+    
+    \begin{titlepage}
+        
+        \noindent
+        \begin{minipage}[t]{0.19\textwidth}
+            \vspace{-4mm}{\includegraphics[scale=1.15]{logo_unimib.pdf}}
+        \end{minipage}
+        \begin{minipage}[t]{0.81\textwidth}
+        {
+                \setstretch{1.42}
                 {\textsc{Università degli Studi di Milano - Bicocca}} \\
                 \textbf{Scuola di Scienze} \\
                 \textbf{Dipartimento di Informatica, Sistemistica e Comunicazione} \\
                 \textbf{Corso di laurea in Informatica} \\
                 \par
         }
-\end{minipage}
- 
-\vspace{40mm}
+        \end{minipage}
         
-\begin{center}
-	 {\LARGE{
-                    \textbf{\inserttitle}
+	\vspace{40mm}
+        
+	\begin{center}
+            {\LARGE{
+                    \setstretch{1.2}
+                    \textbf{Applicazione per dispositivi mobili basata sul principio della bisimulazione}
                     \par
             }}
         \end{center}
@@ -59,24 +45,25 @@
         {\large \textbf{Relatore:} Prof.ssa Micucci Daniela} \\
 
         \noindent
-        {\large \textbf{Primo Correlatore:} Prof.Ginelli Davide}
-
-	\noindent
-        	{\large \textbf{Secondo Correlatore:} Prof.Bernardinello Luca}
+        {\large \textbf{Correlatore:} Dott. Ginelli Davide}\\
+        {\large \textbf{Correlatore:} Prof. Bernardinello Luca}	
         
         \vspace{15mm}
 
         \begin{flushright}
             {\large \textbf{Relazione della prova finale di:}} \\
-            \large{\insertauthor} \\
+            \large{Lanzi Mattia} \\
             \large{Matricola 827502} 
         \end{flushright}
         
         \vspace{40mm}
         \begin{center}
             {\large{\bf Anno Accademico 2020-2021}}
-        \end{center}     
-\end{titlepage}
+        \end{center}
+
+        \restoregeometry
+        
+    \end{titlepage}
 
 \tableofcontents
 
@@ -87,7 +74,7 @@ L'obiettivo della tesi è la realizzazione di una app Android che sia da support
 L'applicazione Bisimulazione ha dunque uno scopo prettamente didattico in quanto il suo fine è quello di essere utilizzato per comprendere il meccanismo della bisimulazione all'interno del corso xxx tenuto dal Prof.Bernardinello.
 
 \chapter{Bisimulazione}
-Un \textit{sistema a transizione di stati} (dall'inglese \textit{labelled transition system, LTS}), talvolta chiamato \textit{transition graph}, è una tripla (\textbf{Proc}, \textbf{Act}, \{ $\xrightarrow{\alpha}$ | $\alpha$ $\in$ \textbf{Act}\}) dove:
+Un \textit{sistema a transizione di stati} (dall'inglese \textit{labelled transition system}, ~\cite{1}), talvolta chiamato \textit{transition graph}, è una tripla (\textbf{Proc}, \textbf{Act}, \{ $\xrightarrow{\alpha}$ | $\alpha$ $\in$ \textbf{Act}\}) dove:
 
 \begin{itemize}
 \item \textbf{Proc} è un insieme di \textit{stati} (o \textit{processi});
@@ -110,7 +97,7 @@ Assumiamo che \textit{P} e \textit{Q} siano stati in un LTS. Per ogni azione di 
 dove ($\xrightarrow{\tau}$)* indica la relazione riflessiva e transitiva $\xrightarrow{\tau}$.
 
 \section{Dispositivi Android}
-Secondo l'articolo riportato da Ericsson Mobility Report sono 5.9 miliardi le persone nel mondo che possiedono un telefonino ed il numero di abbonamenti LTE risulta essere in crescita costante.\\
+Secondo l'articolo riportato da Ericsson Mobility Report \cite{2} sono 5.9 miliardi le persone nel mondo che possiedono un telefonino ed il numero di abbonamenti LTE risulta essere in crescita costante.\\
 Tra questi emergono i dispositivi con sistema operativo Android, che risulta essere il sistema operativo più diffuso al mondo per quanto riguarda i dispositivi mobili (Figura 1.1). I fattori che hanno determinato questo primato di Android sono i prezzi contenuti per i mercati emergenti e la disponibilità di poter usufruire di migliaia di app per la salute e per l'istruzione.\\
 Android, più di qualunque altra piattaforma per dispositivi mobili, aiuta le persone ad accedere alle informazioni e a più opportunità.
 
@@ -141,7 +128,7 @@ Allo stesso modo per poter usufruire delle funzionalità inerenti al database è
 
 \subsection{Registrazione}
 La classe Java \textit{SignUp} si occupa della registrazione di un utente alla piattaforma Firebase che permetterà poi di autenticarsi al fine di poterne usufruire dei servizi.\\
-La modalità scelta per la registrazione è la classica modalità che utilizza email e password. Uno degli attributi con modificatore privato di questa classe è \textit{auth}, un oggetto della classe FirebaseAuth; su questo oggetto, definito nel metodo \textit{onCreate()} (metodo che viene eseguito appena l'activity corrispondente alla classe viene lanciata), tramite il metodo \textit{getInstance()} che ritorna un istanza default della classe FirebaseApp, viene chiamato il metodo \textit{createUserWithEmailAndPassword()}.  Quest'ultima funzione legge come argomento due stringhe, l'indirizzo mail inserito dall'utente e la password, anch'essa inserita dall'utente, e prova a creare un nuovo account utente con l'indirzzo mail e la password fornita. Questo metodo lancia tre eccezzioni:
+La modalità scelta per la registrazione è la classica modalità che utilizza email e password. Uno degli attributi con modificatore privato di questa classe è \textit{auth}, un oggetto della classe FirebaseAuth; su questo oggetto, definito nel metodo \textit{onCreate()}\cite{3} (metodo che viene eseguito appena l'activity corrispondente alla classe viene lanciata), tramite il metodo \textit{getInstance()} che ritorna un istanza default della classe FirebaseApp, viene chiamato il metodo \textit{createUserWithEmailAndPassword()}\cite{4}. Quest'ultima funzione legge come argomento due stringhe, l'indirizzo mail inserito dall'utente e la password, anch'essa inserita dall'utente, e prova a creare un nuovo account utente con l'indirzzo mail e la password fornita. Questo metodo lancia tre eccezzioni:
 
 \begin{enumerate}
 \item \textbf{FirebaseAuthWeakPasswordException};
@@ -156,6 +143,7 @@ Per quanto riguarda l'eccezione \textit{FirebaseAuthInvalidCredentialsException}
 Infine l'ultima eccezione viene lanciata se è già presente un account con l'indirizzo mail inserito dall'utente.\\
 Ogni eccezione viene gestita da un blocco catch specifico che provvede a mostrare all'utente messaggi differenti in modo da spiegare le cause degli errori.\\
  Se il processo va a buon fine, questa funzione autentica anche l'utente all'interno dell'applicazione; inoltre, le generalità inserite dall'utente vengono memorizzate all'interno del Realtime Database di Firebase: viene creato un oggetto \textit{map} di tipo HashMap<String, String> a cui vengono aggiunti tramite metodo put() tutte le informazioni necessarie e poi salvate nel databse. L'utente sarà aggiunto all'interno del nodo \textit{users}, come rappresentato nella figura 2.1.
+
 \begin{figure}[h]
 \includegraphics{images/Users node.png}
 \caption{Creazione di un utente nel database.}
@@ -163,7 +151,7 @@ Ogni eccezione viene gestita da un blocco catch specifico che provvede a mostrar
 
 \subsection{Autenticazione}
 L'autenticazione dell'utente all'interno dell'applicazione per utilizzare i servizi offerti da Firebase viene gestita dalla classe \textit{Login}. L'autenticazione avrà successo solo se l'utente in precedenza si è già registrato; in caso contrario non si potrà accedere e dunque non sarà reso possibile l'utilizzo dell'applicazione \textbf{Bisimulazione}.\\
-A livello di codice l'autenticazione è gestita dal metodo \textit{signInWithEmailAndPassword()} che, così come per il metodo createUserWithEmailAndPassword() descritto nella sezione precedente, legge come argomento due stringhe, l'indirizzo mail e la password forniti dall'utente, e permette il login all'interno dell'applicazione. Questo metodo lancia due eccezioni:
+A livello di codice l'autenticazione è gestita dal metodo \textit{signInWithEmailAndPassword()}\cite{5} che, così come per il metodo createUserWithEmailAndPassword() descritto nella sezione precedente, legge come argomento due stringhe, l'indirizzo mail e la password forniti dall'utente, e permette il login all'interno dell'applicazione. Questo metodo lancia due eccezioni:
 
 \begin{itemize}
 \item \textbf{FirebaseAuthInvalidUserException};
@@ -173,18 +161,19 @@ A livello di codice l'autenticazione è gestita dal metodo \textit{signInWithEma
 
 Le due eccezioni vengono lanciate rispettivamente se l'indirizzo mail dell'account utente non esiste oppure è stato disbilitato, o se la password inserita non è corretta.\\
 Così come per le eccezioni descritte nella sezione precedente, anche in questo caso è presente un blocco catch per ognuna di esse.\\
-La memorizzazione delle credenziali avviene tramite l'interfaccia \textit{SharedPreferences} che permette di accedere e modificare i dati a livello locale, non a livello di Realtime Database.
+La memorizzazione delle credenziali avviene tramite l'interfaccia \textit{SharedPreferences}\cite{6} che permette di accedere e modificare i dati a livello locale, non a livello di Realtime Database.
 I dati collocati nelle SharedPreferences vengono salvati in un file XML contenuto nello storage interno, in particolare nella cartella \textit{shared\_prefs}. Il file in cui sono contenute le informazioni è chiamato "\textit{sharedPreferencesLogin}". In questo file vengono salvati i dati di accesso (indirizzo mail e password) dell'utente che saranno poi memorizzati per il successivo utilizzo.\\
 Il salvataggio dei dati in questo file locale avviene solamente nel caso in cui l'utente abbia contrassegnato con un flag la checkbox accompagnata dalla descrizione "\textit{Ricordami}". In caso contrario, i dati non vengono salvati e se l'utente dovesse dimenticarsi della password utilizzata, è possibile effettuare un reset utilizzando sempre una funzionalità offferta da Firebase; nello specifico, per mezzo del metodo sendPasswordResetEmail() che prende come parametro l'indirizzo mail dell'utente è possibile effettuare questa operazione. Questo metodo attiva il backend di Firebase Authentication per inviare un'email di reimpostazione della password all'indirizzo email fornito che deve corrispondere ad un utente esistente già registrato a Bisimulazione.
 
 \section{Realtime Database}
-\textbf{Realtime Database} è un database ospitato nel cloud. I dati vengono archiviati come \textit{JSON} e sincronizzati in tempo reale con ogni client connesso, rimanendo disponibili fino a che l'app diventa offline. Con questo database è possibile archiviare e sincronizzare i dati con il database dal modello NoSQL.\\
+\textbf{Realtime Database} è un database ospitato nel cloud. I dati vengono archiviati come \textit{JSON} e sincronizzati in tempo reale con ogni client connesso, rimanendo disponibili fino a che l'app diventa offline. Con questo database è possibile archiviare e sincronizzare i dati con il database dal modello NoSQL\cite{7}.\\
 Un aspetto fondamentale che ha favorito l'ultilizzo del Realtime Databsse come supporto all'applicazione è che, invece delle tipiche richieste HTTP, Firebase Realtime Database utilizza una sincronizzazione in tempo reale dei dati: ogni volta che i dati cambiano, qualsiasi dispositivo connesso riceve l'aggiornamento in pochi millisecondi. Questo aspetto è fondamentale per la gestione di una partita real time.\\
 
 \subsection{Scrittura dati}
-Per l'operazione di scrittura all'interno del database viene utlizzato il metodo \textit{setValue()} che permette di salvare il dato passato come argomento in un riferimento specifico, sostituendo qualsiasi dato esistente presente in quel percorso.\\
+Per l'operazione di scrittura all'interno del database viene utlizzato il metodo \textit{setValue()}\cite{8} che permette di salvare il dato passato come argomento in un riferimento specifico, sostituendo qualsiasi dato esistente presente in quel percorso.\\
 Questo metodo è stato utilizzato in maniera molto frequente e un esempio chiaro del suo funzionamento è possibile trovarlo nella classe Java \textbf{MatchmakingRoom}: qui quando viene creata una partita si passa al riferimento della partita stessa tutte le informazioni poi smistate nei vari nodi figlio.\\
 Ogni operazione di scrittura genera un nodo figlio di uno dei tre nodi principali del database rappresentati in figura 2.2.
+
 \begin{figure}[h]
 \includegraphics{images/Main nodes.png}
 \caption{Nodi principali del database}
@@ -194,7 +183,7 @@ Ogni operazione di scrittura genera un nodo figlio di uno dei tre nodi principal
 La lettura dei dati salvati all'interno del database è fondamentale per la creazione, lo sviluppo e il termine delle sfide in tempo reale.\\
 Per leggere un valore presente nel database è stato utilizzato il meccanismo dei callback.\\
 I dati memorizzati all'interno del Firebase Realtime Database sono recuperati collegando un ascoltatore asincrono (\textit{asynchronous listener}) che punta ad un riferimento del database. Il listener è attivato appena il dato viene trasmesso al database e in seguito si attiva ogni qual volta il dato cambia (si aggiorna o si elimina).\\
-Innanzitutto viene dichiarata un'interfaccia, ovvero \textbf{DEFINIZIONE INTERFACCIA DA LIBRO DI TESTO}.
+Innanzitutto viene dichiarata un'interfaccia. Un'interfaccia è un componente di di un programma che contiene le intestazioni di un certo numero di metodi. Un'interfaccia può anche definire delle costanti pubbliche.\cite{9}\\ 
 Di seguito la classe in cui si dovrà leggere il dato o i dati eredita l'interfaccia generata. A questo punto viene creato un metodo che legge come parametro il metodo callback definito nell'interfaccia; tramite un ascoltatore si legge il dato dal database che viene poi passato al callback. Una volta che il processo di lettura del dato termina, il callback rilascia il valore del dato letto nel metodo in cui è stato definito.\\
 Per lo sviluppo di quest'applicazione mobile sono stati utilizzati esclusivamente due listener:
 
@@ -211,11 +200,11 @@ Un esempio di utilizzo di un \textit{value event listener} è possibile trovarlo
 
 \section{Frontend}
 \subsection{Material Design}
-Il \textbf{Material Design} è una guida completa per il design visivo, del moviment o e dell'interazione dei dispositivi.\\
-Nello sviluppo dell'applicazione è stato utilizzato il Material Design seguendo le linee guida definite, dalla tipografia alle diverse views utilizzate.
+Il \textbf{Material Design} \cite{10} è una guida completa per il design visivo, del movimento e dell'interazione dei dispositivi.\\
+Per rendere l'esperienza utente ottimale e per rispettare le indicazioni Android, nello sviluppo dell'applicazione è stato utilizzato il Material Design seguendo le linee guida definite, dalla tipografia alle diverse views utilizzate.
 
 \subsection{Componenti Sign Up Activity}
-Dal punto di vista dell'interfaccia grafica l'activity \textit{SignUp} presenta una serie di \textbf{TextView} ed \textbf{EditText} con lo scopo rispettivamente di informare l'utente sull'informazione richiesta che esso dovrà inserire e lo spazio necessario per eseguire tale operazione.
+Dal punto di vista dell'interfaccia grafica l'activity \textit{SignUp} (Figura ) presenta una serie di \textbf{TextView} ed \textbf{EditText} con lo scopo rispettivamente di informare l'utente sull'informazione richiesta che esso dovrà inserire e lo spazio necessario per eseguire tale operazione.
 
 \subsection{Componenti Login Activity}
 Questa activity, oltre a presentare le solite TextView ed EditText, mostra una \textit{checkbox} ovvero un componente che consente all'utente di selezionare un'opzione. In questo caso specifico  questa checkbox permette all'utente di memorizzare le proprie credenziali di accesso.\\
@@ -478,4 +467,7 @@ Attualmente è possibile affrontare esclusivamente un avversario reale in una pa
 
 \section{Animazioni}
 Uno sviluppo futuro può riguardare la \textbf{UI} (\textit{user interface}) ovvero l'interfaccia grafica. Si possono aggiungere animazioni più intrattenenti quando un utente compie una mossa e dunque c'è un passaggio di stato all'interno del grafo scelto.
+
+\bibliographystyle{plainurl}
+\bibliography{bibliography.bib}
 \end{document}
