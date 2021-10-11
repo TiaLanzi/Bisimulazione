@@ -383,18 +383,18 @@ Con il termine bottom sheet \cite{11} (rappresentato in figura (b)) si intende u
 \centering
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=.4\linewidth,height=460pt,keepaspectratio]{images/Login.png}
+  \includegraphics[width=.4\linewidth,height=860pt,keepaspectratio]{images/Login.png}
   \caption{Schermata di Login.}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=.4\linewidth,height=460pt,keepaspectratio]{images/BottomSheet.png}
+  \includegraphics[width=.4\linewidth,height=860pt,keepaspectratio]{images/BottomSheet.png}
   \caption{Bottom sheet utilizzata per reimpostare la password.}
 \end{subfigure}
 \end{figure}
 
 \subsection{Home}
-La schermata principale dal titolo \textbf{Home} (o \textbf{Bisimulazione}) presenta due cards, tre pulsanti e il menù di navigazione.\\
+La schermata principale dal titolo \textbf{Home} (o \textbf{Bisimulazione}) /Figura 4.3) presenta due cards, tre pulsanti e il menù di navigazione.\\
 Le due cards contengono informazioni riguardo l'utente, i giocatori e le partite in corso.\\ 
 In particolare la prima card dal titolo \textit{Statistiche personali}  mostra le vittorie ottenute dall'utente sotto la scritta \textit{Numero di vittorie} e le sconfitte 
 accumulate sotto la scritta \textit{Numero di sconfitte}. Inoltre questa card contiene un pulsante che presenta la dicitura \textit{Scopri di più} che se premuto apre la
@@ -405,7 +405,7 @@ Al centro sono presenti due pulsanti dal titolo: \textit{Gioca ora!} e \textit{G
 In basso a destra è presente anche un bottone circolare che permette di condividere un messaggio con i propri contatti su differenti social networks: una volta cliccato
 apparirà un messaggio che invita a condividere l'utilizzo dell'applicazione con i propri contatti. Se si clicca sul tasto \textit{Condividi}, si potrà proseguire condividendo
 il messaggio, altrimenti se si tocca su \textit{Chiudi} la finestra verrà chiusa.\\
-Infine questa schermata presenta lateralmente un menù di navigazione; per aprirlo basterà schiacciare sull'apposita icona e saranno mostrati le diverse activity
+Infine questa schermata presenta lateralmente un menù di navigazione; per aprirlo basterà schiacciare sull'apposita icona e saranno mostrati le diverse schermate
 presenti all'interno dell'applicazione che possono essere raggiunte con un semplice tocco sull'item desiderato.
 
 \begin{figure}[h]
@@ -436,37 +436,42 @@ sotto la domanda un testo contenente la risposta alla domanda selezionata. La fi
 \subsection{Impostazioni}
 La schermata \textbf{Impostazioni} permette esclusivamente di cambiare la lingua dell'applicazione da italiano a inglese o viceversa. Per eseguire questa operazione è necessario 
 cliccare sulla scritta \textbf{Seleziona lingua...}; in seguito verrà mostrata la possibilità di scegliere tra \textit{Italiano} o \textit{Inglese}: per effettuare la propria scelta basterà toccare
-sulla lingua desiderata e subito si tornerà alla schermata \textbf{Main Activity} con la nuova lingua selezionata.
+sulla lingua desiderata e subito si tornerà alla schermata principale con la nuova lingua selezionata.
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=\linewidth,height=360pt,keepaspectratio]{images/Settings.png}
-\caption{Schermata impostazioni.}
-\end{figure}
+%\begin{figure}[h]
+%\centering
+%\includegraphics[width=\linewidth,height=360pt,keepaspectratio]{images/Settings.png}
+%\caption{Schermata impostazioni.}
+%\end{figure}
 
 \subsection{Segnala un problema}
-Dal menù di navigazione è possibile raggiungere anche la pagina \textbf{Segnala un problema} (Figura 4.6). Qui è possibile segnalare eventuali problemi riscontrati durante l'utilizzo dell'applicazione
+Dal menù di navigazione è possibile raggiungere anche la pagina \textbf{Segnala un problema} (Figura 4.5). Qui è possibile segnalare eventuali problemi riscontrati durante l'utilizzo dell'applicazione
 o fornire dei suggerimenti per migliorare l'applicazione; per fare ciò è necessario toccare all'interno della casella di testo dove è presente la scritta \textit{Inserisci qui il testo} e scrivere
 il messaggio che si intende recapitare. Una volta terminato di scrivere il messaggio si deve cliccare sul tasto \textit{Invia} che, una volta rilasciato, mostrerà un messaggio di avvenuta spedizione del messaggio di testo.
 
-\begin{figure}[]
+\begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth,height=360pt,keepaspectratio]{images/BugReport.png}
 \caption{Schermata segnala un problema.}
 \end{figure}
 
 \subsection{Stanza pre-partita}
-L'activity \textbf{Stanza pre-partita} mostra tutte le partite create da altri giocatori che ancora stanno aspettando il proprio avversario. Per poter partecipare alla partita creata da un altro
+La pagina \textbf{Stanza pre-partita} (Figura 4.6) mostra tutte le partite create da altri giocatori che ancora stanno aspettando il proprio avversario. Per poter partecipare alla partita creata da un altro
 giocatore si deve schiacciare su un elemento della lista con scritto \textit{Stanza di "Cognome"," Nome"}; a questo punto inizierà la partita in una nuova schermata contro l'avversario selezionato.\\
-In questa activity è possibile anche creare una stanza propria cliccando sul pulsante \textit{Crea stanza}; appena viene cliccato questo pulsante si apre una nuova schermata con la partita.
+In questa schermata è possibile anche creare una stanza propria cliccando sul pulsante \textit{Crea stanza}; appena viene cliccato questo pulsante si apre una nuova schermata con la partita.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth,height=360pt,keepaspectratio]{images/MatchmakingRoom.png}
+\caption{Schermata creazione stanza da gioco.}
+\end{figure}
 
 \subsection{Gioco}
-La partita tra i due avversari avviene nell'activity \textbf{Gioco}. Questa activity è composta da due tavoli: \textit{Tavolo sinistro} e \textit{Tavolo destro}.\\
-All'interno di ogni tavolo è presente un \textbf{\textit{grafo}}. Il gioco consente di eseguire due azioni: toccare un nodo di uno dei due grafi oppure toccare il pulsante \textit{Stai fermo} che si trova
-in fondo all'activity. Se viene toccato un nodo e la mossa eseguita dal giocatore è valida allora il nodo toccato si colorerà di blu, così come era colorato precedentemente il nodo selezionato.\\
+La partita tra i due avversari avviene nella schermata \textbf{Gioco} (Figura 4.7). Questa schermata si compone di due tavoli: \textit{Tavolo sinistro} e \textit{Tavolo destro}.\\
+All'interno di ogni tavolo è presente un \textbf{\textit{grafo}}. Il gioco consente di eseguire due azioni: toccare un nodo di uno dei due grafi oppure toccare il pulsante \textit{Stai fermo} che si trova in fondo alla schermata. Se viene toccato un nodo e la mossa eseguita dal giocatore è valida allora il nodo toccato si colorerà di blu, così come era colorato precedentemente il nodo selezionato.\\
 Se il giocatore decide di non muoversi e questa mossa è consentita dalle regole del gioco, allora cambierà il turno senza che sui grafi avvenga alcun cambiamento.\\
 In entrambi i casi, se la mossa eseguita rispetta le regole del gioco, viene aggiornato il turno di gioco e il colore dell'ultima mossa. In caso contrario, verrà mostrato un messaggio che suggerisce
-al giocatore che ci sono ancora mosse disponibili; se questo non fosse vero, allora la partita terminerebbe mostrando un messaggio di \textit{Fine partita} che riporta l'utente alla \textbf{Main Activity}.
+al giocatore che ci sono ancora mosse disponibili; se questo non fosse vero, allora la partita terminerebbe mostrando un messaggio di \textit{Fine partita} che riporta l'utente alla schermata principale.
 Sotto i due tavoli è presente una tabella che contiene informazioni utili riguardanti lo svolgimento del gioco; in particolare la casella fornisce informazioni su:
 
 \begin{itemize}
@@ -483,6 +488,12 @@ Sotto i due tavoli è presente una tabella che contiene informazioni utili rigua
 
  Le regole del gioco possono essere trovate nella sezione 4.3 "Regole del gioco".
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth,height=360pt,keepaspectratio]{images/Game.png}
+\caption{Schermata di gioco.}
+\end{figure}
+
 \section{Regole}
 
 Il gioco si svolge tra due giocatori, che chiameremo Attaccante (A) e Difensore (D).\\
@@ -490,6 +501,12 @@ Il terreno di gioco è formato da due grafi orientati, detti rispettivamente \te
 partita è proposto un colore che definiremo \textit{colore speciale}.\\
 Una partita è composta da una sequenza di turni. Ad ogni turno muove l’attaccante che sceglie su quale tavolo compiere la mossa; e il difensore deve rispondere muovendo sul tavolo opposto.\\
 Ci sono due tipi di mosse: mosse forti e mosse deboli. L’attaccante compie sempre mosse forti, il difensore mosse deboli. Una mossa forte consiste nello spostarsi dallo stato in cui si trova a uno stato raggiungibile percorrendo uno ed un solo arco del grafo. Diremo che il colore della mossa è il colore dell’arco percorso. Una mossa debole di colore \textit{x} consiste nello spostarsi lungo una sequenza di archi, uno dei quali di colore \textit{x}, mentre gli altri devono essere tutti del colore speciale. C'è un’eccezione: una mossa debole del colore speciale consiste in una sequenza di zero o più archi, tutti del colore speciale.\\
+Prendendo come esempio la figura 4.8, se il difensore si trova sullo stato 3, una mossa debole di colore azzurro consiste nello spostare la pedina sullo stato 4, passando
+per lo stato 5; a partire dallo stato 1, una mossa debole rossa può consistere nello spostare la pedina sullo stato 2, oppure sullo stato 3, oppure sullo stato 5 (passando
+per lo stato 3).\\
+A partire dallo stato 3 del tavolo di sinistra, una mossa forte grigia consiste nello spostare la pedina sullo stato 5; una mossa debole grigia può consistere nello spostare
+la pedina sullo stato 5, oppure nel lasciare la pedina sullo stato 3.\\
+
 La partita può terminare in tre modi:
 
 \begin{enumerate}
@@ -499,6 +516,16 @@ La partita può terminare in tre modi:
 
 \item Dopo una mossa del difensore, si torna a una configurazione già visitata nella stessa partita al termine di un turno. Il difensore vince.
 \end{enumerate}
+
+Sempre in riferimento alla figura 4.8, data la coppia (1, 1) come configurazione iniziale, l’attaccante può scegliere fra quattro mosse iniziali, tutte rosse: può muovere la pedina su 2 o su 3 sul tavolo di sinistra, oppure su 2 o su 3 sul tavolo di destra. Supponiamo che scelga di muovere su 3 sul tavolo di destra; la nuova configurazione
+sarà (1, 3). Il difensore può scegliere fra tre mosse deboli sul tavolo di sinistra: da 1 a 2, da 1 a 3, da 1 a 5. Le nuove configurazioni nei tre casi saranno, rispettivamente,
+(2, 3), (3, 3), e (5, 3).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth,height=360pt,keepaspectratio]{images/Rules.png}
+\caption{Esempio terreno di gioco.}
+\end{figure}
 
 \chapter{Conclusioni}
 In questa relazione di stage viene affrontato lo sviluppo di un'applicazione che mira ad essere di supporto per l'insegnamento didattico del principio della bisimulazione.\\
