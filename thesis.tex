@@ -73,10 +73,29 @@
 Il progetto di tesi consiste nello sviluppo di un'applicazione per dispositivi mobili che utilizzano una versione del sistema operativo Android.\\
 L'applicazione dal titolo \textbf{Bisimulazione} permette di sperimentare un gioco basato sul principio della bisimulazione.\\
 L'obiettivo della tesi è la realizzazione di una app Android che sia da supporto didattico agli studenti che affrontano lo studio della bisimulazione; in particolare, l'app sviluppata supporta lo svolgimento di un gioco dove attaccante e difensore si affrontano navigando un grafo fino a che sono disponibili delle mosse valide.\\
-L'applicazione Bisimulazione ha dunque uno scopo prettamente didattico in quanto il suo fine è quello di essere utilizzato per comprendere il meccanismo della bisimulazione all'interno del corso xxx tenuto dal Prof.Bernardinello.
+L'applicazione Bisimulazione ha dunque uno scopo prettamente didattico in quanto il suo fine è quello di essere utilizzato per comprendere il meccanismo della bisimulazione all'interno del corso magistrale sui sistemi di metodi formali e sui modelli di sistemi concorrenti.\\
+Il seguente elaborato propone come primo capitolo la definizione del principio di bisimulazione e dei suoi concetti derivati sia formalmente che informalmente.\\
+Di seguito viene illustrata l'organizzazione dell'applicazione dividendo il capitolo in tre macro argomenti: il backend, il frontend e il modulo logico.\\ 
+Successivamente nel terzo capitolo si mostra il meccanismo della partita in tempo reale dal punto di vista dell'interazione con il database.\\ 
+Segue il manuale utente che spiega all'utente come utilizzare il gioco e le regole dello stesso.\\
+Infine vengono tratte le conclusioni e i possibili sviluppi futuri che l'applicazione può subire per migliorare l'esperienza dell'utente.
+
+\section*{Obiettivo dello stage}
+Come già anticipato, l'obiettivo dello stage è stato quello di implementare un'applicazione per dispositivi mobili che possa essere utilizzata come sostegno all'insegnamento e all'apprendimento del concetto della bisimulazione. Per lo sviluppo del progetto è stato scelto di programmare utilizzando l'\textbf{IDE} (\textit{integrated development environment})  \textbf{Android Studio}, un ambiente di sviluppo integrato adibito per la creazione di applicazioni Android, basato sul linguaggio \textbf{Java} per il \textit{backend} e sull'\textbf{XML} (\textit{extensible Markup Language}) per il \textit{frontend}. Android Studio offre inoltre un ampio supporto a serivizi di terze parti, in particolare ai serivizi di \textbf{Google}, tra cui \textbf{Firebase}, utilizzato principalmente come \textit{Realtime Database}.
+
+\section*{Dispositivi Android}
+Secondo l'articolo riportato da Ericsson Mobility Report \cite{2} sono 5.9 miliardi le persone nel mondo che possiedono un telefonino ed il numero di abbonamenti LTE risulta essere in crescita costante.\\
+Tra questi emergono i dispositivi con sistema operativo Android, che risulta essere il sistema operativo più diffuso al mondo per quanto riguarda i dispositivi mobili (Figura 1.1). I fattori che hanno determinato questo primato di Android sono i prezzi contenuti per i mercati emergenti e la disponibilità di poter usufruire di migliaia di app per la salute e per l'istruzione.\\
+Android, più di qualunque altra piattaforma per dispositivi mobili, aiuta le persone ad accedere alle informazioni e a più opportunità.
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{images/Smartphone Android.png}
+\caption{Grafico smartphone con sistema operativo Android.}
+\end{figure}
 
 \chapter{Bisimulazione}
-Un \textit{sistema a transizione di stati} (dall'inglese \textit{labelled transition system}, ~\cite{1}), talvolta chiamato \textit{transition graph}, è una tripla (\textbf{Proc}, \textbf{Act}, \{ $\xrightarrow{\alpha}$ | $\alpha$ $\in$ \textbf{Act}\}) dove:
+In questa sezione vengono presentati dal punto di vista formale i concetti di sistema a transizione di stati, transizione debole e bisimulazione debole \cite{1}.\\
+\[\textbf{SISTEMA DI TRANSIZIONI ETICHETTATEI}\] Un \textit{sistema di transizioni etichettate} (dall'inglese \textit{labelled transition system}), talvolta chiamato \textit{transition graph}, è una tripla (\textbf{Proc}, \textbf{Act}, \{ $\xrightarrow{\alpha}$ | $\alpha$ $\in$ \textbf{Act}\}) dove:
 
 \begin{itemize}
 \item \textbf{Proc} è un insieme di \textit{stati} (o \textit{processi});
@@ -87,29 +106,27 @@ Un \textit{sistema a transizione di stati} (dall'inglese \textit{labelled transi
 \end{itemize}
 
 Un sistema a transizioni di stati è \textit{finito} se i suoi insiemi di stati e azioni sono anch'essi finiti.\\
-Assumiamo che \textit{P} e \textit{Q} siano stati in un LTS. Per ogni azione di $\alpha$, diciamo che \textit{P} $\xRightarrow{\alpha}$ \textit{Q} se una delle due condizioni è verificata:
+
+\[\textbf{TRANSIZIONE DEBOLE}\]Assumiamo che \textit{P} e \textit{Q} siano stati in un LTS. Per ogni azione di $\alpha$, diciamo che \textit{P} $\xRightarrow{\alpha}$ \textit{Q} se una delle due condizioni è verificata:
 
 \begin{itemize}
-\item $\alpha$ $\neq$ $\tau$ e ci sono stati \textit{P'} e \textit{Q'} tali che\\
+\item $\alpha$ $\neq$ $\tau$ e ci sono stati $P'$ e $Q'$ tali che\\
 \centerline{\textit{P($\xrightarrow{\tau}$)*P'$\xrightarrow{\alpha}$Q'($\xrightarrow{\tau}$)*Q}}
 
-\item oppure $\alpha$ = $\tau$ e P($\xrightarrow{\tau}$)*Q,
+\item oppure $\alpha$ = $\tau$ e $P$($\xrightarrow{\tau}$)*$Q$,
 \end{itemize}
 
-dove ($\xrightarrow{\tau}$)* indica la relazione riflessiva e transitiva $\xrightarrow{\tau}$.
+dove ($\xrightarrow{\tau}$)* indica la chiusura riflessiva e transitiva sulla relazione $\xrightarrow{\tau}$.\\
 
-\section{Dispositivi Android}
-Secondo l'articolo riportato da Ericsson Mobility Report \cite{2} sono 5.9 miliardi le persone nel mondo che possiedono un telefonino ed il numero di abbonamenti LTE risulta essere in crescita costante.\\
-Tra questi emergono i dispositivi con sistema operativo Android, che risulta essere il sistema operativo più diffuso al mondo per quanto riguarda i dispositivi mobili (Figura 1.1). I fattori che hanno determinato questo primato di Android sono i prezzi contenuti per i mercati emergenti e la disponibilità di poter usufruire di migliaia di app per la salute e per l'istruzione.\\
-Android, più di qualunque altra piattaforma per dispositivi mobili, aiuta le persone ad accedere alle informazioni e a più opportunità.
+\[\textbf{BISIMULAZIONE DEBOLE}\] Una relazione binaria $R$ sull'insieme di stati di un LTS è una \textit{weak bisimulation} (relazione di bisimulazione debole) se $s_1$ $R$ $s_2$ e $\alpha$ è un azione e:
 
-\begin{figure}[h]
-\includegraphics[width=\textwidth]{images/Smartphone Android.png}
-\caption{Grafico smartphone con sistema operativo Android.}
-\end{figure}
+\begin{itemize}
+\item se $s_1$ $\xrightarrow{\alpha}$ $s'_1$, allora c'è una transizione $s_2$ $\xRightarrow{\alpha}$ $s'_2$ tale che $s'_1$ $R$ $s'_2$.
 
-\section{Obiettivo dello stage}
-Come già anticipato, l'obiettivo dello stage è stato quello di implementare un'applicazione per dispositivi mobili che possa essere utilizzata come sostegno all'insegnamento e all'apprendimento del concetto della bisimulazione. Per lo sviluppo del progetto è stato scelto di programmare utilizzando l'\textbf{IDE} (\textit{integrated development environment})  \textbf{Android Studio}, un ambiente di sviluppo integrato adibito per la creazione di applicazioni Android, basato sul linguaggio \textbf{Java} per il \textit{backend} e sull'\textbf{XML} (\textit{extensible Markup Language}) per il \textit{frontend}. Android Studio offre inoltre un ampio supporto a serivizi di terze parti, in particolare ai serivizi di \textbf{Google}, tra cui \textbf{Firebase}, utilizzato principalmente come \textit{Realtime Database}.
+\item se $s_2$ $\xrightarrow{\alpha}$ $s'_2$, allora c'è una transizione $s_1$ $\xRightarrow{\alpha}$ $s'_1$ tale che $s'_1$ $R$ $s'_2$.
+\end{itemize}
+
+Due stati $s$ ed $s'$ sono \textit{weakly bisimilar} (\textit{debolmente bisimili}), se e solo se c'è una relazione di bisimulazione che li unisce.
 
 \chapter{Organizzazione applicazione}
 \section{Backend}
@@ -165,7 +182,7 @@ Le due eccezioni vengono lanciate rispettivamente se l'indirizzo mail dell'accou
 Così come per le eccezioni descritte nella sezione precedente, anche in questo caso è presente un blocco catch per ognuna di esse.\\
 La memorizzazione delle credenziali avviene tramite l'interfaccia \textit{SharedPreferences}\cite{6} che permette di accedere e modificare i dati a livello locale, non a livello di Realtime Database.
 I dati collocati nelle SharedPreferences vengono salvati in un file XML contenuto nello storage interno, in particolare nella cartella \textit{shared\_prefs}. Il file in cui sono contenute le informazioni è chiamato "\textit{sharedPreferencesLogin}". In questo file vengono salvati i dati di accesso (indirizzo mail e password) dell'utente che saranno poi memorizzati per il successivo utilizzo.\\
-Il salvataggio dei dati in questo file locale avviene solamente nel caso in cui l'utente abbia contrassegnato con un flag la checkbox accompagnata dalla descrizione "\textit{Ricordami}". In caso contrario, i dati non vengono salvati e se l'utente dovesse dimenticarsi della password utilizzata, è possibile effettuare un reset utilizzando sempre una funzionalità offferta da Firebase; nello specifico, per mezzo del metodo sendPasswordResetEmail() che prende come parametro l'indirizzo mail dell'utente è possibile effettuare questa operazione. Questo metodo attiva il backend di Firebase Authentication per inviare un'email di reimpostazione della password all'indirizzo email fornito che deve corrispondere ad un utente esistente già registrato a Bisimulazione.
+Il salvataggio dei dati in questo file locale avviene solamente nel caso in cui l'utente abbia contrassegnato con un flag la checkbox accompagnata dalla descrizione "\textit{Ricordami}". In caso contrario, i dati non vengono salvati e se l'utente dovesse dimenticarsi della password utilizzata, è possibile effettuare un reset utilizzando sempre una funzionalità offferta da Firebase; nello specifico, per mezzo del metodo sendPasswordResetEmail() che prende come parametro l'indirizzo mail dell'utente e rende possibile effettuare questa operazione. Questo metodo attiva il backend di Firebase Authentication per inviare un'email di reimpostazione della password all'indirizzo email fornito che deve corrispondere ad un utente esistente già registrato a Bisimulazione.
 
 \section{Realtime Database}
 \textbf{Realtime Database} è un database ospitato nel cloud. I dati vengono archiviati come \textit{JSON} e sincronizzati in tempo reale con ogni client connesso, rimanendo disponibili fino a che l'app diventa offline. Con questo database è possibile archiviare e sincronizzare i dati con il database dal modello NoSQL\cite{7}.\\
@@ -199,6 +216,51 @@ Un ascoltatore singolo permette di leggere i dati una volta sola; più nello spe
 Un esempio di utilizzo di un \textit{single value listener} è all'interno della classe Java \textbf{Table}: una volta letto il nome dell'attaccante e definito all'interno dell'info box non è più necessario mantenere un ascoltare su questo valore, quindi viene letto una volta sola e poi rimosso.\\
 In maniera differente un ascoltatore persistente serve per tenere traccia di aggiornamenti ad uno specifico riferimento.\\
 Un esempio di utilizzo di un \textit{value event listener} è possibile trovarlo sempre all'interno della classe Java \textbf{Table}: qui è necessario che venga letto il valore del riferimento \textit{turnOf} ogni volta che esso viene aggiornato per far sì che i giocatori che si sfidano sappiano in tempo reale a chi tocca eseguire una mossa.
+
+\section{Modulo logico}
+Dal punto di vista logico, la maggior parte dei controlli partono dal metodo \textit{setOnTouchGraph()} contenuto nella classe \textbf{Table} dove si svolge effettivamente la partita tra i due giocatori. Il metodo riceve come argomento un oggetto \textit{event} della classe \textbf{MotionEvent} e un oggetto \textit{directedGraph} della classe \textbf{DirectedGraph} (definita nella sezione XXX).\\
+Il metodo effettua un ciclo continuo sui nodi del grafo passato come argomento.\\
+Questo metodo inizialmente verifica se un tocco effettuato dall'utente è stato eseguito all'interno di un nodo o meno passando il compito di tale controllo al metodo \textit{touchIsInCircle()}; questa funzione riceve in ingresso le coordinate del punto dove l'utente ha effettuato il tocco e le coordinate del nodo insieme al valore del raggio, in seguito i dati vengono processati per mezzo del codice mostrato in figura XXX ritornando rispettivamente \textit{true} o \textit{false}.
+
+INSERIRE IMMAGINE CODICE
+
+Questa formula si basa sull'equazione del cerchio per le coordinate cartesiane.\\
+Se il tocco non risulta all'interno del nodo, quindi il risultato della funzione chiamata è \textit{false} si rimane in attesa di un ulteriore tocco da parte dell'utente.\\
+Altrimenti si verifica che la mossa eseguita dall'utente sia una mossa valida. Questa parte viene illustrata nelle sezioni successive.
+
+\subsection{Mosse forti}
+Per determinare se una mossa è valida è necessario comprendere prima la differenza tra mosse forti e mosse deboli.\\
+Una mossa forte viene eseguita esclusivamente dall'attaccante e la sua definizione è meglio illustrata nella sezione XXX.\\
+Dal punto di vista implementativo per verificare se una mossa compiuta è una mossa forte si chiama il metodo \textit{isStrongMove()} che legge come argomento il nodo del grafo toccato (grafo sinistro o grafo destro) selezionato prima di eseguire la mossa (\textit{startNode}) e il nodo successivamente toccato.\\
+A partire dallo \textit{startNode} si esegue un ciclo su tutti gli archi uscenti di questo nodo e si controlla se il nodo destinazione di uno degli archi su cui si sta ciclando coincide con il nodo toccato. Più nello specifico questo controllo viene effettuato sugli id essendo essi univoci.\\ 
+Il metodo restituisce un valore booleano che assume la forma di \textit{true} se è stato trovato un id che combacia, \textit{false} in tutti gli altri casi.
+
+\subsection{Mosse deboli}
+Una mossa debole può essere eseguita esclusivamente dal difensore e la sua definizione è meglio illustrata nella sezione XXX.\\
+Dal punto di vista implementativo è stata definita la funziona \textit{isWeakMove()}. Questa funzione riceve in ingresso lo \textit{startNode} (già definito nella sezione precedente), il nodo toccato dall'utente, una variabile booleana \textit{atLeastOneArcOfLastMoveColour}, una mappa con coppia chiave valore <Node, Boolean> che assume il nome di \textit{visitedNodes}. DEFINIZIONE MAPPA XXX.\\
+La variabile booleana \textit{atLeastOneArcOfLastMoveColour} assume valore \textit{true} quando è già stato visitato un arco con lo stesso colore del colore dell'ultima mossa; altrimenti, assume valore \textit{false}. La mappa \textit{visitedNodes} aggiunge i nodi visitati accostando ad essi il valore \textit{true} se visitati, \textit{false} se non ancora visitati.\\
+Questo metodo ha un carattere ricorsivo.\\
+Innanzitutto si verifica se il colore speciale coincide con il colore dell'ultima mossa effettuata; in questo caso, si cicla sui nodi uscenti dello \textit{startNode} e se il colore di un arco coincide con il colore speciale (che è a sua volta uguale al colore dell'ultima mossa) la funzione ritorna \textit{true}; altrimenti, si prosegue verso il prossimo blocco di codice. Questa parte di codice è necessaria a verificare il caso in cui colore speciale e colore dell'ultima mossa coincidono: in questo caso si può anche rimanere fermi.\\
+Il blocco sucessivo verifica se la mappa contiene al suo interno lo \textit{startNode}; se questo si verifica la funzione ritorna \textit{true} dopo aver riabilitato l'utilizzo di entrambi i grafi per l'attaccante tramite la funzione \textit{updateValidWeakMove()} (prima era stato disabilitato al tocco il grafo in cui aveva effettuato la mossa l'attaccante).\\
+Altrimenti se la mappa non contiene il nodo toccato si passa al prossimo blocco di codice. Qui si controlla che lo startNode sia uguale al nodo toccato; se questo accade si ritorna il valore di \textit{atLeastOneArcOfLastMoveColour} ovvero se è stato trovato almeno un arco del colore dell'ultima mossa ritornerà \textit{true} altrimenti il suo valore di default, ovvero \textit{false}.
+Se i due nodi non coincidono, si fa un ciclo sugli archi uscenti dello \textit{startNode} e si verifica tramite la variabile \textit{lastColorJustUsed} che viene inizializzata uguale al valore di \textit{atLeastOneArcOfLastMoveColour} se il colore dell'arco ispezionato è uguale al colore dell'ultima mossa: in questo caso la variabile \textit{lastColourJustUsed} assume il valore \textit{true} altrimenti si continua a ciclare.\\
+In seguito avviene la chiamata ricorsiva passando come argomenti il nodo destinazione dell'arco, il nodo toccato, la variabile \textit{lastColourJustUsed} e la mappa \textit{visitedNodes}; su questa chiamata si fa un controllo e se essa restituisce \textit{true} si aggiunge alla mappa il nodo di destinazione dell'arco associato al valore \textit{true} e si richiama il metodo \textit{updateValidWeakMove()}, ritornando il valore \textit{true}. Questo blocco di codice permette di percorrere tutti gli archi percorribili a partire dal nodo di partenza fino a che non si trova il percorso contenente il nodo toccato.\\
+Se viene toccato un nodo che non rientra nei percorsi degli archi percorribili, il metodo ritornerà \textit{false}.
+
+\subsection{Controllo mossa valida}
+Al fine di verificare che una mossa eseguita da un giocatore sia corretta, il primo step è verificare a chi appartiene attualmente il turno. Per fare ciò si legge una casella di testo contenente tale informazione che a sua volta prende l'informazione leggendola dal database.\\
+Se è il turno dell'attaccante si chiama la funzione \textit{isStrongMove()} e a seconda del valore ritornato da questa funzione si rende valida la mossa o meno.\\
+Analogamente nel turno del difensore si procede alla stessa maniera richiamando il metodo \textit{isWeakMove()}.
+
+\subsection{Controlli fine partita}
+Le condizioni di fine partita sono tre e sono illustrate nella sezione XXX.\\
+A livello di codice se una mossa è stata ritenuta valida si passa il controllo al metodo \textit{controlConfiguration()}. Questo metodo controlla che una configurazione non si sia già verificata in precedenza; se così fosse, la partita terminerebbe.\\
+Questo metodo utilizza un \textbf{HashSet<Pair>}. Un oggetto della classe \textbf{HashSet} non garantisce l'ordine di iterazione sull'insieme; in particolare, non garantisce che l'ordine rimanga costante nel tempo. cite XXX\\
+La classe \textit{Pair} è una classe del folder \textit{models} che sostanzialmente memorizza due nodi, uno del grafo di sinsitra e uno del grafo di destra.\\
+Dunque se al termine di una mossa la nuova configurazione, ovvero la nuova coppia di nodi, è già presente all'interno dell'insieme dunque è già stata visitata, la partita termina.\\
+Questo metodo garantisce il controllo di una delle tre condizioni di termine della partita.\\
+Le altre due condizioni sono analoghe tra di loro e dal punto di vista implementativo sono riassunte in un unico metodo chiamato \textit{possibleMoves()}. Questo metodo legge come parametro lo \textit{startNode} e al suo interno verifica se sono presenti ancora mosse possibile per l'attaccante simulando una mossa dell'attaccante stesso. Più nel dettaglio vengono selezionati il nodo corrente di ogni singolo grafo e si verifica se almeno uno dei due nodi tra i suoi archi uscenti ha un arco diverso da null; se questo non avviene significa che non ci sono più mosse disponibili e dunque dopo un aggiornamento del valore \textit{gameInProgress} all'interno del database la partita termina.\\
+Il discorso è analago per il difensore.
 
 \section{Frontend}
 \subsection{Material Design}
@@ -256,6 +318,57 @@ Gli archi invece sono disegnati tramite il metodo \textit{drawLine()} che riceve
 \end{enumerate}
 
 Come punto di arrivo e punto di fine sono stati utilizzati come riferimento i nodi, facendo dei calcoli utilizzando il centro e il raggio.
+
+\subsection{Directed Graph}
+I grafi rappresentati tramite la classe Canvas sono contenuti nella classe \textit{astratta} \textbf{DirectedGraph}.\\
+Questa classe definisce i metodi principali, quali getter, setter e costruttore, quest'ultimo utilizzato per la rappresentazione dei grafica dei grafi.\\
+Tra gli attributi di questa classe sono presenti un array di oggetti della classe \textit{Node} (sezione 2.5.2)  e un array di oggetti della classe \textbf{Edges} (sezione 2.5.3).
+All'interno di questa classe sono implementati 3 metodi che restituiscono tutti e 3 un oggetto di tipo\textbf{Paint} che viene utilizzato rispettivamento per la rappresentazione grafica rispettivamente dei nodi, degli archi e della punta della freccia che termina l'arco. In particolare, questi oggetti definiscono il colore, lo spessore e lo stile dei tre elementi indicati precedentemente.\\
+La classe DirectedGraph è una classe astratta in quanto definisce senza implementazione i seguenti metodi:
+
+\begin{itemize}
+\item \textit{drawGraph()};
+
+\item \textit{drawNodes()};
+
+\item \textit{drawEdges()};
+\end{itemize}
+
+Tutti questi metodi ricevono come parametro un oggetto di tipo Canvas e sono implementati nelle classi figlie, \textbf{DirectedGraphLeft} e \textbf{DirectedGraphRight}.\\
+Per disegnare i nodi nelle posizioni corrette, viene eseguito un ciclo sull'attributo di classe \textit{nodes} a cui si ha accesso tramite il getter e con il metodo \textit{drawCircle()} chiamato sull'oggetto canvas si disegna nodo per nodo. Nello specifico, questo metodo legge come parametro la posizone del nodo (coordinate x e y), il raggio e il colore del nodo.
+
+\subsection{Node}
+La classe \textbf{Node} rappresenta un componente insieme alla classe \textbf{Edge} necessaria per la rappresentazione grafica dei Canvas.\\
+Oltre alla definizione dei getter e dei setter, questa classe è basata sul costruttore che legge come parametro tutti gli attributi definiti e li attribuisce tramite i setter.\\
+Gli attributi \textit{id}, \textit{root} (che definisce se un nodo è la radice del grafo o meno), \textit{toLeft} (che definisce se un nodo si trova a sinistra rispetto al nodo genitore o meno), \textit{toRight} (stesso principio di \textit{toLeft}), \textit{leftTable} (che definisce se un nodo appartiene al grafo di sinistra o meno) e \textit{color} vengono impostati tramite i setter senza alcuna manipolazione.\\
+D'altro canto gli attributi \textit{x} e \textit{y} che rappresentano rispettivamente l'ascissa e l'ordinata del nodo sono manipolati: se il nodo è un nodo radice, allora il punto \textit{x} dovrà essere messo al centro del layout cui appartiene utilizzando il metodo \textit{getDisplayMetrics()} della classe Resources. La coordinata \textit{y} non viene manipolata. \\
+Altrimenti se il nodo non è un nodo radice bisogna distinguere due casi:
+
+\begin{enumerate}
+\item il nodo si trova alla sinistra rispetto al nodo genitore;
+
+\item il nodo si trova alla destra rispetto al nodo genitore.
+\end{enumerate}
+
+In entrambi i casi la coordinata \textit{x} viene manipolata; nel primo caso viene spostata verso sinistra di un valore fisso che assume il nome di \textit{shiftHorizontal}, nel secondo caso viene spostato dalla parte opposta sempre dello stesso valore precedentemente citato.\\
+E' possibile che un nodo non rientri in nessuno dei due casi sopracitati: in questo caso la coordinata \textit{x} non viene manipolata rispetto alla sua lettura come parametro del costruttore.\\
+In tutti i casi la coordinata \textit{y} subisce una variazione di un valore fisso che assume il nome di \textit{shiftVertical} verso il basso.
+
+\subsection{Edge}
+La classe \textbf{Edge} definisce semplicemente i getter, i setter e il costruttore. All'interno di questi metodi le variabili non vengono manipolate.\\
+Gli attributi di questa classe sono:
+
+\begin{itemize}
+\item \textit{id} che rappresenta un numero univoco che identifica l'arco;
+
+\item \textit{source} un oggetto della classe Node che rappresenta il nodo di partenza dell'arco;
+
+\item \textit{destination} un oggetto della classe Node che rappresenta il nodo di arrivo dell'arco;
+
+\item \textit{color} che rappresenta il colore dell'arco;
+
+\item \textit{toBottom} che indica se l'arco ha direzione nord-sud;
+\end{itemize}
 
 \chapter{Partita in tempo reale}
 \section{Lettura file di configurazione}
