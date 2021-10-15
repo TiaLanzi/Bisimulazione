@@ -85,7 +85,7 @@ Come già anticipato, l'obiettivo dello stage è stato quello di implementare un
 
 \section*{Dispositivi Android}
 Secondo l'articolo riportato da Ericsson Mobility Report \cite{2} sono 5.9 miliardi le persone nel mondo che possiedono un telefonino ed il numero di abbonamenti LTE risulta essere in crescita costante.\\
-Tra questi emergono i dispositivi con sistema operativo Android, che risulta essere il sistema operativo più diffuso al mondo per quanto riguarda i dispositivi mobili (Figura 1.1). I fattori che hanno determinato questo primato di Android sono i prezzi contenuti per i mercati emergenti e la disponibilità di poter usufruire di migliaia di app per la salute e per l'istruzione.\\
+Tra questi emergono i dispositivi con sistema operativo Android, che risulta essere il sistema operativo più diffuso al mondo per quanto riguarda i dispositivi mobili (Figura 1). I fattori che hanno determinato questo primato di Android sono i prezzi contenuti per i mercati emergenti e la disponibilità di poter usufruire di migliaia di app per la salute e per l'istruzione.\\
 Android, più di qualunque altra piattaforma per dispositivi mobili, aiuta le persone ad accedere alle informazioni e a più opportunità.
 
 \begin{figure}[h]
@@ -95,7 +95,7 @@ Android, più di qualunque altra piattaforma per dispositivi mobili, aiuta le pe
 
 \chapter{Bisimulazione}
 In questa sezione vengono presentati dal punto di vista formale i concetti di sistema a transizione di stati, transizione debole e bisimulazione debole \cite{1}.\\
-\[\textbf{SISTEMA DI TRANSIZIONI ETICHETTATEI}\] Un \textit{sistema di transizioni etichettate} (dall'inglese \textit{labelled transition system}), talvolta chiamato \textit{transition graph}, è una tripla (\textbf{Proc}, \textbf{Act}, \{ $\xrightarrow{\alpha}$ | $\alpha$ $\in$ \textbf{Act}\}) dove:
+\[\textbf{SISTEMA DI TRANSIZIONI ETICHETTATE}\] Un \textit{sistema di transizioni etichettate} (dall'inglese \textit{labelled transition system}), talvolta chiamato \textit{transition graph}, è una tripla (\textbf{Proc}, \textbf{Act}, \{ $\xrightarrow{\alpha}$ | $\alpha$ $\in$ \textbf{Act}\}) dove:
 
 \begin{itemize}
 \item \textbf{Proc} è un insieme di \textit{stati} (o \textit{processi});
@@ -218,26 +218,28 @@ In maniera differente un ascoltatore persistente serve per tenere traccia di agg
 Un esempio di utilizzo di un \textit{value event listener} è possibile trovarlo sempre all'interno della classe Java \textbf{Table}: qui è necessario che venga letto il valore del riferimento \textit{turnOf} ogni volta che esso viene aggiornato per far sì che i giocatori che si sfidano sappiano in tempo reale a chi tocca eseguire una mossa.
 
 \section{Modulo logico}
-Dal punto di vista logico, la maggior parte dei controlli partono dal metodo \textit{setOnTouchGraph()} contenuto nella classe \textbf{Table} dove si svolge effettivamente la partita tra i due giocatori. Il metodo riceve come argomento un oggetto \textit{event} della classe \textbf{MotionEvent} e un oggetto \textit{directedGraph} della classe \textbf{DirectedGraph} (definita nella sezione XXX).\\
+Dal punto di vista logico, la maggior parte dei controlli partono dal metodo \textit{setOnTouchGraph()} contenuto nella classe \textbf{Table} dove si svolge effettivamente la partita tra i due giocatori. Il metodo riceve come argomento un oggetto \textit{event} della classe \textbf{MotionEvent} e un oggetto \textit{directedGraph} della classe \textbf{DirectedGraph} (definita nella sezione 2.5.1).\\
 Il metodo effettua un ciclo continuo sui nodi del grafo passato come argomento.\\
-Questo metodo inizialmente verifica se un tocco effettuato dall'utente è stato eseguito all'interno di un nodo o meno passando il compito di tale controllo al metodo \textit{touchIsInCircle()}; questa funzione riceve in ingresso le coordinate del punto dove l'utente ha effettuato il tocco e le coordinate del nodo insieme al valore del raggio, in seguito i dati vengono processati per mezzo del codice mostrato in figura XXX ritornando rispettivamente \textit{true} o \textit{false}.
-
-INSERIRE IMMAGINE CODICE
-
+Questo metodo inizialmente verifica se un tocco effettuato dall'utente è stato eseguito all'interno di un nodo o meno passando il compito di tale controllo al metodo \textit{touchIsInCircle()}; questa funzione riceve in ingresso le coordinate del punto dove l'utente ha effettuato il tocco e le coordinate del nodo insieme al valore del raggio, in seguito i dati vengono processati per mezzo del codice mostrato in figura 2.3 ritornando rispettivamente \textit{true} o \textit{false}.\\
 Questa formula si basa sull'equazione del cerchio per le coordinate cartesiane.\\
 Se il tocco non risulta all'interno del nodo, quindi il risultato della funzione chiamata è \textit{false} si rimane in attesa di un ulteriore tocco da parte dell'utente.\\
 Altrimenti si verifica che la mossa eseguita dall'utente sia una mossa valida. Questa parte viene illustrata nelle sezioni successive.
 
+\begin{figure}[h]
+\includegraphics{images/touchIsInCircle.png}
+\caption{Implementazione metodo \textit{touchIsInCircle()}.}
+\end{figure}
+
 \subsection{Mosse forti}
 Per determinare se una mossa è valida è necessario comprendere prima la differenza tra mosse forti e mosse deboli.\\
-Una mossa forte viene eseguita esclusivamente dall'attaccante e la sua definizione è meglio illustrata nella sezione XXX.\\
+Una mossa forte viene eseguita esclusivamente dall'attaccante e la sua definizione è meglio illustrata nella sezione 4.3 dove vengono esplicate le regole.\\
 Dal punto di vista implementativo per verificare se una mossa compiuta è una mossa forte si chiama il metodo \textit{isStrongMove()} che legge come argomento il nodo del grafo toccato (grafo sinistro o grafo destro) selezionato prima di eseguire la mossa (\textit{startNode}) e il nodo successivamente toccato.\\
 A partire dallo \textit{startNode} si esegue un ciclo su tutti gli archi uscenti di questo nodo e si controlla se il nodo destinazione di uno degli archi su cui si sta ciclando coincide con il nodo toccato. Più nello specifico questo controllo viene effettuato sugli id essendo essi univoci.\\ 
 Il metodo restituisce un valore booleano che assume la forma di \textit{true} se è stato trovato un id che combacia, \textit{false} in tutti gli altri casi.
 
 \subsection{Mosse deboli}
-Una mossa debole può essere eseguita esclusivamente dal difensore e la sua definizione è meglio illustrata nella sezione XXX.\\
-Dal punto di vista implementativo è stata definita la funziona \textit{isWeakMove()}. Questa funzione riceve in ingresso lo \textit{startNode} (già definito nella sezione precedente), il nodo toccato dall'utente, una variabile booleana \textit{atLeastOneArcOfLastMoveColour}, una mappa con coppia chiave valore <Node, Boolean> che assume il nome di \textit{visitedNodes}. DEFINIZIONE MAPPA XXX.\\
+Una mossa debole può essere eseguita esclusivamente dal difensore e la sua definizione è meglio illustrata nella sezione 4.3.\\
+Dal punto di vista implementativo è stata definita la funziona \textit{isWeakMove()}. Questa funzione riceve in ingresso lo \textit{startNode} (già definito nella sezione precedente), il nodo toccato dall'utente, una variabile booleana \textit{atLeastOneArcOfLastMoveColour}, una mappa con coppia chiave valore <Node, Boolean> che assume il nome di \textit{visitedNodes}. Un oggetto della classe \textbf{Map}\cite{14}che associa una chiave ad un valore. Una mappa non può contenere chiavi duplicate; ogni chiave può essere associata al massimo ad un valore.\\
 La variabile booleana \textit{atLeastOneArcOfLastMoveColour} assume valore \textit{true} quando è già stato visitato un arco con lo stesso colore del colore dell'ultima mossa; altrimenti, assume valore \textit{false}. La mappa \textit{visitedNodes} aggiunge i nodi visitati accostando ad essi il valore \textit{true} se visitati, \textit{false} se non ancora visitati.\\
 Questo metodo ha un carattere ricorsivo.\\
 Innanzitutto si verifica se il colore speciale coincide con il colore dell'ultima mossa effettuata; in questo caso, si cicla sui nodi uscenti dello \textit{startNode} e se il colore di un arco coincide con il colore speciale (che è a sua volta uguale al colore dell'ultima mossa) la funzione ritorna \textit{true}; altrimenti, si prosegue verso il prossimo blocco di codice. Questa parte di codice è necessaria a verificare il caso in cui colore speciale e colore dell'ultima mossa coincidono: in questo caso si può anche rimanere fermi.\\
@@ -253,9 +255,9 @@ Se è il turno dell'attaccante si chiama la funzione \textit{isStrongMove()} e a
 Analogamente nel turno del difensore si procede alla stessa maniera richiamando il metodo \textit{isWeakMove()}.
 
 \subsection{Controlli fine partita}
-Le condizioni di fine partita sono tre e sono illustrate nella sezione XXX.\\
+Le condizioni di fine partita sono tre e sono illustrate nella sezione 4.3.\\
 A livello di codice se una mossa è stata ritenuta valida si passa il controllo al metodo \textit{controlConfiguration()}. Questo metodo controlla che una configurazione non si sia già verificata in precedenza; se così fosse, la partita terminerebbe.\\
-Questo metodo utilizza un \textbf{HashSet<Pair>}. Un oggetto della classe \textbf{HashSet} non garantisce l'ordine di iterazione sull'insieme; in particolare, non garantisce che l'ordine rimanga costante nel tempo. cite XXX\\
+Questo metodo utilizza un \textbf{HashSet<Pair>}. Un oggetto della classe \textbf{HashSet} non garantisce l'ordine di iterazione sull'insieme; in particolare, non garantisce che l'ordine rimanga costante nel tempo\cite{13}.\\
 La classe \textit{Pair} è una classe del folder \textit{models} che sostanzialmente memorizza due nodi, uno del grafo di sinsitra e uno del grafo di destra.\\
 Dunque se al termine di una mossa la nuova configurazione, ovvero la nuova coppia di nodi, è già presente all'interno dell'insieme dunque è già stata visitata, la partita termina.\\
 Questo metodo garantisce il controllo di una delle tre condizioni di termine della partita.\\
@@ -268,7 +270,7 @@ Il \textbf{Material Design} \cite{10} è una guida completa per il design visivo
 Per rendere l'esperienza utente ottimale e per rispettare le indicazioni Android, nello sviluppo dell'applicazione è stato utilizzato il Material Design seguendo le linee guida definite, dalla tipografia alle diverse views utilizzate.
 
 \subsection{Componenti Sign Up Activity}
-Dal punto di vista dell'interfaccia grafica l'activity \textit{SignUp} (Figura ) presenta una serie di \textbf{TextView} ed \textbf{EditText} con lo scopo rispettivamente di informare l'utente sull'informazione richiesta che esso dovrà inserire e lo spazio necessario per eseguire tale operazione.
+Dal punto di vista dell'interfaccia grafica l'activity \textit{SignUp} presenta una serie di \textbf{TextView} ed \textbf{EditText} con lo scopo rispettivamente di informare l'utente sull'informazione richiesta che esso dovrà inserire e lo spazio necessario per eseguire tale operazione.
 
 \subsection{Componenti Login Activity}
 Questa activity, oltre a presentare le solite TextView ed EditText, mostra una \textit{checkbox} ovvero un componente che consente all'utente di selezionare un'opzione. In questo caso specifico  questa checkbox permette all'utente di memorizzare le proprie credenziali di accesso.\\
@@ -424,6 +426,7 @@ Il nodo \textit{turnOf} cambia ad ogni turno: inizialmente prende valore di "att
 Tutte queste informazioni sono contenute nella casella sottostante i tavoli di gioco.\\
 In aggiunta è presente anche un attributo \textit{enabled} che, quando assume valore \textbf{false} rende il grafo inutilizzabile, come mostrato in figura 3.3.\\
 Infine il nodo \textit{gameInProgress} ha lo scopo di terminare la partita non appena esso assume valore \textbf{false}.
+
 \begin{figure}[h]
 \includegraphics{images/Match in progress node.png}
 \caption{Nodo riguardante partita che ha subito variazioni.}
@@ -507,7 +510,7 @@ Con il termine bottom sheet \cite{11} (rappresentato in figura (b)) si intende u
 \end{figure}
 
 \subsection{Home}
-La schermata principale dal titolo \textbf{Home} (o \textbf{Bisimulazione}) /Figura 4.3) presenta due cards, tre pulsanti e il menù di navigazione.\\
+La schermata principale dal titolo \textbf{Home} (o \textbf{Bisimulazione}) (Figura 4.3) presenta due cards, tre pulsanti e il menù di navigazione.\\
 Le due cards contengono informazioni riguardo l'utente, i giocatori e le partite in corso.\\ 
 In particolare la prima card dal titolo \textit{Statistiche personali}  mostra le vittorie ottenute dall'utente sotto la scritta \textit{Numero di vittorie} e le sconfitte 
 accumulate sotto la scritta \textit{Numero di sconfitte}. Inoltre questa card contiene un pulsante che presenta la dicitura \textit{Scopri di più} che se premuto apre la
