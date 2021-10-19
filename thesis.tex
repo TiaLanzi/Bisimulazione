@@ -133,9 +133,9 @@ Informalmente è possibile definire la relazione di bisimulazione nei seguenti t
 Un \textbf{sistema di transizioni} rappresenta i possibili comportamenti di un sistema \textit{reattivo}, cioè di un sistema che può cambiare stato in seguito a interazioni con l'ambiente o ad azioni interne.\\
 Le etichette dell'alfabeto corrispondono a possibili interazioni con l'ambiente; l'etichetta speciale $\tau$ corrisponde ad azioni interne. Intuitivamente, due sistemi sono \textbf{bisimili} se esibiscono lo stesso schema di possibili interazioni con l'ambiente. Un utente esterno che può interagire attraverso le azioni corrispondenti alle etichette dell'alfabeto (e non osserva direttamente le azioni interne) non sarà in grado di distinguere due sistemi bisimili: i due sistemi sono equivalenti rispetto alle possibili interazioni con l'esterno.\\
 Il gioco riflette questa idea nel suo meccanismo: due sistemi sono bisimili se il difensore è in grado di replicare ogni possibile interazione compiuta dall'attaccante. Le etichette sono rappresentate dai colori degli archi e l'etichetta speciale $\tau$ dal colore speciale stabilito nel momento di creazione della partita.\\
-L'esempio seguente mostra due sistemi di transizione \textbf{bisimili} in cui il difensore ha una strategia vincente che possiamo definire come segue.\\
-Le regole del gioco vengono definite nel capitolo XXX, ora viene illustrato un esempio per chiarire il principio della Bisimulazione.\\
-Dato l'insieme di colori [\textit{R = rosso, B = blu, V = verde, M = magenta, N = nero}] e assumendo che il nero sia il \textit{colore speciale} e dati i due grafi in figura 1.XXX, inizia l'attaccante a muovere.\\
+L'esempio seguente mostra due sistemi di transizioni \textbf{bisimili} in cui il difensore ha una strategia vincente che possiamo definire come segue.\\
+Le regole del gioco vengono definite nel capitolo 4.3, ora viene illustrato un esempio per chiarire il principio della Bisimulazione.\\
+Dato l'insieme di colori [\textit{R = rosso, B = blu, V = verde, M = magenta, N = nero}] e assumendo che il nero sia il \textit{colore speciale} e dati i due grafi in figura 1.1, inizia l'attaccante a muovere.\\
 L'attaccante può scegliere tra due mosse iniziali:\\
 (1) da 1 a 2 con mossa V\\
 (2) da 5 a 6 con mossa V\\
@@ -160,7 +160,7 @@ E' necessario ora analizzare la configurazione (2,6). L'attaccante può fare qua
 (10) da 6 a 8 con mossa N\\
 
 Nel caso (7), il difensore muove da 6 a 7, raggiungendo la configurazione (3,7); nel caso (8) muova da 6 a 9 con una mossa composta: la nuova configurazione è (4,9); nel caso (9) muove da 2 a 3: la nuova configurazione è (3,7); infine, nel caso (10), resta nello stato 2 (mossa lecita perchè l'attaccante ha scelto il colore speciale come colore dell'ultima mossa): la nuova configurazione è (2,8). In tutti i casi abbiamo raggiunto configurazioni già visitate. E' stata  trovata dunque una strategia vincente per il difensore.\\
-Possiamo concludere dicendo che se due sistemi sono bisimili il difensore può mettere in atto una strategia vincente replicando le mosse dell'attaccante. Nel caso in cui due sistemi non sono bisimili sarà l'attaccante ad avere una strategia vincente in quanto il difensore non potrà replicare pedissequamente le mosse dell'attaccante.
+Possiamo concludere dicendo che se due sistemi sono bisimili il difensore può mettere in atto una strategia vincente replicando le mosse dell'attaccante. Nel caso in cui due sistemi non sono bisimili sarà l'attaccante ad avere una strategia vincente in quanto il difensore non potrà replicare ogni mossa dell'attaccante.
 
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{images/Example.png}
@@ -186,7 +186,7 @@ Allo stesso modo per poter usufruire delle funzionalità inerenti al database è
 
 \subsection{Registrazione}
 La classe Java \textit{SignUp} si occupa della registrazione di un utente alla piattaforma Firebase che permetterà poi di autenticarsi al fine di poterne usufruire dei servizi.\\
-La modalità scelta per la registrazione è la classica modalità che utilizza email e password. Uno degli attributi con modificatore privato di questa classe è \textit{auth}, un oggetto della classe FirebaseAuth; su questo oggetto, definito nel metodo \textit{onCreate()}\cite{3} (metodo che viene eseguito appena l'activity corrispondente alla classe viene lanciata), tramite il metodo \textit{getInstance()} che ritorna un istanza default della classe FirebaseApp, viene chiamato il metodo \textit{createUserWithEmailAndPassword()}\cite{4}. Quest'ultima funzione legge come argomento due stringhe, l'indirizzo mail inserito dall'utente e la password, anch'essa inserita dall'utente, e prova a creare un nuovo account utente con l'indirzzo mail e la password fornita. Questo metodo lancia tre eccezzioni:
+La modalità scelta per la registrazione è la classica modalità che utilizza email e password. Uno degli attributi con modificatore privato di questa classe è \textit{auth}, un oggetto della classe FirebaseAuth; su questo oggetto, definito nel metodo \textit{onCreate()}\cite{3} (metodo che viene eseguito appena l'activity corrispondente alla classe viene lanciata), tramite il metodo \textit{getInstance()} che ritorna un istanza default della classe FirebaseApp, viene chiamato il metodo \textit{createUserWithEmailAndPassword()}\cite{4}. Quest'ultima funzione legge come argomento due stringhe, l'indirizzo mail inserito dall'utente e la password, anch'essa inserita dall'utente, e prova a creare un nuovo account utente con l'indirzzo mail e la password fornita. Questo metodo lancia tre eccezioni:
 
 \begin{enumerate}
 \item \textbf{FirebaseAuthWeakPasswordException};
