@@ -126,7 +126,46 @@ dove ($\xrightarrow{\tau}$)* indica la chiusura riflessiva e transitiva sulla re
 \item se $s_2$ $\xrightarrow{\alpha}$ $s'_2$, allora c'è una transizione $s_1$ $\xRightarrow{\alpha}$ $s'_1$ tale che $s'_1$ $R$ $s'_2$.
 \end{itemize}
 
-Due stati $s$ ed $s'$ sono \textit{weakly bisimilar} (\textit{debolmente bisimili}), se e solo se c'è una relazione di bisimulazione che li unisce.
+Due stati $s$ ed $s'$ sono \textit{weakly bisimilar} (\textit{debolmente bisimili}), se e solo se c'è una relazione di bisimulazione che li unisce.\\
+
+
+Informalmente è possibile definire la relazione di bisimulazione nei seguenti termini.\\
+Un \textbf{sistema di transizioni} rappresenta i possibili comportamenti di un sistema \textit{reattivo}, cioè di un sistema che può cambiare stato in seguito a interazioni con l'ambiente o ad azioni interne.\\
+Le etichette dell'alfabeto corrispondono a possibili interazioni con l'ambiente; l'etichetta speciale $\tau$ corrisponde ad azioni interne. Intuitivamente, due sistemi sono \textbf{bisimili} se esibiscono lo stesso schema di possibili interazioni con l'ambiente. Un utente esterno che può interagire attraverso le azioni corrispondenti alle etichette dell'alfabeto (e non osserva direttamente le azioni interne) non sarà in grado di distinguere due sistemi bisimili: i due sistemi sono equivalenti rispetto alle possibili interazioni con l'esterno.\\
+Il gioco riflette questa idea nel suo meccanismo: due sistemi sono bisimili se il difensore è in grado di replicare ogni possibile interazione compiuta dall'attaccante. Le etichette sono rappresentate dai colori degli archi e l'etichetta speciale $\tau$ dal colore speciale stabilito nel momento di creazione della partita.\\
+L'esempio seguente mostra due sistemi di transizione \textbf{bisimili} in cui il difensore ha una strategia vincente che possiamo definire come segue.\\
+Le regole del gioco vengono definite nel capitolo XXX, ora viene illustrato un esempio per chiarire il principio della Bisimulazione.\\
+Dato l'insieme di colori [\textit{R = rosso, B = blu, V = verde, M = magenta, N = nero}] e assumendo che il nero sia il \textit{colore speciale} e dati i due grafi in figura 1.XXX, inizia l'attaccante a muovere.\\
+L'attaccante può scegliere tra due mosse iniziali:\\
+(1) da 1 a 2 con mossa V\\
+(2) da 5 a 6 con mossa V\\
+
+Nel primo caso il difensore risponde con una mossa composta da 5 a 8: la configurazione del gioco diventa (2,8); nel secondo caso il difensore muove da 1 a 2: la configurazione è ora (2,6).\\
+Dalla configurazione (2,8), l'attaccante può fare quattro mosse, che analizzeremo singolarmente:\\
+(3) da 2 a 3 con mossa R\\
+(4) da 2 a 4 con mossa B\\
+(5) da 8 a 7 con mossa R\\
+(6) da 8 a 9 con mossa B\\
+
+Nel caso (3), il difensore muove da 8 a 7: la nuova configurazione è (3,7);\\
+nel caso (4) muove da 8 a 9: la nuova configurazione è (4,9);\\
+nel caso (5) muove da 2 a 3: la nuova configurazione è (3,7);\\
+nel caso (6) muove da 2 a 4: la nuova configurazione è (4,9).\\
+
+Nella configurazione (3,7), l'attaccante può scegliere una mossa N su qualsiasi tavolo; in entrambi i casi il D può rispondere tornando alla configurazione iniziale: il difensore vince.\\
+E' necessario ora analizzare la configurazione (2,6). L'attaccante può fare quattro mosse:\\
+(7) da 2 a 3 con mossa R\\
+(8) da 2 a 4 con mossa B\\
+(9) da 6 a 7 con mossa R\\
+(10) da 6 a 8 con mossa N\\
+
+Nel caso (7), il difensore muove da 6 a 7, raggiungendo la configurazione (3,7); nel caso (8) muova da 6 a 9 con una mossa composta: la nuova configurazione è (4,9); nel caso (9) muove da 2 a 3: la nuova configurazione è (3,7); infine, nel caso (10), resta nello stato 2 (mossa lecita perchè l'attaccante ha scelto il colore speciale come colore dell'ultima mossa): la nuova configurazione è (2,8). In tutti i casi abbiamo raggiunto configurazioni già visitate. E' stata  trovata dunque una strategia vincente per il difensore.\\
+Possiamo concludere dicendo che se due sistemi sono bisimili il difensore può mettere in atto una strategia vincente replicando le mosse dell'attaccante. Nel caso in cui due sistemi non sono bisimili sarà l'attaccante ad avere una strategia vincente in quanto il difensore non potrà replicare pedissequamente le mosse dell'attaccante.
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{images/Example.png}
+\caption{Sistemi di transizioni bisimili.}
+\end{figure}
 
 \chapter{Organizzazione applicazione}
 \section{Backend}
@@ -613,7 +652,7 @@ Sotto i due tavoli è presente una tabella che contiene informazioni utili rigua
 \section{Regole}
 
 Il gioco si svolge tra due giocatori, che chiameremo Attaccante (A) e Difensore (D).\\
-Il terreno di gioco è formato da due grafi orientati, detti rispettivamente \textit{tavolo sinistro} e \textbf{tavolo destro}. Gli archi dei due grafi sono colorati di rosso, verde, blu e nero. All'inizio della
+Il terreno di gioco è formato da due grafi orientati, detti rispettivamente \textit{tavolo sinistro} e \textit{tavolo destro}. Gli archi dei due grafi sono colorati di rosso, verde, blu e nero. All'inizio della
 partita è proposto un colore che definiremo \textit{colore speciale}.\\
 Una partita è composta da una sequenza di turni. Ad ogni turno muove l’attaccante che sceglie su quale tavolo compiere la mossa; e il difensore deve rispondere muovendo sul tavolo opposto.\\
 Ci sono due tipi di mosse: mosse forti e mosse deboli. L’attaccante compie sempre mosse forti, il difensore mosse deboli. Una mossa forte consiste nello spostarsi dallo stato in cui si trova a uno stato raggiungibile percorrendo uno ed un solo arco del grafo. Diremo che il colore della mossa è il colore dell’arco percorso. Una mossa debole di colore \textit{x} consiste nello spostarsi lungo una sequenza di archi, uno dei quali di colore \textit{x}, mentre gli altri devono essere tutti del colore speciale. C'è un’eccezione: una mossa debole del colore speciale consiste in una sequenza di zero o più archi, tutti del colore speciale.\\
