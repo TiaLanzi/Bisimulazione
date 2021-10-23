@@ -229,7 +229,7 @@ Un aspetto fondamentale che ha favorito l'ultilizzo del Realtime Databsse come s
 
 \subsection{Scrittura dati}
 Per l'operazione di scrittura all'interno del database viene utlizzato il metodo \textit{setValue()}\cite{8} che permette di salvare il dato passato come argomento in un riferimento specifico, sostituendo qualsiasi dato esistente presente in quel percorso.\\
-Questo metodo è stato utilizzato in maniera molto frequente e un esempio chiaro del suo funzionamento è possibile trovarlo nella classe Java \textbf{MatchmakingRoom}: qui quando viene creata una partita si passa al riferimento della partita stessa tutte le informazioni poi smistate nei vari nodi figlio.\\
+Questo metodo è stato utilizzato in maniera molto frequente e un esempio chiaro del suo funzionamento è possibile trfovarlo nella classe Java \textbf{MatchmakingRoom}: qui quando viene creata una partita si passa al riferimento della partita stessa tutte le informazioni poi smistate nei vari nodi figlio.\\
 Ogni operazione di scrittura genera un nodo figlio di uno dei tre nodi principali del database rappresentati in figura 2.2.
 
 \begin{figure}[h]
@@ -240,8 +240,8 @@ Ogni operazione di scrittura genera un nodo figlio di uno dei tre nodi principal
 \subsection{Lettura dati}
 La lettura dei dati salvati all'interno del database è fondamentale per la creazione, lo sviluppo e il termine delle sfide in tempo reale.\\
 Per leggere un valore presente nel database è stato utilizzato il meccanismo dei callback.\\
-I dati memorizzati all'interno del Firebase Realtime Database sono recuperati collegando un ascoltatore asincrono (\textit{asynchronous listener}) che punta ad un riferimento del database. Il listener è attivato appena il dato viene trasmesso al database e in seguito si attiva ogni qual volta il dato cambia (si aggiorna o si elimina).\\
-Innanzitutto viene dichiarata un'interfaccia. Un'interfaccia è un componente di di un programma che contiene le intestazioni di un certo numero di metodi. Un'interfaccia può anche definire delle costanti pubbliche.\cite{9}\\ 
+I dati memorizzati all'interno del Firebase Realtime Database sono recuperati collegando un ascoltatore asincrono (\textit{asynchronous listener}) che punta ad un riferimento del database. Il listener è attivato appena il dato viene trasmesso al database e in seguito si attiva ogniqualvolta il dato cambia (si aggiorna o si elimina).\\
+Innanzitutto viene dichiarata un'interfaccia. Un'interfaccia è un componente di di un programma che contiene le intestazioni di un certo numero di metodi. Un'interfaccia può anche definire delle costanti pubbliche\cite{9}.\\ 
 Di seguito la classe in cui si dovrà leggere il dato o i dati eredita l'interfaccia generata. A questo punto viene creato un metodo che legge come parametro il metodo callback definito nell'interfaccia; tramite un ascoltatore si legge il dato dal database che viene poi passato al callback. Una volta che il processo di lettura del dato termina, il callback rilascia il valore del dato letto nel metodo in cui è stato definito.\\
 Per lo sviluppo di quest'applicazione mobile sono stati utilizzati esclusivamente due listener:
 
@@ -278,7 +278,7 @@ Il metodo restituisce un valore booleano che assume la forma di \textit{true} se
 
 \subsection{Mosse deboli}
 Una mossa debole può essere eseguita esclusivamente dal difensore e la sua definizione è meglio illustrata nella sezione 4.3.\\
-Dal punto di vista implementativo è stata definita la funziona \textit{isWeakMove()}. Questa funzione riceve in ingresso lo \textit{startNode} (già definito nella sezione precedente), il nodo toccato dall'utente, una variabile booleana \textit{atLeastOneArcOfLastMoveColour}, una mappa con coppia chiave valore <Node, Boolean> che assume il nome di \textit{visitedNodes}. Un oggetto della classe \textbf{Map}\cite{14}che associa una chiave ad un valore. Una mappa non può contenere chiavi duplicate; ogni chiave può essere associata al massimo ad un valore.\\
+Dal punto di vista implementativo è stata definita la funziona \textit{isWeakMove()}. Questa funzione riceve in ingresso lo \textit{startNode} (già definito nella sezione precedente), il nodo toccato dall'utente, una variabile booleana \textit{atLeastOneArcOfLastMoveColour}, una mappa con coppia chiave valore <Node, Boolean> che assume il nome di \textit{visitedNodes}. Un oggetto della classe \textbf{Map}\cite{14} che associa una chiave ad un valore. Una mappa non può contenere chiavi duplicate; ogni chiave può essere associata al massimo ad un valore.\\
 La variabile booleana \textit{atLeastOneArcOfLastMoveColour} assume valore \textit{true} quando è già stato visitato un arco con lo stesso colore del colore dell'ultima mossa; altrimenti, assume valore \textit{false}. La mappa \textit{visitedNodes} aggiunge i nodi visitati accostando ad essi il valore \textit{true} se visitati, \textit{false} se non ancora visitati.\\
 Questo metodo ha un carattere ricorsivo.\\
 Innanzitutto si verifica se il colore speciale coincide con il colore dell'ultima mossa effettuata; in questo caso, si cicla sui nodi uscenti dello \textit{startNode} e se il colore di un arco coincide con il colore speciale (che è a sua volta uguale al colore dell'ultima mossa) la funzione ritorna \textit{true}; altrimenti, si prosegue verso il prossimo blocco di codice. Questa parte di codice è necessaria a verificare il caso in cui colore speciale e colore dell'ultima mossa coincidono: in questo caso si può anche rimanere fermi.\\
@@ -364,7 +364,7 @@ Come punto di arrivo e punto di fine sono stati utilizzati come riferimento i no
 I grafi rappresentati tramite la classe Canvas sono contenuti nella classe \textit{astratta} \textbf{DirectedGraph}.\\
 Questa classe definisce i metodi principali, quali getter, setter e costruttore, quest'ultimo utilizzato per la rappresentazione dei grafica dei grafi.\\
 Tra gli attributi di questa classe sono presenti un array di oggetti della classe \textit{Node} (sezione 2.5.2)  e un array di oggetti della classe \textbf{Edges} (sezione 2.5.3).
-All'interno di questa classe sono implementati 3 metodi che restituiscono tutti e 3 un oggetto di tipo\textbf{Paint} che viene utilizzato rispettivamento per la rappresentazione grafica rispettivamente dei nodi, degli archi e della punta della freccia che termina l'arco. In particolare, questi oggetti definiscono il colore, lo spessore e lo stile dei tre elementi indicati precedentemente.\\
+All'interno di questa classe sono implementati 3 metodi che restituiscono tutti e 3 un oggetto di tipo \textbf{Paint} che viene utilizzato rispettivamento per la rappresentazione grafica rispettivamente dei nodi, degli archi e della punta della freccia che termina l'arco. In particolare, questi oggetti definiscono il colore, lo spessore e lo stile dei tre elementi indicati precedentemente.\\
 La classe DirectedGraph è una classe astratta in quanto definisce senza implementazione i seguenti metodi:
 
 \begin{itemize}
@@ -449,7 +449,7 @@ I nodi figli di ogni singola stanza sono i seguenti:
 \end{itemize}
 
 Il nodo padre, che indica il nome della stanza, acquisce un nodo figlio chiamato \textit{Player 2} nel momento in cui un avversario si unisce alla stanza. Questo nodo segue la stessa logica del nodo \textit{Player 1}. Questi nodi forniscono le informazioni sul nome dell'utente e il suo ruolo, attaccante o difensore.\\
-Nel momento in cui il secondo giocatore si unisce alla partita, quindi nei momenti che ancora precedono l'inizio della stessa, il nodo \textit{show} assume valore \textbf{false}.
+Nel momento in cui il secondo giocatore si unisce alla partita, quindi nei momenti che ancora precedono l'inizio della stessa, il nodo \textit{show} assume valore \textit{false}.
 Il nodo \textit{show} se ha valore \textit{true} permette di mostrare la stanza della partita nella ListView, indicando che manca ancora un avversario. Quando questo nodo assume valore \textit{false} la stanza della partita non sarà più visibile all'interno della ListView.\\
 Il nodo \textit{specialColour} assume il valore di una stringa corrispondente al colore di uno degli archi utilizzati all'interno del gioco (rosso, blu, verde, nero). Anch'esso non viene modificato durante lo svoglimento della partita. La figura 3.2 rappresenta un nodo completo prima dell'inizio della partita.\\
 \begin{figure}[h]
@@ -685,7 +685,7 @@ sarà (1, 3). Il difensore può scegliere fra tre mosse deboli sul tavolo di sin
 \chapter{Conclusioni}
 In questa relazione di stage viene affrontato lo sviluppo di un'applicazione che mira ad essere di supporto per l'insegnamento didattico del principio della bisimulazione.\\
 La soluzione offerta è dunque un gioco che permette di mettere in pratica le conoscenze acquisite a livello teorico su tale argomento contro un avversario che può essere più o meno competente in materia. Con questa soluzione si cerca di offrire una possibilità di testare le proprie competenze possibilmente divertendosi.\\
-L'esperienza di stage interna all'università si è rivelata un importante occasione per accrescere le mie competenze in ambito di sviluppo Android, imparando ad utilizzare nuove librerie come le Canvas, aggiungendo al mio bagaglio personale nuovi meccanismi implementativi e perferzionando le abilità pregresse.
+L'esperienza di stage interna all'università si è rivelata un'importante occasione per accrescere le mie competenze in ambito di sviluppo Android, imparando ad utilizzare nuove librerie come le Canvas, aggiungendo al mio bagaglio personale nuovi meccanismi implementativi e perferzionando le abilità pregresse.
 
 \chapter{Sviluppi futuri}
 In questo capitolo vengono proposti dei possibili sviluppi futuri che possono rendere l'applicazione più completa e più fruibile.
@@ -701,6 +701,20 @@ Uno sviluppo futuro può riguardare la \textbf{UI} (\textit{user interface}) ovv
 
 \section{Impostazioni}
 L'activity riguardante le impostazioni attualmente consta della sola funzionalità di cambio lingua. In futuro è programmata l'implementazione di nuove funzionalità in questa pagina quali la possibilità di cambiare tema, aggiungere un collegamento sulle info del progetto e sui servizi di terze parti.
+
+\chapter*{Ringraziamenti}
+Ringrazio la mia relatrice Daniela Micucci e il mio correlatore Ginelli Davide per la disponibilità e la competenza mostrate durante il percorso di stage. Ringrazio inoltre il prof. Bernardinello Luca per l'opportunità offerta di sviluppo di questa applicazione.\\
+
+Ringrazio i miei amici che sono stati al mio fianco durante tutto il percorso universitario dandomi un aiuto nei momenti di difficoltà, in particolare ad Alessandro che c'è stato in ogni occasione.\\
+
+Il ringraziamento più sentito va alla mia famiglia che mi ha sempre supportato e sopportato durante il percorso universitario non facendomi mai mancare nulla e riempiendomi di affetto.\\
+
+Infine un ringraziamento speciale lo voglio dedicare ai miei nonni, le persone a me più care in assoluto.\\
+
+A loro voglio dedicare la mia tesi. Grazie.\\
+
+
+
 
 \bibliographystyle{plainurl}
 \bibliography{bibliography.bib}
